@@ -15,6 +15,7 @@ class TodaySoldPage extends StatelessWidget {
               backgroundColor: Colors.transparent,
               floating: true,
               flexibleSpace: CustomDropDownBtn(
+                tooltip: "Store selection",
                 options: const ["hello", "hi"],
                 onTap: (val) {},
               ),

@@ -12,14 +12,16 @@ class CustomDropDownBtn extends StatefulWidget {
   final List<String> options;
   final ValueChanged<String> onTap;
   final String? initialValue;
+  final String? tooltip;
 
   const CustomDropDownBtn({
     Key? key,
+    required this.options,
+    required this.onTap,
     this.hideBackgroundUI,
     this.width,
     this.initialValue,
-    required this.options,
-    required this.onTap,
+    this.tooltip,
   }) : super(key: key);
 
   @override
@@ -48,6 +50,7 @@ class _CustomDropDownBtnState extends State<CustomDropDownBtn> {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DropdownButtonHideUnderline(
         child: PopupMenuButton<String>(
+          tooltip: widget.tooltip,
           itemBuilder: (context) {
             return widget.options.map((str) {
               return PopupMenuItem(

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
-import 'package:merostore_mobile/views/instock_page/InStockPage.dart';
-import 'package:merostore_mobile/views/other_page/OtherPage.dart';
-import 'package:merostore_mobile/views/summary_page/SummaryPage.dart';
-import 'package:merostore_mobile/views/today_sold_page/TodaySoldPage.dart';
+import 'package:merostore_mobile/views/instock_page/in_stock_page.dart';
+import 'package:merostore_mobile/views/other_page/other_page.dart';
+import 'package:merostore_mobile/views/summary_page/summary_page.dart';
+import 'package:merostore_mobile/views/today_sold_page/today_sold_page.dart';
 
 /// This widget is responsible for changing screen and acts as container to host other responsible screen
 
