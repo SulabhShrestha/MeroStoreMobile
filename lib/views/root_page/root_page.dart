@@ -50,8 +50,8 @@ class _RootPageState extends State<RootPage> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
             child: CustomShadowContainer(
-              foregroundColor: AppColors.greenColor,
-              backgroundColor: AppColors.yellowColor,
+              foregroundColor: ConstantAppColors.greenColor,
+              backgroundColor: ConstantAppColors.yellowColor,
               height: 48,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
@@ -64,7 +64,7 @@ class _RootPageState extends State<RootPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   duration: const Duration(milliseconds: 400),
-                  tabBackgroundColor: AppColors.yellowColor,
+                  tabBackgroundColor: ConstantAppColors.yellowColor,
                   tabBorderRadius: 14,
                   color: Colors.black,
                   textStyle: const TextStyle(

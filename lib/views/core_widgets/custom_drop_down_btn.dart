@@ -43,8 +43,8 @@ class _CustomDropDownBtnState extends State<CustomDropDownBtn> {
       height: 42,
       hideBackgroundUI: widget.hideBackgroundUI ?? false,
       width: widget.width ?? MediaQuery.of(context).size.width * 0.25,
-      foregroundColor: AppColors.greenColor,
-      backgroundColor: AppColors.yellowColor,
+      foregroundColor: ConstantAppColors.greenColor,
+      backgroundColor: ConstantAppColors.yellowColor,
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DropdownButtonHideUnderline(
         child: PopupMenuButton<String>(
