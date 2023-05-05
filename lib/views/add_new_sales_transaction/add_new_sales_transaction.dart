@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
+import 'package:merostore_mobile/views/add_new_sales_transaction/utils/sales_helper.dart';
 import 'package:merostore_mobile/views/add_new_stock/utils/required_marking.dart';
-import 'package:merostore_mobile/views/add_new_stock/utils/stock_helper.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
@@ -12,16 +12,16 @@ import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_.
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_with_dropdownbtn.dart';
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
 
-class AddNewStock extends StatefulWidget {
-  const AddNewStock({
+class AddNewSalesTransaction extends StatefulWidget {
+  const AddNewSalesTransaction({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<AddNewStock> createState() => _AddNewStockState();
+  State<AddNewSalesTransaction> createState() => _AddNewSalesTransactionState();
 }
 
-class _AddNewStockState extends State<AddNewStock> {
+class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
   String _currentTransactionType =
       ""; // Holds what the user has currently selected
 
@@ -29,7 +29,7 @@ class _AddNewStockState extends State<AddNewStock> {
 
   @override
   void initState() {
-    _allTransactionType = StockHelper().getTransactionTypes();
+    _allTransactionType = SalesHelper().getTransactionTypes();
     _currentTransactionType = _allTransactionType.first;
     super.initState();
   }
@@ -80,7 +80,7 @@ class _AddNewStockState extends State<AddNewStock> {
                       ),
                     ),
                     CustomDropDownBtn(
-                      options: StockHelper().getTransactionTypes(),
+                      options: _allTransactionType,
                       tooltip: "Transaction type selection",
                       onTap: (value) {
                         setState(() => _currentTransactionType = value);
@@ -91,7 +91,7 @@ class _AddNewStockState extends State<AddNewStock> {
 
                 ConstantSpaces.height12,
 
-                for (Map elem in StockHelper()
+                for (Map elem in SalesHelper()
                     .getInformation(transactionType: _currentTransactionType))
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

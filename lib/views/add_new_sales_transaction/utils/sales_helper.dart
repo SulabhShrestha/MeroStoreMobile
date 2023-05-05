@@ -1,7 +1,7 @@
-/// Helper class responsible for assisting [StockPage]
-class StockHelper {
+/// Helper class responsible for assisting [SalesPage]
+class SalesHelper {
   List<String> getTransactionTypes() {
-    return ["Cash", "Credit", "Prepaid", "Return"];
+    return ["Cash", "Credit", "Prepaid", "Return", "Settlement", "Deposited"];
   }
 
   List<Map> _getCashInformation() {
@@ -11,7 +11,7 @@ class StockHelper {
         "required": true,
       },
       {
-        "heading": "Brought Quantity",
+        "heading": "Sold Quantity",
         "required": true,
         "quantityOption": true,
       },
@@ -33,7 +33,7 @@ class StockHelper {
         "required": true,
       },
       {
-        "heading": "Brought Quantity",
+        "heading": "Sold Quantity",
         "required": true,
         "quantityOption": true,
       },
@@ -42,11 +42,11 @@ class StockHelper {
         "required": true,
       },
       {
-        "heading": "Creditor's Name",
+        "heading": "Debtor's Name",
         "required": true,
       },
       {
-        "heading": "Creditor's Information",
+        "heading": "Debtor's Information",
         "required": false,
       },
       {
@@ -64,7 +64,7 @@ class StockHelper {
       },
       {
         "heading": "For Quantity",
-        "required": true,
+        "required": false,
         "quantityOption": true,
       },
       {
@@ -72,11 +72,11 @@ class StockHelper {
         "required": true,
       },
       {
-        "heading": "Debtor's Name",
+        "heading": "Creditor's Name",
         "required": true,
       },
       {
-        "heading": "Debtor's Information",
+        "heading": "Creditor's Information",
         "required": false,
       },
       {
@@ -108,6 +108,40 @@ class StockHelper {
     ];
   }
 
+  List<Map> _getSettlementInformation() {
+    return [
+      {
+        "heading": "Debtor Name",
+        "required": true,
+      },
+      {
+        "heading": "Money Given",
+        "required": true,
+      },
+      {
+        "heading": "Description",
+        "required": false,
+      },
+    ];
+  }
+
+  List<Map> _getDepositedInformation() {
+    return [
+      {
+        "heading": "Organization Name",
+        "required": true,
+      },
+      {
+        "heading": "Amount",
+        "required": true,
+      },
+      {
+        "heading": "Description",
+        "required": false,
+      },
+    ];
+  }
+
   List<Map> getInformation({required String transactionType}) {
     switch (transactionType.toLowerCase()) {
       case "cash":
@@ -121,6 +155,12 @@ class StockHelper {
 
       case "return":
         return _getReturnInformation();
+
+      case "settlement":
+        return _getSettlementInformation();
+
+      case "deposited":
+        return _getDepositedInformation();
 
       default:
         return [];

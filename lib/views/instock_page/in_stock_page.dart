@@ -67,8 +67,8 @@ class InStockPage extends StatelessWidget {
                 duration: const Duration(milliseconds: 250),
                 child: FloatingActionButton(
                   onPressed: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (_) => AddNewStock()));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const AddNewStock()));
                   },
                   tooltip: "Add new stock",
                   child: const Icon(

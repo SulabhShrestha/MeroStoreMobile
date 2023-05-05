@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:merostore_mobile/views/add_new_sales_transaction/add_new_sales_transaction.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 
 class TodaySoldPage extends StatelessWidget {
@@ -22,8 +23,29 @@ class TodaySoldPage extends StatelessWidget {
             ),
           ];
         },
-        body: const Center(
-          child: Text("Today"),
+        body: Stack(
+          children: [
+            // add new transaction
+            Positioned(
+              right: 16,
+              bottom: 16,
+              child: AnimatedContainer(
+                width: 58,
+                height: 58,
+                duration: const Duration(milliseconds: 250),
+                child: FloatingActionButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const AddNewSalesTransaction()));
+                  },
+                  tooltip: "Add new sales transaction",
+                  child: const Icon(
+                    Icons.add,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
