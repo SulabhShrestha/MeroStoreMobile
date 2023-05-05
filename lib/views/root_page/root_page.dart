@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
-import 'package:merostore_mobile/utils/custom_shadow_container.dart';
+import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
 import 'package:merostore_mobile/views/instock_page/InStockPage.dart';
 import 'package:merostore_mobile/views/other_page/OtherPage.dart';
 import 'package:merostore_mobile/views/summary_page/SummaryPage.dart';
