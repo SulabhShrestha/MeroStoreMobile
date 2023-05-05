@@ -1,0 +1,163 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:merostore_mobile/utils/constants/app_colors.dart';
+import 'package:merostore_mobile/utils/constants/spaces.dart';
+import 'package:merostore_mobile/utils/constants/text_styles.dart';
+import 'package:merostore_mobile/views/add_new_stock/utils/required_marking.dart';
+import 'package:merostore_mobile/views/add_new_stock/utils/stock_helper.dart';
+import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
+import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
+import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
+import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_.dart';
+import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_with_dropdownbtn.dart';
+
+class AddNewStock extends StatefulWidget {
+  const AddNewStock({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<AddNewStock> createState() => _AddNewStockState();
+}
+
+class _AddNewStockState extends State<AddNewStock> {
+  String _currentTransactionType =
+      ""; // Holds what the user has currently selected
+  List<String> _allTransactionType = [];
+
+  @override
+  void initState() {
+    _allTransactionType = StockHelper().getTransactionTypes();
+    _currentTransactionType = _allTransactionType.first;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: CustomBox(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 16.0,
+          ),
+
+          // wrapping with scroll view since max height is used
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // store name
+                Row(
+                  children: [
+                    Text(
+                      "Store Names:",
+                      style: ConstantTextStyles.normalStyle20.copyWith(
+                        color: ConstantAppColors.primaryColor.withOpacity(0.6),
+                      ),
+                    ),
+                    CustomDropDownBtn(
+                      options: const ["Hi"],
+                      tooltip: "Store selection",
+                      onTap: (value) {},
+                    ),
+                  ],
+                ),
+
+                ConstantSpaces.height12,
+
+                // Transaction type
+                Row(
+                  children: [
+                    Text(
+                      "Transaction Type:",
+                      style: ConstantTextStyles.normalStyle20.copyWith(
+                        color: ConstantAppColors.primaryColor.withOpacity(0.6),
+                      ),
+                    ),
+                    CustomDropDownBtn(
+                      options: StockHelper().getTransactionTypes(),
+                      tooltip: "Transaction type selection",
+                      onTap: (value) {
+                        setState(() => _currentTransactionType = value);
+                      },
+                    ),
+                  ],
+                ),
+
+                ConstantSpaces.height12,
+
+                for (Map elem in StockHelper()
+                    .getInformation(transactionType: _currentTransactionType))
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // required heading
+                      if (elem["required"])
+                        RequiredMarking(heading: elem["heading"]),
+
+                      if (elem["required"] == false)
+                        StockHelper().getNormalHeading(elem["heading"]),
+
+                      // textfield
+                      if (elem["quantityOption"] == null)
+                        const DottedUnderlineTextField(),
+
+                      // textfield with quantity selection option
+                      if (elem["quantityOption"] != null)
+                        const DottedUnderlineTextFieldWithDropDownBtn(),
+
+                      ConstantSpaces.height12,
+                    ],
+                  ),
+
+                // Today's date
+                Row(
+                  children: [
+                    Icon(
+                      Icons.today_outlined,
+                      color: ConstantAppColors.primaryColor.withOpacity(0.6),
+                    ),
+                    Text(
+                      DateFormat("yyyy-MM-dd")
+                          .format(DateTime.now())
+                          .toString(),
+                      style: ConstantTextStyles.normalStyle20.copyWith(
+                        color: ConstantAppColors.primaryColor.withOpacity(0.6),
+                      ),
+                    ),
+                  ],
+                ),
+
+                ConstantSpaces.height20,
+
+                // submit button
+                Align(
+                  alignment: Alignment.center,
+                  child: CustomShadowContainer(
+                    onTap: () {},
+                    height: 42,
+                    width: 96,
+                    foregroundColor: ConstantAppColors.greenColor,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    child: const Text(
+                      "Submit",
+                      style: TextStyle(
+                          color: ConstantAppColors.primaryColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+
+                ConstantSpaces.height16,
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

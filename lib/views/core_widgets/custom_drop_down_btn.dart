@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
@@ -7,21 +5,21 @@ import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'custom_shadow_container.dart';
 
 class CustomDropDownBtn extends StatefulWidget {
-  final bool? hideBackgroundUI;
-  final double? width;
   final List<String> options;
   final ValueChanged<String> onTap;
+  final String tooltip;
+  final bool? hideBackgroundUI;
+  final double? width;
   final String? initialValue;
-  final String? tooltip;
 
   const CustomDropDownBtn({
     Key? key,
     required this.options,
     required this.onTap,
+    required this.tooltip,
     this.hideBackgroundUI,
     this.width,
     this.initialValue,
-    this.tooltip,
   }) : super(key: key);
 
   @override
@@ -36,7 +34,6 @@ class _CustomDropDownBtnState extends State<CustomDropDownBtn> {
     super.initState();
     _currentItemSelected = widget.initialValue ??
         widget.options.first; // First priority is always initial value
-    log("Beginning of DROPDOWNBTN: $_currentItemSelected");
   }
 
   @override
@@ -79,7 +76,7 @@ class _CustomDropDownBtnState extends State<CustomDropDownBtn> {
                     ),
                   ),
                 ),
-                Icon(Icons.arrow_drop_down),
+                const Icon(Icons.arrow_drop_down),
               ],
             ),
           ),
@@ -88,8 +85,6 @@ class _CustomDropDownBtnState extends State<CustomDropDownBtn> {
             setState(() {
               _currentItemSelected = value;
             });
-
-            log("Inside DropDownBtn $_currentItemSelected");
           },
         ),
       ),
