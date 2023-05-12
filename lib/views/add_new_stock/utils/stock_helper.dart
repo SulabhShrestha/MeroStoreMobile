@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// Helper class responsible for assisting [StockPage]
 class StockHelper {
   List<String> getTransactionTypes() {
@@ -14,10 +16,12 @@ class StockHelper {
         "heading": "Brought Quantity",
         "required": true,
         "quantityOption": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Total Price",
         "required": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Description",
@@ -36,10 +40,12 @@ class StockHelper {
         "heading": "Brought Quantity",
         "required": true,
         "quantityOption": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Total Price",
         "required": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Creditor's Name",
@@ -66,10 +72,12 @@ class StockHelper {
         "heading": "For Quantity",
         "required": true,
         "quantityOption": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Money Given",
         "required": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Debtor's Name",
@@ -96,10 +104,12 @@ class StockHelper {
         "heading": "Returned Quantity",
         "required": true,
         "quantityOption": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Returned Amount",
         "required": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Description",

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// Helper class responsible for assisting [SalesPage]
 class SalesHelper {
   List<String> getTransactionTypes() {
@@ -14,10 +16,12 @@ class SalesHelper {
         "heading": "Sold Quantity",
         "required": true,
         "quantityOption": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Total Price",
         "required": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Description",
@@ -36,10 +40,12 @@ class SalesHelper {
         "heading": "Sold Quantity",
         "required": true,
         "quantityOption": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Total Price",
         "required": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Debtor's Name",
@@ -66,10 +72,12 @@ class SalesHelper {
         "heading": "For Quantity",
         "required": false,
         "quantityOption": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Money Given",
         "required": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Creditor's Name",
@@ -96,10 +104,12 @@ class SalesHelper {
         "heading": "Returned Quantity",
         "required": true,
         "quantityOption": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Returned Amount",
         "required": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Description",
@@ -117,6 +127,7 @@ class SalesHelper {
       {
         "heading": "Money Given",
         "required": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Description",
@@ -134,6 +145,7 @@ class SalesHelper {
       {
         "heading": "Amount",
         "required": true,
+        "keyboardType": TextInputType.number,
       },
       {
         "heading": "Description",

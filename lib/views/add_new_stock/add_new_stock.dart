@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
+import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/views/add_new_stock/utils/required_marking.dart';
 import 'package:merostore_mobile/views/add_new_stock/utils/stock_helper.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
@@ -27,10 +30,25 @@ class _AddNewStockState extends State<AddNewStock> {
 
   List<String> _allTransactionType = []; // Stores all the transaction type
 
+  Map<String, TextEditingController> controllers =
+      {}; // Holds the controllers for all fields
+
+  List<Map> allFormFields = []; // Holds all the form data
+
   @override
   void initState() {
     _allTransactionType = StockHelper().getTransactionTypes();
     _currentTransactionType = _allTransactionType.first;
+    allFormFields =
+        StockHelper().getInformation(transactionType: _currentTransactionType);
+
+    log("All form fields: $allFormFields");
+
+    // Initialize controllers based on initial transaction type
+    for (Map elem in allFormFields) {
+      controllers[elem["heading"]] = TextEditingController();
+    }
+
     super.initState();
   }
 
@@ -83,7 +101,34 @@ class _AddNewStockState extends State<AddNewStock> {
                       options: StockHelper().getTransactionTypes(),
                       tooltip: "Transaction type selection",
                       onTap: (value) {
-                        setState(() => _currentTransactionType = value);
+                        Map<String, dynamic> previousUserInput = {};
+
+                        _currentTransactionType = value;
+
+                        // Changing current form fields
+                        setState(
+                          () => allFormFields = StockHelper().getInformation(
+                              transactionType: _currentTransactionType),
+                        );
+
+                        // Store the previous user input
+                        for (Map elem in allFormFields) {
+                          String heading = elem["heading"];
+                          if (controllers.containsKey(heading)) {
+                            previousUserInput[heading] =
+                                controllers[heading]?.text;
+                          }
+                        }
+
+                        // Clear the controllers
+                        controllers.clear();
+
+                        // Changing controllers according to form fields
+                        for (Map elem in allFormFields) {
+                          String heading = elem["heading"];
+                          controllers[heading] = TextEditingController(
+                              text: previousUserInput[heading]);
+                        }
                       },
                     ),
                   ],
@@ -91,29 +136,7 @@ class _AddNewStockState extends State<AddNewStock> {
 
                 ConstantSpaces.height12,
 
-                for (Map elem in StockHelper()
-                    .getInformation(transactionType: _currentTransactionType))
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // required heading
-                      if (elem["required"])
-                        RequiredMarking(heading: elem["heading"]),
-
-                      if (elem["required"] == false)
-                        NormalHeadingForAddingNewItem(text: elem["heading"]),
-
-                      // textfield
-                      if (elem["quantityOption"] == null)
-                        const DottedUnderlineTextField(),
-
-                      // textfield with quantity selection option
-                      if (elem["quantityOption"] != null)
-                        const DottedUnderlineTextFieldWithDropDownBtn(),
-
-                      ConstantSpaces.height12,
-                    ],
-                  ),
+                ..._populateOptions(),
 
                 // Today's date
                 Row(
@@ -139,7 +162,24 @@ class _AddNewStockState extends State<AddNewStock> {
                 Align(
                   alignment: Alignment.center,
                   child: CustomShadowContainer(
-                    onTap: () {},
+                    onTap: () async {
+                      final userInput = _getAllDataFromTextEditingController();
+
+                      // User didn't added required fields
+                      if (userInput["redFlag"]) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Missing required fields.")));
+                      }
+                      // User has inserted required fields
+                      else {
+                        StockViewModel().addNewStock(
+                          userInput: userInput["userInput"],
+                          onStockAdded: () {},
+                          onFailure: () {},
+                        );
+                      }
+                    },
                     height: 42,
                     width: 96,
                     foregroundColor: ConstantAppColors.greenColor,
@@ -161,5 +201,84 @@ class _AddNewStockState extends State<AddNewStock> {
         ),
       ),
     );
+  }
+
+  List<Widget> _populateOptions() {
+    List<Widget> widgets = [];
+
+    for (Map elem in allFormFields) {
+      log("Keyboard: ${elem["keyboardType"]}");
+      // Adding to widget
+      widgets.add(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // required heading
+            if (elem["required"]) RequiredMarking(heading: elem["heading"]),
+
+            if (elem["required"] == false)
+              NormalHeadingForAddingNewItem(text: elem["heading"]),
+
+            // TextField
+            if (elem["quantityOption"] == null)
+              DottedUnderlineTextField(
+                controller: controllers[elem["heading"]],
+                keyboardType: elem["keyboardType"] ?? TextInputType.text,
+              ),
+
+            // TextField with quantity selection option
+            if (elem["quantityOption"] != null)
+              DottedUnderlineTextFieldWithDropDownBtn(
+                controller: controllers[elem["heading"]],
+                keyboardType: elem["keyboardType"] ?? TextInputType.text,
+              ),
+
+            ConstantSpaces.height12,
+          ],
+        ),
+      );
+    }
+
+    return widgets;
+  }
+
+  Map<String, dynamic> _getAllDataFromTextEditingController() {
+    bool redFlag = false; // if user hasn't entered required fields
+    Map<String, dynamic> userInput = {};
+
+    userInput["Transaction Type"] = _currentTransactionType;
+    //TODO: store name and brought quantity should also be added.
+
+    // length of controllers and allFormFields is same.
+    for (int i = 0; i < allFormFields.length; i++) {
+      Map elem = allFormFields[i]; // Returning Map data of each form item
+      // Getting controller using the form's heading
+      TextEditingController controller = controllers[elem["heading"]]!;
+      String value = controller.text;
+      bool isRequired = elem["required"];
+
+      // User has entered important field
+      if (isRequired && value.isNotEmpty) {
+        userInput[elem["heading"]] = value;
+      }
+
+      // User hasn't entered important field
+      else if (isRequired && value.isEmpty) {
+        redFlag = true;
+        // break;
+      }
+
+      // User has entered not important field such as description
+      else if (value.isNotEmpty) {
+        userInput[elem["heading"]] = value;
+      }
+    }
+
+    log(userInput.toString());
+
+    return {
+      "redFlag": redFlag,
+      "userInput": userInput,
+    };
   }
 }

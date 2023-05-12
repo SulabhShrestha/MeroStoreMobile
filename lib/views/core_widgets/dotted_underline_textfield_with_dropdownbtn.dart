@@ -9,7 +9,13 @@ import 'custom_drop_down_btn.dart';
 ///
 
 class DottedUnderlineTextFieldWithDropDownBtn extends StatelessWidget {
-  const DottedUnderlineTextFieldWithDropDownBtn({Key? key}) : super(key: key);
+  final TextEditingController? controller;
+  final TextInputType keyboardType;
+  const DottedUnderlineTextFieldWithDropDownBtn({
+    Key? key,
+    this.controller,
+    required this.keyboardType,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +26,10 @@ class DottedUnderlineTextFieldWithDropDownBtn extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.55,
           child: Column(
             children: [
-              const TextField(
+              TextField(
+                controller: controller,
                 maxLines: 1,
-                keyboardType: TextInputType.number,
+                keyboardType: keyboardType,
                 cursorColor: ConstantAppColors.primaryColor,
               ),
               Padding(

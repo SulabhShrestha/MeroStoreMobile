@@ -7,15 +7,23 @@ import '../../utils/constants/app_colors.dart';
 ///
 
 class DottedUnderlineTextField extends StatelessWidget {
-  const DottedUnderlineTextField({Key? key}) : super(key: key);
+  final TextEditingController? controller;
+  final TextInputType keyboardType;
+
+  const DottedUnderlineTextField({
+    Key? key,
+    this.controller,
+    required this.keyboardType,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const TextField(
+        TextField(
+          controller: controller,
           maxLines: 1,
-          keyboardType: TextInputType.number,
+          keyboardType: keyboardType,
           cursorColor: ConstantAppColors.primaryColor,
         ),
         Padding(

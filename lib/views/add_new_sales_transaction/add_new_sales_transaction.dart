@@ -105,11 +105,18 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
 
                       // textfield
                       if (elem["quantityOption"] == null)
-                        const DottedUnderlineTextField(),
+                        DottedUnderlineTextField(
+                          controller: TextEditingController(),
+                          keyboardType:
+                              elem["keyboardType"] ?? TextInputType.text,
+                        ),
 
                       // textfield with quantity selection option
                       if (elem["quantityOption"] != null)
-                        const DottedUnderlineTextFieldWithDropDownBtn(),
+                        DottedUnderlineTextFieldWithDropDownBtn(
+                          keyboardType:
+                              elem["keyboardType"] ?? TextInputType.text,
+                        ),
 
                       ConstantSpaces.height12,
                     ],
