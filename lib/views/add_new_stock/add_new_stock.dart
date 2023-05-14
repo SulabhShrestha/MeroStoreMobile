@@ -42,8 +42,6 @@ class _AddNewStockState extends State<AddNewStock> {
     allFormFields =
         StockHelper().getInformation(transactionType: _currentTransactionType);
 
-    log("All form fields: $allFormFields");
-
     // Initialize controllers based on initial transaction type
     for (Map elem in allFormFields) {
       controllers[elem["heading"]] = TextEditingController();
@@ -175,8 +173,14 @@ class _AddNewStockState extends State<AddNewStock> {
                       else {
                         StockViewModel().addNewStock(
                           userInput: userInput["userInput"],
-                          onStockAdded: () {},
-                          onFailure: () {},
+                          onStockAdded: () {
+                            Navigator.of(context).pop();
+                          },
+                          onFailure: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text("Something went wrong.")));
+                          },
                         );
                       }
                     },
@@ -207,7 +211,6 @@ class _AddNewStockState extends State<AddNewStock> {
     List<Widget> widgets = [];
 
     for (Map elem in allFormFields) {
-      log("Keyboard: ${elem["keyboardType"]}");
       // Adding to widget
       widgets.add(
         Column(
@@ -245,6 +248,7 @@ class _AddNewStockState extends State<AddNewStock> {
   Map<String, dynamic> _getAllDataFromTextEditingController() {
     bool redFlag = false; // if user hasn't entered required fields
     Map<String, dynamic> userInput = {};
+    Map<String, dynamic> details = {}; // holds all stock details
 
     userInput["Transaction Type"] = _currentTransactionType;
     //TODO: store name and brought quantity should also be added.
@@ -259,23 +263,24 @@ class _AddNewStockState extends State<AddNewStock> {
 
       // User has entered important field
       if (isRequired && value.isNotEmpty) {
-        userInput[elem["heading"]] = value;
+        details[elem["heading"]] = value;
       }
 
       // User hasn't entered important field
       else if (isRequired && value.isEmpty) {
         redFlag = true;
-        // break;
+        break; // No need to add since necessary field is empty
       }
 
       // User has entered not important field such as description
       else if (value.isNotEmpty) {
-        userInput[elem["heading"]] = value;
+        details[elem["heading"]] = value;
       }
     }
 
-    log(userInput.toString());
+    userInput["details"] = details;
 
+    log(userInput.toString());
     return {
       "redFlag": redFlag,
       "userInput": userInput,

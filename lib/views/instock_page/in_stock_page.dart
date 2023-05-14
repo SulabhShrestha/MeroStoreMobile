@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:merostore_mobile/models/stock.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
+import 'package:merostore_mobile/utils/stock_transaction_card.dart';
+import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/views/add_new_stock/add_new_stock.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 
@@ -8,6 +11,7 @@ class InStockPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    StockViewModel().getAllStocks();
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
@@ -77,6 +81,23 @@ class InStockPage extends StatelessWidget {
                 ),
               ),
             ),
+
+            FutureBuilder(
+                future: StockViewModel().getAllStocks(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      children: [
+                        for (Stock element in snapshot.data!)
+                          StockTransactionCard(
+                            transactionType: element.transactionType,
+                            stockDetails: element.details,
+                          ),
+                      ],
+                    );
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                }),
           ],
         ),
       ),
