@@ -5,6 +5,7 @@ import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
+import 'package:merostore_mobile/views/edit_store_page/edit_store_page.dart';
 
 import 'widgets/custom_list_tile.dart';
 
@@ -70,40 +71,36 @@ class OtherPage extends StatelessWidget {
         CustomBox(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
+            children: [
+              const Text(
                 "Preferences",
                 style: ConstantTextStyles.redHeading20,
               ),
               ConstantSpaces.height4,
-              CustomListTile(
+              const CustomListTile(
                 title: "Personal data",
                 googleIconData: Icons.contact_page_outlined,
                 trailingIcon: Icon(Icons.navigate_next_outlined),
               ),
-              CustomListTile(
-                title: "Sales transaction type",
-                googleIconData: Icons.payment,
-                trailingIcon: Icon(Icons.navigate_next_outlined),
-              ),
-              CustomListTile(
-                title: "Quantity type",
-                googleIconData: Icons.balance,
-                trailingIcon: Icon(Icons.navigate_next_outlined),
-              ),
+
               CustomListTile(
                 title: "Stores",
                 googleIconData: Icons.store_outlined,
-                trailingIcon: Icon(Icons.navigate_next_outlined),
+                trailingIcon: const Icon(Icons.navigate_next_outlined),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const EditStorePage(title: "Edit stores"),
+                  ));
+                },
               ),
-              CustomListTile(
+              const CustomListTile(
                 title: "Language",
                 googleIconData: Icons.language_outlined,
                 trailingIcon: Icon(Icons.navigate_next_outlined),
               ),
 
               // when turned on, leadingIconData: light_mode
-              CustomListTile(
+              const CustomListTile(
                 title: "Dark mode",
                 googleIconData: Icons.light_mode_outlined,
                 trailingIcon: Icon(Icons.navigate_next_outlined),

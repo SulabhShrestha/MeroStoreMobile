@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:merostore_mobile/extensions/string_ext.dart';
 import 'package:merostore_mobile/utils/bold_first_word_from_text.dart';
 
 /// This card is responsible for displaying for stock and sales transaction
@@ -40,7 +41,8 @@ class StockTransactionCard extends StatelessWidget {
                       ...stockDetails.entries.map((entry) {
                         return BoldFirstWordFromText(
                           boldWord: entry.key,
-                          normalWord: entry.value,
+                          normalWord:
+                              entry.value.toString().capitalizeFirstLetter(),
                         );
                       }).toList(),
                     ],

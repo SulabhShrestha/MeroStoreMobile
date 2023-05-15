@@ -6,18 +6,20 @@ class CustomListTile extends StatelessWidget {
   final String title;
   final Widget trailingIcon;
   final IconData? googleIconData;
+  final VoidCallback? onTap;
 
   const CustomListTile({
     Key? key,
     required this.title,
     required this.trailingIcon,
     this.googleIconData,
+    this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () {},
+      onTap: onTap,
       title: Text(
         title,
         style: ConstantTextStyles.normalStyle18,
