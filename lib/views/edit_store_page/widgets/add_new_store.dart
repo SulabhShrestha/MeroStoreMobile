@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/edit_store_page/widgets/dynamic_checkbox_list.dart';
 
 class AddNewStore extends StatefulWidget {
@@ -38,8 +39,22 @@ class _AddNewStoreState extends State<AddNewStore> {
                   const SnackBar(content: Text("Quantity types not selected.")),
                 );
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Everything is fine.")),
+                Map<String, dynamic> newStoreDetails = {
+                  "storeName": _storeNameController.text.trim(),
+                  "quantityTypes": userSelectedQuantityTypes,
+                  "transactionTypes": userSelectedTransactionTypes,
+                };
+
+                StoreViewModel().addNewStore(
+                  newStore: newStoreDetails,
+                  onStockAdded: () {
+                    Navigator.of(context).pop();
+                  },
+                  onFailure: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Something went wrong.")),
+                    );
+                  },
                 );
               }
             },
