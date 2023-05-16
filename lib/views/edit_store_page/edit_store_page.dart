@@ -1,4 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:merostore_mobile/models/store.dart';
+import 'package:merostore_mobile/view_models/store_view_model.dart';
+import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 import 'package:merostore_mobile/views/edit_store_page/widgets/add_new_store.dart';
 
 /// This page is responsible for providing interface to edit salesTransactionType,
@@ -20,6 +25,29 @@ class EditStorePage extends StatelessWidget {
       ),
       body: Stack(
         children: [
+          FutureBuilder(
+            future: StoreViewModel().getAllStores(),
+            builder: (context, snapshot) {
+              log("Snapshot: ${snapshot.data}");
+
+              if (snapshot.hasData) {
+                return Column(
+                  children: [
+                    for (Store element in snapshot.data!)
+                      CustomCard(
+                        displaying: "Store",
+                        storeName: element.storeName,
+                        quantityTypes: element.quantityTypes,
+                        transactionTypes: element.transactionTypes,
+                      ),
+                  ],
+                );
+              }
+
+              return CircularProgressIndicator();
+            },
+          ),
+
           // Add new store
           Positioned(
             right: 16,

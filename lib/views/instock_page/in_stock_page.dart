@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:merostore_mobile/models/stock.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
-import 'package:merostore_mobile/utils/stock_transaction_card.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/views/add_new_stock/add_new_stock.dart';
+import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 
 class InStockPage extends StatelessWidget {
@@ -89,9 +89,10 @@ class InStockPage extends StatelessWidget {
                     return Column(
                       children: [
                         for (Stock element in snapshot.data!)
-                          StockTransactionCard(
+                          CustomCard(
                             transactionType: element.transactionType,
                             stockDetails: element.details,
+                            displaying: "Stock",
                           ),
                       ],
                     );
