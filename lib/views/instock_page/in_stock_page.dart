@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:merostore_mobile/models/stock.dart';
+import 'package:merostore_mobile/models/stores.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/views/add_new_stock/add_new_stock.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
+import 'package:provider/provider.dart';
 
 class InStockPage extends StatelessWidget {
   const InStockPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    StockViewModel().getAllStocks();
+    final stores = Provider.of<Stores>(context);
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
@@ -22,7 +24,7 @@ class InStockPage extends StatelessWidget {
               floating: true,
               flexibleSpace: CustomDropDownBtn(
                 tooltip: "Store selection",
-                options: const ["hello", "hi"],
+                options: stores.allStoresNames,
                 onTap: (val) {},
               ),
               actions: [
@@ -71,8 +73,9 @@ class InStockPage extends StatelessWidget {
                 duration: const Duration(milliseconds: 250),
                 child: FloatingActionButton(
                   onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const AddNewStock()));
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => AddNewStock(stores: stores),
+                    ));
                   },
                   tooltip: "Add new stock",
                   child: const Icon(

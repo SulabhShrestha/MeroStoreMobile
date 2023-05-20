@@ -2,10 +2,12 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:merostore_mobile/models/stores.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
+import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/add_new_stock/utils/required_marking.dart';
 import 'package:merostore_mobile/views/add_new_stock/utils/stock_helper.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
@@ -16,8 +18,11 @@ import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_w
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
 
 class AddNewStock extends StatefulWidget {
+  final Stores stores; // for getting info about user's all stores
+
   const AddNewStock({
     Key? key,
+    required this.stores,
   }) : super(key: key);
 
   @override
@@ -27,6 +32,8 @@ class AddNewStock extends StatefulWidget {
 class _AddNewStockState extends State<AddNewStock> {
   String _currentTransactionType =
       ""; // Holds what the user has currently selected
+
+  String _currentStoreName = "";
 
   List<String> _allTransactionType = []; // Stores all the transaction type
 
@@ -47,6 +54,8 @@ class _AddNewStockState extends State<AddNewStock> {
       controllers[elem["heading"]] = TextEditingController();
     }
 
+    _currentStoreName = widget.stores.allStoresNames.first;
+
     super.initState();
   }
 
@@ -54,155 +63,171 @@ class _AddNewStockState extends State<AddNewStock> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: CustomBox(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: 16.0,
-          ),
-
-          // wrapping with scroll view since max height is used
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // store name
-                Row(
-                  children: [
-                    Text(
-                      "Store Names:",
-                      style: ConstantTextStyles.normalStyle20.copyWith(
-                        color: ConstantAppColors.primaryColor.withOpacity(0.6),
-                      ),
-                    ),
-                    CustomDropDownBtn(
-                      options: const ["Hi"],
-                      tooltip: "Store selection",
-                      onTap: (value) {},
-                    ),
-                  ],
+        child: FutureBuilder(
+            future: StoreViewModel().getAllStores(),
+            builder: (context, snapshot) {
+              return CustomBox(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 16.0,
                 ),
 
-                ConstantSpaces.height12,
-
-                // Transaction type
-                Row(
-                  children: [
-                    Text(
-                      "Transaction Type:",
-                      style: ConstantTextStyles.normalStyle20.copyWith(
-                        color: ConstantAppColors.primaryColor.withOpacity(0.6),
+                // wrapping with scroll view since max height is used
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // store name
+                      Row(
+                        children: [
+                          Text(
+                            "Store Names:",
+                            style: ConstantTextStyles.normalStyle20.copyWith(
+                              color: ConstantAppColors.primaryColor
+                                  .withOpacity(0.6),
+                            ),
+                          ),
+                          CustomDropDownBtn(
+                            options: widget.stores.allStoresNames,
+                            tooltip: "Store selection",
+                            onTap: (value) {
+                              setState(() => _currentStoreName = value);
+                            },
+                          ),
+                        ],
                       ),
-                    ),
-                    CustomDropDownBtn(
-                      options: StockHelper().getTransactionTypes(),
-                      tooltip: "Transaction type selection",
-                      onTap: (value) {
-                        Map<String, dynamic> previousUserInput = {};
 
-                        _currentTransactionType = value;
+                      ConstantSpaces.height12,
 
-                        // Changing current form fields
-                        setState(
-                          () => allFormFields = StockHelper().getInformation(
-                              transactionType: _currentTransactionType),
-                        );
+                      // Transaction type
+                      Row(
+                        children: [
+                          Text(
+                            "Transaction Type:",
+                            style: ConstantTextStyles.normalStyle20.copyWith(
+                              color: ConstantAppColors.primaryColor
+                                  .withOpacity(0.6),
+                            ),
+                          ),
+                          CustomDropDownBtn(
+                            options: StockHelper().getTransactionTypes(),
+                            tooltip: "Transaction type selection",
+                            onTap: (value) {
+                              Map<String, dynamic> previousUserInput = {};
 
-                        // Store the previous user input
-                        for (Map elem in allFormFields) {
-                          String heading = elem["heading"];
-                          if (controllers.containsKey(heading)) {
-                            previousUserInput[heading] =
-                                controllers[heading]?.text;
-                          }
-                        }
+                              _currentTransactionType = value;
 
-                        // Clear the controllers
-                        controllers.clear();
+                              // Changing current form fields
+                              setState(
+                                () => allFormFields = StockHelper()
+                                    .getInformation(
+                                        transactionType:
+                                            _currentTransactionType),
+                              );
 
-                        // Changing controllers according to form fields
-                        for (Map elem in allFormFields) {
-                          String heading = elem["heading"];
-                          controllers[heading] = TextEditingController(
-                              text: previousUserInput[heading]);
-                        }
-                      },
-                    ),
-                  ],
-                ),
+                              // Store the previous user input
+                              for (Map elem in allFormFields) {
+                                String heading = elem["heading"];
+                                if (controllers.containsKey(heading)) {
+                                  previousUserInput[heading] =
+                                      controllers[heading]?.text;
+                                }
+                              }
 
-                ConstantSpaces.height12,
+                              // Clear the controllers
+                              controllers.clear();
 
-                ..._populateOptions(),
-
-                // Today's date
-                Row(
-                  children: [
-                    Icon(
-                      Icons.today_outlined,
-                      color: ConstantAppColors.primaryColor.withOpacity(0.6),
-                    ),
-                    Text(
-                      DateFormat("yyyy-MM-dd")
-                          .format(DateTime.now())
-                          .toString(),
-                      style: ConstantTextStyles.normalStyle20.copyWith(
-                        color: ConstantAppColors.primaryColor.withOpacity(0.6),
+                              // Changing controllers according to form fields
+                              for (Map elem in allFormFields) {
+                                String heading = elem["heading"];
+                                controllers[heading] = TextEditingController(
+                                    text: previousUserInput[heading]);
+                              }
+                            },
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
 
-                ConstantSpaces.height20,
+                      ConstantSpaces.height12,
 
-                // submit button
-                Align(
-                  alignment: Alignment.center,
-                  child: CustomShadowContainer(
-                    onTap: () async {
-                      final userInput = _getAllDataFromTextEditingController();
+                      ..._populateOptions(),
 
-                      // User didn't added required fields
-                      if (userInput["redFlag"]) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Missing required fields.")));
-                      }
-                      // User has inserted required fields
-                      else {
-                        StockViewModel().addNewStock(
-                          userInput: userInput["userInput"],
-                          onStockAdded: () {
-                            Navigator.of(context).pop();
+                      // Today's date
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.today_outlined,
+                            color:
+                                ConstantAppColors.primaryColor.withOpacity(0.6),
+                          ),
+                          Text(
+                            DateFormat("yyyy-MM-dd")
+                                .format(DateTime.now())
+                                .toString(),
+                            style: ConstantTextStyles.normalStyle20.copyWith(
+                              color: ConstantAppColors.primaryColor
+                                  .withOpacity(0.6),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      ConstantSpaces.height20,
+
+                      // submit button
+                      Align(
+                        alignment: Alignment.center,
+                        child: CustomShadowContainer(
+                          onTap: () async {
+                            final userInput =
+                                _getAllDataFromTextEditingController();
+
+                            // User didn't added required fields
+                            if (userInput["redFlag"]) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text("Missing required fields.")));
+                            }
+                            // User has inserted required fields
+                            else {
+                              StockViewModel().addNewStock(
+                                userInput: userInput["userInput"],
+                                onStockAdded: () {
+                                  Navigator.of(context).pop();
+                                },
+                                onFailure: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text("Something went wrong.")));
+                                },
+                              );
+                            }
                           },
-                          onFailure: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text("Something went wrong.")));
-                          },
-                        );
-                      }
-                    },
-                    height: 42,
-                    width: 96,
-                    foregroundColor: ConstantAppColors.greenColor,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    child: const Text(
-                      "Submit",
-                      style: TextStyle(
-                          color: ConstantAppColors.primaryColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500),
-                    ),
+                          height: 42,
+                          width: 96,
+                          foregroundColor: ConstantAppColors.greenColor,
+                          backgroundColor:
+                              Theme.of(context).scaffoldBackgroundColor,
+                          child: const Text(
+                            "Submit",
+                            style: TextStyle(
+                                color: ConstantAppColors.primaryColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+
+                      ConstantSpaces.height16,
+                    ],
                   ),
                 ),
-
-                ConstantSpaces.height16,
-              ],
-            ),
-          ),
-        ),
+              );
+            }),
       ),
     );
   }
@@ -234,6 +259,8 @@ class _AddNewStockState extends State<AddNewStock> {
               DottedUnderlineTextFieldWithDropDownBtn(
                 controller: controllers[elem["heading"]],
                 keyboardType: elem["keyboardType"] ?? TextInputType.text,
+                quantityTypes: widget.stores
+                    .allQuantityTypes(storeName: _currentStoreName),
               ),
 
             ConstantSpaces.height12,

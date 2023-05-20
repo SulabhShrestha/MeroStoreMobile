@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:merostore_mobile/models/stores.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
 import 'package:merostore_mobile/views/edit_store_page/edit_store_page.dart';
+import 'package:provider/provider.dart';
 
 import 'widgets/custom_list_tile.dart';
 
@@ -88,9 +90,17 @@ class OtherPage extends StatelessWidget {
                 googleIconData: Icons.store_outlined,
                 trailingIcon: const Icon(Icons.navigate_next_outlined),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => const EditStorePage(title: "Edit stores"),
-                  ));
+                  final Stores stores =
+                      Provider.of<Stores>(context, listen: false);
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ListenableProvider<Stores>.value(
+                        value: stores,
+                        child: const EditStorePage(title: "Edit stores"),
+                      ),
+                    ),
+                  );
                 },
               ),
               const CustomListTile(

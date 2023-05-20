@@ -8,15 +8,15 @@ class StoreViewModel {
 
   Future<void> addNewStore({
     required Map<String, dynamic> newStore,
-    required VoidCallback onStockAdded,
+    required Function(Store store) onStockAdded,
     required VoidCallback onFailure,
   }) async {
-    bool isAdded = await _storeWebServices.addNewStore(
+    Map<String, dynamic> response = await _storeWebServices.addNewStore(
       newStore: newStore,
     );
 
-    if (isAdded) {
-      onStockAdded();
+    if (response["isSaved"]) {
+      onStockAdded(response["savedStore"]);
     } else {
       onFailure();
     }

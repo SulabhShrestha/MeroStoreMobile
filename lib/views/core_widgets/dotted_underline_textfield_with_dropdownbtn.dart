@@ -11,10 +11,13 @@ import 'custom_drop_down_btn.dart';
 class DottedUnderlineTextFieldWithDropDownBtn extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputType keyboardType;
+  final List<String> quantityTypes;
+
   const DottedUnderlineTextFieldWithDropDownBtn({
     Key? key,
     this.controller,
     required this.keyboardType,
+    required this.quantityTypes,
   }) : super(key: key);
 
   @override
@@ -43,7 +46,7 @@ class DottedUnderlineTextFieldWithDropDownBtn extends StatelessWidget {
           ),
         ),
         CustomDropDownBtn(
-          options: const ["Hi"],
+          options: quantityTypes,
           tooltip: "Types of goods quantity",
           hideBackgroundUI: true,
           onTap: (value) {},

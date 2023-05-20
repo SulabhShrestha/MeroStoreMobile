@@ -1,11 +1,15 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:merostore_mobile/extensions/string_ext.dart';
+import 'package:merostore_mobile/models/stores.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/edit_store_page/widgets/dynamic_checkbox_list.dart';
 
 class AddNewStore extends StatefulWidget {
-  const AddNewStore({Key? key}) : super(key: key);
+  final Stores stores; // For adding new store locally
+
+  const AddNewStore({Key? key, required this.stores}) : super(key: key);
 
   @override
   State<AddNewStore> createState() => _AddNewStoreState();
@@ -38,16 +42,27 @@ class _AddNewStoreState extends State<AddNewStore> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Quantity types not selected.")),
                 );
+              }
+              // checking if previously entered
+              else if (Stores().contains(
+                  _storeNameController.text.trim().capitalizeFirstLetter())) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Store already added.")),
+                );
               } else {
                 Map<String, dynamic> newStoreDetails = {
-                  "storeName": _storeNameController.text.trim(),
+                  "storeName":
+                      _storeNameController.text.trim().capitalizeFirstLetter(),
                   "quantityTypes": userSelectedQuantityTypes,
                   "transactionTypes": userSelectedTransactionTypes,
                 };
 
                 StoreViewModel().addNewStore(
                   newStore: newStoreDetails,
-                  onStockAdded: () {
+                  onStockAdded: (addedStore) {
+                    // Adding newly added store to the stores list
+                    widget.stores.addStore(addedStore);
+
                     Navigator.of(context).pop();
                   },
                   onFailure: () {

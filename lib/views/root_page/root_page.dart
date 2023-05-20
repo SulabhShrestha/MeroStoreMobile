@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:merostore_mobile/models/stores.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
+import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
 import 'package:merostore_mobile/views/instock_page/in_stock_page.dart';
 import 'package:merostore_mobile/views/other_page/other_page.dart';
 import 'package:merostore_mobile/views/summary_page/summary_page.dart';
 import 'package:merostore_mobile/views/today_sold_page/today_sold_page.dart';
+import 'package:provider/provider.dart';
 
 /// This widget is responsible for changing screen and acts as container to host other responsible screen
 
@@ -20,8 +23,11 @@ class _RootPageState extends State<RootPage> {
   int _selectedIndex = 0;
   late List<Widget> _pagesList;
 
+  Stores _stores = Stores();
+
   @override
   void initState() {
+    fetchNecessary();
     _pagesList = const [
       TodaySoldPage(),
       SummaryPage(),
@@ -31,14 +37,28 @@ class _RootPageState extends State<RootPage> {
     super.initState();
   }
 
+  Future<void> fetchNecessary() async {
+    var allStores = await StoreViewModel().getAllStores();
+
+    // Adding stores
+    for (var store in allStores) {
+      _stores.addStore(store);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
 
       // body part
-      body: SafeArea(
-        child: _pagesList.elementAt(_selectedIndex),
+      body: ChangeNotifierProvider<Stores>(
+        create: (_) => _stores,
+        builder: (context, child) {
+          return SafeArea(
+            child: _pagesList.elementAt(_selectedIndex),
+          );
+        },
       ),
 
       // Bottom nav part

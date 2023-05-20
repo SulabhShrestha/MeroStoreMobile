@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:merostore_mobile/models/stores.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
@@ -13,8 +14,10 @@ import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_w
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
 
 class AddNewSalesTransaction extends StatefulWidget {
+  final Stores stores;
   const AddNewSalesTransaction({
     Key? key,
+    required this.stores,
   }) : super(key: key);
 
   @override
@@ -61,7 +64,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                       ),
                     ),
                     CustomDropDownBtn(
-                      options: const ["Hi"],
+                      options: widget.stores.allStoresNames,
                       tooltip: "Store selection",
                       onTap: (value) {},
                     ),
@@ -116,6 +119,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                         DottedUnderlineTextFieldWithDropDownBtn(
                           keyboardType:
                               elem["keyboardType"] ?? TextInputType.text,
+                          quantityTypes: [],
                         ),
 
                       ConstantSpaces.height12,
