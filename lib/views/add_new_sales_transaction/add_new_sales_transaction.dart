@@ -30,10 +30,13 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
 
   List<String> _allTransactionType = []; // Stores all the transaction type
 
+  String _currentStoreName = "";
+
   @override
   void initState() {
     _allTransactionType = SalesHelper().getTransactionTypes();
     _currentTransactionType = _allTransactionType.first;
+    _currentStoreName = widget.stores.allStoresNames.first;
     super.initState();
   }
 
@@ -66,7 +69,11 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                     CustomDropDownBtn(
                       options: widget.stores.allStoresNames,
                       tooltip: "Store selection",
-                      onTap: (value) {},
+                      onTap: (value) {
+                        setState(() {
+                          _currentStoreName = value;
+                        });
+                      },
                     ),
                   ],
                 ),
@@ -83,7 +90,8 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                       ),
                     ),
                     CustomDropDownBtn(
-                      options: _allTransactionType,
+                      options: widget.stores
+                          .allTransactionTypes(storeName: _currentStoreName),
                       tooltip: "Transaction type selection",
                       onTap: (value) {
                         setState(() => _currentTransactionType = value);
@@ -119,7 +127,8 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                         DottedUnderlineTextFieldWithDropDownBtn(
                           keyboardType:
                               elem["keyboardType"] ?? TextInputType.text,
-                          quantityTypes: [],
+                          quantityTypes: widget.stores
+                              .allQuantityTypes(storeName: _currentStoreName),
                         ),
 
                       ConstantSpaces.height12,

@@ -69,7 +69,8 @@ class CustomCard extends StatelessWidget {
       BoldFirstWordFromText(
           boldWord: "Quantity Types", normalWord: quantityTypes!.toString()),
       BoldFirstWordFromText(
-          boldWord: "Store Name", normalWord: transactionTypes!.toString()),
+          boldWord: "Transaction Type",
+          normalWord: transactionTypes!.toString()),
     ];
   }
 

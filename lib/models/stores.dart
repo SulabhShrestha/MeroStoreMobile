@@ -37,4 +37,14 @@ class Stores extends ChangeNotifier {
 
     return quantityTypes.cast<String>().toList();
   }
+
+  /// Returns all the quantity types of the stores stored
+  List<String> allTransactionTypes({required String storeName}) {
+    List<dynamic> transactionTypes = _stores
+        .where((store) => store.storeName == storeName)
+        .first
+        .transactionTypes;
+
+    return transactionTypes.cast<String>().toList();
+  }
 }

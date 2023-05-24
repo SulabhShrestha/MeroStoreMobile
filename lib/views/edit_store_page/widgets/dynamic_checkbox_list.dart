@@ -4,12 +4,14 @@ class DynamicCheckboxList extends StatefulWidget {
   final List<String> options;
   final String heading;
   final ValueChanged<List<String>> onSelectOptionsChanged;
+  final bool showOtherOption;
 
   const DynamicCheckboxList({
     Key? key,
     required this.heading,
     required this.options,
     required this.onSelectOptionsChanged,
+    required this.showOtherOption,
   }) : super(key: key);
 
   @override
@@ -73,15 +75,16 @@ class _DynamicCheckboxListState extends State<DynamicCheckboxList> {
             ),
 
             // Adding more to the options by the user
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.45,
-              child: CheckboxListTile(
-                  value: isOtherSelected,
-                  title: const Text("Other"),
-                  onChanged: (value) {
-                    setState(() => isOtherSelected = value!);
-                  }),
-            ),
+            if (widget.showOtherOption)
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.45,
+                child: CheckboxListTile(
+                    value: isOtherSelected,
+                    title: const Text("Other"),
+                    onChanged: (value) {
+                      setState(() => isOtherSelected = value!);
+                    }),
+              ),
           ],
         ),
         if (isOtherSelected)

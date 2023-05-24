@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:merostore_mobile/models/stores.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class _SalesData {
@@ -42,6 +44,7 @@ class _SummaryPageState extends State<SummaryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final stores = Provider.of<Stores>(context);
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
@@ -52,7 +55,7 @@ class _SummaryPageState extends State<SummaryPage> {
               floating: true,
               flexibleSpace: CustomDropDownBtn(
                 tooltip: "Store selection",
-                options: const ["hello", "hi"],
+                options: stores.allStoresNames,
                 onTap: (val) {},
               ),
               actions: [

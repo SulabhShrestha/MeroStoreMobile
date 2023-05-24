@@ -91,6 +91,7 @@ class _AddNewStoreState extends State<AddNewStore> {
                 "Settlement",
                 "Deposited",
               ],
+              showOtherOption: false,
               onSelectOptionsChanged: (value) {
                 log("transaction: $value");
                 userSelectedTransactionTypes = value;
@@ -99,6 +100,7 @@ class _AddNewStoreState extends State<AddNewStore> {
             DynamicCheckboxList(
               heading: "Quantity types",
               options: const ['Kg', 'Pcs', 'Litre', "Box", "Sack"],
+              showOtherOption: true,
               onSelectOptionsChanged: (value) {
                 log("quantity: $value");
                 userSelectedQuantityTypes = value;

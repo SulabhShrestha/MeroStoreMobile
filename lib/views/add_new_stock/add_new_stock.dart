@@ -112,7 +112,8 @@ class _AddNewStockState extends State<AddNewStock> {
                             ),
                           ),
                           CustomDropDownBtn(
-                            options: StockHelper().getTransactionTypes(),
+                            options: widget.stores.allTransactionTypes(
+                                storeName: _currentStoreName),
                             tooltip: "Transaction type selection",
                             onTap: (value) {
                               Map<String, dynamic> previousUserInput = {};
