@@ -25,6 +25,8 @@ class _RootPageState extends State<RootPage> {
 
   Stores _stores = Stores();
 
+  bool showLoading = true; // show loading indicator while fetching data
+
   @override
   void initState() {
     fetchNecessary();
@@ -38,12 +40,16 @@ class _RootPageState extends State<RootPage> {
   }
 
   Future<void> fetchNecessary() async {
+    setState(() => showLoading = true);
+
     var allStores = await StoreViewModel().getAllStores();
 
     // Adding stores
     for (var store in allStores) {
       _stores.addStore(store);
     }
+
+    setState(() => showLoading = false);
   }
 
   @override
@@ -52,14 +58,16 @@ class _RootPageState extends State<RootPage> {
       backgroundColor: Colors.white,
 
       // body part
-      body: ChangeNotifierProvider<Stores>(
-        create: (_) => _stores,
-        builder: (context, child) {
-          return SafeArea(
-            child: _pagesList.elementAt(_selectedIndex),
-          );
-        },
-      ),
+      body: showLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ChangeNotifierProvider<Stores>(
+              create: (_) => _stores,
+              builder: (context, child) {
+                return SafeArea(
+                  child: _pagesList.elementAt(_selectedIndex),
+                );
+              },
+            ),
 
       // Bottom nav part
       bottomNavigationBar: Container(

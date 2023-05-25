@@ -129,6 +129,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                               elem["keyboardType"] ?? TextInputType.text,
                           quantityTypes: widget.stores
                               .allQuantityTypes(storeName: _currentStoreName),
+                          onSelected: (newQuantityType) {},
                         ),
 
                       ConstantSpaces.height12,

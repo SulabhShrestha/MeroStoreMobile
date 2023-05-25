@@ -37,6 +37,15 @@ class _CustomDropDownBtnState extends State<CustomDropDownBtn> {
   }
 
   @override
+  void didUpdateWidget(CustomDropDownBtn oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue) {
+      // Update the current value when initialValue changes
+      _currentItemSelected = widget.initialValue!;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CustomShadowContainer(
       height: 42,

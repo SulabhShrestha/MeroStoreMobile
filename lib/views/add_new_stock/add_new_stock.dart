@@ -16,6 +16,7 @@ import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_.dart';
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_with_dropdownbtn.dart';
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
+import 'package:provider/provider.dart';
 
 class AddNewStock extends StatefulWidget {
   final Stores stores; // for getting info about user's all stores
@@ -30,12 +31,15 @@ class AddNewStock extends StatefulWidget {
 }
 
 class _AddNewStockState extends State<AddNewStock> {
-  String _currentTransactionType =
-      ""; // Holds what the user has currently selected
-
   String _currentStoreName = "";
 
-  List<String> _allTransactionType = []; // Stores all the transaction type
+  // Transaction type related
+  String _currentTransactionType = "";
+  List<String> _allTransactionTypes = [];
+
+  // quantity type related
+  String _currentQuantityType = "";
+  List<String> _allBroughtQuantities = [];
 
   Map<String, TextEditingController> controllers =
       {}; // Holds the controllers for all fields
@@ -44,8 +48,13 @@ class _AddNewStockState extends State<AddNewStock> {
 
   @override
   void initState() {
-    _allTransactionType = StockHelper().getTransactionTypes();
-    _currentTransactionType = _allTransactionType.first;
+    _currentStoreName = widget.stores.allStoresNames.first;
+
+    // Transaction types
+    _allTransactionTypes = StockHelper().getTransactionTypes();
+    _currentTransactionType = _allTransactionTypes.first;
+
+    // Handling related to form data
     allFormFields =
         StockHelper().getInformation(transactionType: _currentTransactionType);
 
@@ -54,8 +63,10 @@ class _AddNewStockState extends State<AddNewStock> {
       controllers[elem["heading"]] = TextEditingController();
     }
 
-    _currentStoreName = widget.stores.allStoresNames.first;
-
+    // Brought quantity type
+    _allBroughtQuantities =
+        widget.stores.allQuantityTypes(storeName: _currentStoreName);
+    _currentQuantityType = _allBroughtQuantities.first;
     super.initState();
   }
 
@@ -89,13 +100,32 @@ class _AddNewStockState extends State<AddNewStock> {
                                   .withOpacity(0.6),
                             ),
                           ),
-                          CustomDropDownBtn(
-                            options: widget.stores.allStoresNames,
-                            tooltip: "Store selection",
-                            onTap: (value) {
-                              setState(() => _currentStoreName = value);
-                            },
-                          ),
+                          Provider<String>(
+                              create: (context) => _currentStoreName,
+                              builder: (context, __) {
+                                return CustomDropDownBtn(
+                                  options: widget.stores.allStoresNames,
+                                  tooltip: "Store selection",
+                                  onTap: (storeName) {
+                                    setState(() {
+                                      _currentStoreName = storeName;
+                                      // changing transaction type related
+                                      _allTransactionTypes = widget.stores
+                                          .allTransactionTypes(
+                                              storeName: _currentStoreName);
+                                      _currentTransactionType =
+                                          _allTransactionTypes.first;
+
+                                      // changing brought quantity related
+                                      _allBroughtQuantities = widget.stores
+                                          .allQuantityTypes(
+                                              storeName: _currentStoreName);
+                                      _currentQuantityType =
+                                          _allBroughtQuantities.first;
+                                    });
+                                  },
+                                );
+                              }),
                         ],
                       ),
 
@@ -112,9 +142,9 @@ class _AddNewStockState extends State<AddNewStock> {
                             ),
                           ),
                           CustomDropDownBtn(
-                            options: widget.stores.allTransactionTypes(
-                                storeName: _currentStoreName),
+                            options: _allTransactionTypes,
                             tooltip: "Transaction type selection",
+                            initialValue: _currentTransactionType,
                             onTap: (value) {
                               Map<String, dynamic> previousUserInput = {};
 
@@ -182,8 +212,7 @@ class _AddNewStockState extends State<AddNewStock> {
                         alignment: Alignment.center,
                         child: CustomShadowContainer(
                           onTap: () async {
-                            final userInput =
-                                _getAllDataFromTextEditingController();
+                            final userInput = _getAllDataFromUserInputs();
 
                             // User didn't added required fields
                             if (userInput["redFlag"]) {
@@ -259,9 +288,10 @@ class _AddNewStockState extends State<AddNewStock> {
             if (elem["quantityOption"] != null)
               DottedUnderlineTextFieldWithDropDownBtn(
                 controller: controllers[elem["heading"]],
+                displayingText: _currentQuantityType,
                 keyboardType: elem["keyboardType"] ?? TextInputType.text,
-                quantityTypes: widget.stores
-                    .allQuantityTypes(storeName: _currentStoreName),
+                quantityTypes: _allBroughtQuantities,
+                onSelected: (newQuantityType) {},
               ),
 
             ConstantSpaces.height12,
@@ -273,12 +303,14 @@ class _AddNewStockState extends State<AddNewStock> {
     return widgets;
   }
 
-  Map<String, dynamic> _getAllDataFromTextEditingController() {
+  Map<String, dynamic> _getAllDataFromUserInputs() {
     bool redFlag = false; // if user hasn't entered required fields
     Map<String, dynamic> userInput = {};
     Map<String, dynamic> details = {}; // holds all stock details
 
     userInput["Transaction Type"] = _currentTransactionType;
+    userInput["Store Name"] = _currentStoreName;
+    userInput["Brought Quantity"] = "";
     //TODO: store name and brought quantity should also be added.
 
     // length of controllers and allFormFields is same.

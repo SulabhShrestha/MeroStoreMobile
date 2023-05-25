@@ -10,15 +10,19 @@ import 'custom_drop_down_btn.dart';
 
 class DottedUnderlineTextFieldWithDropDownBtn extends StatelessWidget {
   final TextEditingController? controller;
+  final String? displayingText;
   final TextInputType keyboardType;
   final List<String> quantityTypes;
+  final ValueChanged<String> onSelected;
 
-  const DottedUnderlineTextFieldWithDropDownBtn({
-    Key? key,
-    this.controller,
-    required this.keyboardType,
-    required this.quantityTypes,
-  }) : super(key: key);
+  const DottedUnderlineTextFieldWithDropDownBtn(
+      {Key? key,
+      this.controller,
+      this.displayingText,
+      required this.keyboardType,
+      required this.quantityTypes,
+      required this.onSelected})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +50,11 @@ class DottedUnderlineTextFieldWithDropDownBtn extends StatelessWidget {
           ),
         ),
         CustomDropDownBtn(
+          initialValue: displayingText,
           options: quantityTypes,
           tooltip: "Types of goods quantity",
           hideBackgroundUI: true,
-          onTap: (value) {},
+          onTap: onSelected,
         ),
       ],
     );
