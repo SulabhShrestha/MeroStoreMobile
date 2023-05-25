@@ -313,12 +313,8 @@ class _AddNewStockState extends State<AddNewStock> {
 
     userInput["Transaction Type"] = _currentTransactionType;
     userInput["Store Name"] = _currentStoreName;
-<<<<<<< HEAD
 
     details["Brought Quantity"] = _currentQuantityType;
-=======
-    userInput["Brought Quantity"] = _currentQuantityType;
->>>>>>> 98931b29e2c4545554e6d93661b91c035fab1779
 
     // length of controllers and allFormFields is same.
     for (int i = 0; i < allFormFields.length; i++) {
