@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:merostore_mobile/models/stock.dart';
 import 'package:merostore_mobile/models/stores.dart';
@@ -8,8 +10,29 @@ import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 import 'package:provider/provider.dart';
 
-class InStockPage extends StatelessWidget {
+class InStockPage extends StatefulWidget {
   const InStockPage({Key? key}) : super(key: key);
+
+  @override
+  State<InStockPage> createState() => _InStockPageState();
+}
+
+class _InStockPageState extends State<InStockPage> {
+  late Future<List<Stock>> stocksFuture;
+  bool newStockAdded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    stocksFuture = fetchStocks(); // when [InStockPage] is initially loaded
+  }
+
+  // when any update is taken place
+  Future<List<Stock>> fetchStocks() async {
+    final stockViewModel = StockViewModel();
+    final stocks = await stockViewModel.getAllStocks();
+    return stocks;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +86,27 @@ class InStockPage extends StatelessWidget {
         },
         body: Stack(
           children: [
+            FutureBuilder(
+                future: newStockAdded ? fetchStocks() : stocksFuture,
+                builder: (context, snapshot) {
+                  log("Fetching");
+                  if (snapshot.hasData) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          for (Stock element in snapshot.data!)
+                            CustomCard(
+                              transactionType: element.transactionType,
+                              stockDetails: element.details,
+                              displaying: "Stock",
+                            ),
+                        ],
+                      ),
+                    );
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                }),
+
             // add new transaction
             Positioned(
               right: 16,
@@ -72,10 +116,17 @@ class InStockPage extends StatelessWidget {
                 height: 58,
                 duration: const Duration(milliseconds: 250),
                 child: FloatingActionButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
+                  onPressed: () async {
+                    bool? result = await Navigator.of(context)
+                        .push<bool?>(MaterialPageRoute(
                       builder: (_) => AddNewStock(stores: stores),
                     ));
+
+                    if (result == true) {
+                      setState(() {
+                        newStockAdded = true;
+                      });
+                    }
                   },
                   tooltip: "Add new stock",
                   child: const Icon(
@@ -84,24 +135,6 @@ class InStockPage extends StatelessWidget {
                 ),
               ),
             ),
-
-            FutureBuilder(
-                future: StockViewModel().getAllStocks(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Column(
-                      children: [
-                        for (Stock element in snapshot.data!)
-                          CustomCard(
-                            transactionType: element.transactionType,
-                            stockDetails: element.details,
-                            displaying: "Stock",
-                          ),
-                      ],
-                    );
-                  }
-                  return const Center(child: CircularProgressIndicator());
-                }),
           ],
         ),
       ),
