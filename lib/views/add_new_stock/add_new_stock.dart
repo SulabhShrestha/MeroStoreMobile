@@ -291,7 +291,9 @@ class _AddNewStockState extends State<AddNewStock> {
                 displayingText: _currentQuantityType,
                 keyboardType: elem["keyboardType"] ?? TextInputType.text,
                 quantityTypes: _allBroughtQuantities,
-                onSelected: (newQuantityType) {},
+                onSelected: (newQuantityType) {
+                  _currentQuantityType = newQuantityType;
+                },
               ),
 
             ConstantSpaces.height12,
@@ -310,8 +312,7 @@ class _AddNewStockState extends State<AddNewStock> {
 
     userInput["Transaction Type"] = _currentTransactionType;
     userInput["Store Name"] = _currentStoreName;
-    userInput["Brought Quantity"] = "";
-    //TODO: store name and brought quantity should also be added.
+    userInput["Brought Quantity"] = _currentQuantityType;
 
     // length of controllers and allFormFields is same.
     for (int i = 0; i < allFormFields.length; i++) {
