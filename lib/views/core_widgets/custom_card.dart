@@ -77,6 +77,7 @@ class CustomCard extends StatelessWidget {
   _displayingStock() {
     return [
       Text(transactionType!),
+      Text(storeName!),
       ...stockDetails!.entries.map((entry) {
         return BoldFirstWordFromText(
           boldWord: entry.key,

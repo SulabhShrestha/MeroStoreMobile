@@ -16,7 +16,6 @@ import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_.dart';
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_with_dropdownbtn.dart';
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
-import 'package:provider/provider.dart';
 
 class AddNewStock extends StatefulWidget {
   final Stores stores; // for getting info about user's all stores
@@ -100,32 +99,54 @@ class _AddNewStockState extends State<AddNewStock> {
                                   .withOpacity(0.6),
                             ),
                           ),
-                          Provider<String>(
-                              create: (context) => _currentStoreName,
-                              builder: (context, __) {
-                                return CustomDropDownBtn(
-                                  options: widget.stores.allStoresNames,
-                                  tooltip: "Store selection",
-                                  onTap: (storeName) {
-                                    setState(() {
-                                      _currentStoreName = storeName;
-                                      // changing transaction type related
-                                      _allTransactionTypes = widget.stores
-                                          .allTransactionTypes(
-                                              storeName: _currentStoreName);
-                                      _currentTransactionType =
-                                          _allTransactionTypes.first;
+                          CustomDropDownBtn(
+                            options: widget.stores.allStoresNames,
+                            tooltip: "Store selection",
+                            onTap: (storeName) {
+                              Map<String, dynamic> previousUserInput = {};
+                              setState(() {
+                                _currentStoreName = storeName;
+                                // changing transaction type related
+                                _allTransactionTypes = widget.stores
+                                    .allTransactionTypes(
+                                        storeName: _currentStoreName);
+                                _currentTransactionType =
+                                    _allTransactionTypes.first;
 
-                                      // changing brought quantity related
-                                      _allBroughtQuantities = widget.stores
-                                          .allQuantityTypes(
-                                              storeName: _currentStoreName);
-                                      _currentQuantityType =
-                                          _allBroughtQuantities.first;
-                                    });
-                                  },
-                                );
-                              }),
+                                // changing displaying fields
+                                allFormFields = StockHelper()
+                                    .getInformation(
+                                    transactionType:
+                                    _currentTransactionType);
+
+                                // Store the previous user input
+                                for (Map elem in allFormFields) {
+                                  String heading = elem["heading"];
+                                  if (controllers.containsKey(heading)) {
+                                    previousUserInput[heading] =
+                                        controllers[heading]?.text;
+                                  }
+                                }
+
+                                // Clear the controllers
+                                controllers.clear();
+
+                                // Changing controllers according to form fields
+                                for (Map elem in allFormFields) {
+                                  String heading = elem["heading"];
+                                  controllers[heading] = TextEditingController(
+                                      text: previousUserInput[heading]);
+                                }
+
+                                // changing brought quantity related
+                                _allBroughtQuantities = widget.stores
+                                    .allQuantityTypes(
+                                        storeName: _currentStoreName);
+                                _currentQuantityType =
+                                    _allBroughtQuantities.first;
+                              });
+                            },
+                          ),
                         ],
                       ),
 

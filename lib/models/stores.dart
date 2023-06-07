@@ -28,6 +28,7 @@ class Stores extends ChangeNotifier {
   List<String> get allStoresNames =>
       _stores.map((store) => store.storeName).toList();
 
+
   /// Returns all the quantity types of the stores stored
   List<String> allQuantityTypes({required String storeName}) {
     List<dynamic> quantityTypes = _stores
