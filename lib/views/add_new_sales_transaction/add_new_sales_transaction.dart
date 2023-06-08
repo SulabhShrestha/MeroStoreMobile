@@ -8,9 +8,8 @@ import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
-import 'package:merostore_mobile/views/add_new_sales_transaction/utils/sales_helper.dart';
-import 'package:merostore_mobile/views/add_new_sales_transaction/widgets/textfield_with_suggestions.dart';
 import 'package:merostore_mobile/views/add_new_stock/utils/required_marking.dart';
+import 'package:merostore_mobile/views/add_new_stock/utils/stock_helper.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
@@ -18,8 +17,11 @@ import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_.
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_with_dropdownbtn.dart';
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
 
+import 'widgets/textfield_with_suggestions.dart';
+
 class AddNewSalesTransaction extends StatefulWidget {
-  final Stores stores;
+  final Stores stores; // for getting info about user's all stores
+
   const AddNewSalesTransaction({
     Key? key,
     required this.stores,
@@ -41,23 +43,21 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
   List<String> _allBroughtQuantities = [];
 
   Map<String, TextEditingController> controllers =
-      {}; // Holds the controllers for all fields
+  {}; // Holds the controllers for all fields
 
   List<Map> allFormFields = []; // Holds all the form data
-
-  List<String> allMaterialNames = []; // Holds all the material names
 
   @override
   void initState() {
     _currentStoreName = widget.stores.allStoresNames.first;
 
     // Transaction types
-    _allTransactionTypes = SalesHelper().getTransactionTypes();
+    _allTransactionTypes = StockHelper().getTransactionTypes();
     _currentTransactionType = _allTransactionTypes.first;
 
     // Handling related to form data
     allFormFields =
-        SalesHelper().getInformation(transactionType: _currentTransactionType);
+        StockHelper().getInformation(transactionType: _currentTransactionType);
 
     // Initialize controllers based on initial transaction type
     for (Map elem in allFormFields) {
@@ -68,8 +68,6 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
     _allBroughtQuantities =
         widget.stores.allQuantityTypes(storeName: _currentStoreName);
     _currentQuantityType = _allBroughtQuantities.first;
-
-
     super.initState();
   }
 
@@ -77,7 +75,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: FutureBuilder<List<String>>(
+        child: FutureBuilder(
             future: StockViewModel()
                 .getAllMaterialNames(storeName: _currentStoreName),
             builder: (context, snapshot) {
@@ -85,8 +83,8 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
                 return const Center(child: Text("Error occurred"));
-              } else {
-                log("All material names: ${snapshot.data}");
+              }
+              else{
                 return CustomBox(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16.0,
@@ -112,21 +110,48 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                             ),
                             CustomDropDownBtn(
                               options: widget.stores.allStoresNames,
+                              initialValue: _currentStoreName,
                               tooltip: "Store selection",
                               onTap: (storeName) {
+                                Map<String, dynamic> previousUserInput = {};
                                 setState(() {
                                   _currentStoreName = storeName;
                                   // changing transaction type related
                                   _allTransactionTypes = widget.stores
                                       .allTransactionTypes(
-                                          storeName: _currentStoreName);
+                                      storeName: _currentStoreName);
                                   _currentTransactionType =
                                       _allTransactionTypes.first;
+
+                                  // changing displaying fields
+                                  allFormFields = StockHelper()
+                                      .getInformation(
+                                      transactionType:
+                                      _currentTransactionType);
+
+                                  // Store the previous user input
+                                  for (Map elem in allFormFields) {
+                                    String heading = elem["heading"];
+                                    if (controllers.containsKey(heading)) {
+                                      previousUserInput[heading] =
+                                          controllers[heading]?.text;
+                                    }
+                                  }
+
+                                  // Clear the controllers
+                                  controllers.clear();
+
+                                  // Changing controllers according to form fields
+                                  for (Map elem in allFormFields) {
+                                    String heading = elem["heading"];
+                                    controllers[heading] = TextEditingController(
+                                        text: previousUserInput[heading]);
+                                  }
 
                                   // changing brought quantity related
                                   _allBroughtQuantities = widget.stores
                                       .allQuantityTypes(
-                                          storeName: _currentStoreName);
+                                      storeName: _currentStoreName);
                                   _currentQuantityType =
                                       _allBroughtQuantities.first;
                                 });
@@ -158,10 +183,10 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
 
                                 // Changing current form fields
                                 setState(
-                                  () => allFormFields = SalesHelper()
+                                      () => allFormFields = StockHelper()
                                       .getInformation(
-                                          transactionType:
-                                              _currentTransactionType),
+                                      transactionType:
+                                      _currentTransactionType),
                                 );
 
                                 // Store the previous user input
@@ -196,8 +221,8 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                           children: [
                             Icon(
                               Icons.today_outlined,
-                              color: ConstantAppColors.primaryColor
-                                  .withOpacity(0.6),
+                              color:
+                              ConstantAppColors.primaryColor.withOpacity(0.6),
                             ),
                             Text(
                               DateFormat("yyyy-MM-dd")
@@ -225,7 +250,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content:
-                                            Text("Missing required fields.")));
+                                        Text("Missing required fields.")));
                               }
                               // User has inserted required fields
                               else {
@@ -239,7 +264,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                             content:
-                                                Text("Something went wrong.")));
+                                            Text("Something went wrong.")));
                                   },
                                 );
                               }
@@ -248,7 +273,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                             width: 96,
                             foregroundColor: ConstantAppColors.greenColor,
                             backgroundColor:
-                                Theme.of(context).scaffoldBackgroundColor,
+                            Theme.of(context).scaffoldBackgroundColor,
                             child: const Text(
                               "Submit",
                               style: TextStyle(
@@ -265,6 +290,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                   ),
                 );
               }
+
             }),
       ),
     );
@@ -291,7 +317,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                 suggestions: textSuggestions,
               ),
 
-            // Except quantity selection option and material name
+            // TextField
             if (elem["quantityOption"] == null &&
                 elem['heading'] != "Material Name")
               DottedUnderlineTextField(

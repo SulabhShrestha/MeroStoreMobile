@@ -42,7 +42,7 @@ class TodaySoldPage extends StatelessWidget {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (_) => AddNewSalesTransaction(
                               stores: stores,
-                            )));
+                            )),);
                   },
                   tooltip: "Add new sales transaction",
                   child: const Icon(
