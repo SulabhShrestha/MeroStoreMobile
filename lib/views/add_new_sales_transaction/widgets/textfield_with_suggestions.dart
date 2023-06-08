@@ -3,18 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 
-class TextFieldWithSuggestions extends StatefulWidget {
-
+class TextFieldWithSuggestions extends StatelessWidget {
   final List<String> suggestions;
+  final TextEditingController? controller;
 
-  const TextFieldWithSuggestions({Key? key, required this.suggestions,}): super(key: key);
-
-  @override
-  _TextFieldWithSuggestionsState createState() => _TextFieldWithSuggestionsState();
-}
-
-class _TextFieldWithSuggestionsState extends State<TextFieldWithSuggestions> {
-  final TextEditingController _controller = TextEditingController();
+  const TextFieldWithSuggestions({
+    Key? key,
+    required this.suggestions,
+    this.controller,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +20,11 @@ class _TextFieldWithSuggestionsState extends State<TextFieldWithSuggestions> {
         // TextField
         TypeAheadFormField(
           textFieldConfiguration: TextFieldConfiguration(
-            controller: _controller,
+            controller: controller,
           ),
           suggestionsCallback: (pattern) {
             // Filter the suggestions based on the input pattern
-            return widget.suggestions.where((suggestion) =>
+            return suggestions.where((suggestion) =>
                 suggestion.toLowerCase().contains(pattern.toLowerCase()));
           },
           itemBuilder: (context, suggestion) {
@@ -36,7 +33,7 @@ class _TextFieldWithSuggestionsState extends State<TextFieldWithSuggestions> {
             );
           },
           onSuggestionSelected: (suggestion) {
-            _controller.text = suggestion;
+            controller?.text = suggestion;
           },
         ),
 

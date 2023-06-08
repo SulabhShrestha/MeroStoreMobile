@@ -13,7 +13,7 @@ class StockHelper {
         "required": true,
       },
       {
-        "heading": "Brought Quantity",
+        "heading": "Sold Quantity",
         "required": true,
         "quantityOption": true,
         "keyboardType": TextInputType.number,
@@ -37,7 +37,7 @@ class StockHelper {
         "required": true,
       },
       {
-        "heading": "Brought Quantity",
+        "heading": "Sold Quantity",
         "required": true,
         "quantityOption": true,
         "keyboardType": TextInputType.number,
