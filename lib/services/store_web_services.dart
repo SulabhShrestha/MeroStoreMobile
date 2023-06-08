@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
-import 'package:merostore_mobile/models/store.dart';
+import 'package:merostore_mobile/models/store_model.dart';
 
 /// [StoreWebServices] handles everything related to store
 ///

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:merostore_mobile/models/stores.dart';
+import 'package:merostore_mobile/models/stores_model.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';

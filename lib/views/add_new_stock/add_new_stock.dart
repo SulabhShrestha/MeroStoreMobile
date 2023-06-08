@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:merostore_mobile/models/stores.dart';
+import 'package:merostore_mobile/models/stores_model.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';

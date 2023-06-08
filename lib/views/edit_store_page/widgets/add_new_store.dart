@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:merostore_mobile/extensions/string_ext.dart';
-import 'package:merostore_mobile/models/stores.dart';
+import 'package:merostore_mobile/models/stores_model.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/edit_store_page/widgets/dynamic_checkbox_list.dart';
 

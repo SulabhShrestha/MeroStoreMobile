@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:merostore_mobile/models/stock.dart';
+import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/services/stock_web_services.dart';
 
 class StockViewModel {

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
-import 'package:merostore_mobile/models/stock.dart';
+import 'package:merostore_mobile/models/stock_model.dart';
 
 /// Handles everything related to [InStockPage]
 ///

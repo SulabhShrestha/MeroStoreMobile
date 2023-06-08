@@ -1,11 +1,37 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:merostore_mobile/models/stores.dart';
+import 'package:merostore_mobile/models/sales_model.dart';
+import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:merostore_mobile/view_models/sales_view_model.dart';
 import 'package:merostore_mobile/views/add_new_sales_transaction/add_new_sales_transaction.dart';
+import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 import 'package:provider/provider.dart';
 
-class TodaySoldPage extends StatelessWidget {
+class TodaySoldPage extends StatefulWidget {
   const TodaySoldPage({Key? key}) : super(key: key);
+
+  @override
+  State<TodaySoldPage> createState() => _TodaySoldPageState();
+}
+
+class _TodaySoldPageState extends State<TodaySoldPage> {
+
+  late Future<List<Sales>> salesFuture;
+  bool newStockAdded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    salesFuture = fetchSalesRecords(); // when [InStockPage] is initially loaded
+  }
+
+  // when any update is taken place
+  Future<List<Sales>> fetchSalesRecords() async {
+    final stocks = await SalesViewModel().getAllSales();
+    return stocks;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +55,30 @@ class TodaySoldPage extends StatelessWidget {
         },
         body: Stack(
           children: [
+
+            // list of sales transactions
+            FutureBuilder(
+                future: newStockAdded ? fetchSalesRecords() : salesFuture,
+                builder: (context, snapshot) {
+                  log("Fetching");
+                  if (snapshot.hasData) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          for (Sales element in snapshot.data!)
+                            CustomCard(
+                              storeName: element.storeName,
+                              transactionType: element.transactionType,
+                              stockDetails: element.details,
+                              displaying: "Stock",
+                            ),
+                        ],
+                      ),
+                    );
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                }),
+
             // add new transaction
             Positioned(
               right: 16,
@@ -38,11 +88,19 @@ class TodaySoldPage extends StatelessWidget {
                 height: 58,
                 duration: const Duration(milliseconds: 250),
                 child: FloatingActionButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => AddNewSalesTransaction(
-                              stores: stores,
-                            )),);
+                  onPressed: () async{
+
+                    bool? result = await Navigator.of(context)
+                        .push<bool?>(MaterialPageRoute(
+                      builder: (_) => AddNewSalesTransaction(stores: stores),
+                    ));
+
+                    if (result == true) {
+                      setState(() {
+                        newStockAdded = true;
+                      });
+                    }
+
                   },
                   tooltip: "Add new sales transaction",
                   child: const Icon(

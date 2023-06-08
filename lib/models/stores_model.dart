@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:merostore_mobile/models/store.dart';
+import 'package:merostore_mobile/models/store_model.dart';
 
 /// This stores list of [Store] and uses [Provider] to update them in real-time
 class Stores extends ChangeNotifier {

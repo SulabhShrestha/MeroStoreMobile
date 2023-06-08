@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:merostore_mobile/models/store.dart';
-import 'package:merostore_mobile/models/stores.dart';
+import 'package:merostore_mobile/models/store_model.dart';
+import 'package:merostore_mobile/models/stores_model.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 import 'package:merostore_mobile/views/edit_store_page/widgets/add_new_store.dart';
 import 'package:provider/provider.dart';

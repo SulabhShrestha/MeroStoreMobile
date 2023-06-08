@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:merostore_mobile/models/stock.dart';
-import 'package:merostore_mobile/models/stores.dart';
+import 'package:merostore_mobile/models/stock_model.dart';
+import 'package:merostore_mobile/models/stores_model.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/views/add_new_stock/add_new_stock.dart';
