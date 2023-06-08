@@ -8,7 +8,7 @@ import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
-import 'package:merostore_mobile/views/add_new_stock/utils/required_marking.dart';
+import 'package:merostore_mobile/views/add_new_stock/widgets/required_marking.dart';
 import 'package:merostore_mobile/views/add_new_stock/utils/stock_helper.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
@@ -114,10 +114,8 @@ class _AddNewStockState extends State<AddNewStock> {
                                     _allTransactionTypes.first;
 
                                 // changing displaying fields
-                                allFormFields = StockHelper()
-                                    .getInformation(
-                                    transactionType:
-                                    _currentTransactionType);
+                                allFormFields = StockHelper().getInformation(
+                                    transactionType: _currentTransactionType);
 
                                 // Store the previous user input
                                 for (Map elem in allFormFields) {
@@ -238,9 +236,9 @@ class _AddNewStockState extends State<AddNewStock> {
                             // User didn't added required fields
                             if (userInput["redFlag"]) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                       content:
-                                          Text("Missing required fields.")));
+                                          Text(userInput["flagDesc"])));
                             }
                             // User has inserted required fields
                             else {
@@ -329,6 +327,8 @@ class _AddNewStockState extends State<AddNewStock> {
 
   Map<String, dynamic> _getAllDataFromUserInputs() {
     bool redFlag = false; // if user hasn't entered required fields
+    String flagDesc = ""; // cause of red flag
+
     Map<String, dynamic> userInput = {};
     Map<String, dynamic> details = {}; // holds all stock details
 
@@ -340,10 +340,56 @@ class _AddNewStockState extends State<AddNewStock> {
     // length of controllers and allFormFields is same.
     for (int i = 0; i < allFormFields.length; i++) {
       Map elem = allFormFields[i]; // Returning Map data of each form item
+
       // Getting controller using the form's heading
       TextEditingController controller = controllers[elem["heading"]]!;
       String value = controller.text;
       bool isRequired = elem["required"];
+
+      // Trying to convert to it's defined data type from string
+      if (elem["dataType"] != String) {
+        if(elem["dataType"] == int){
+          try{
+            int data = int.parse(value);
+
+            // User has entered negative value
+            if(data < 0){
+              redFlag = true;
+              flagDesc = "Negative value is not allowed.";
+              break;
+            }
+            details[elem["heading"]] = data;
+
+            continue; // No need to check other conditions
+
+          }
+          catch(e){
+            redFlag = true;
+            flagDesc = "Invalid value.";
+            break;
+          }
+        }
+        else if(elem["dataType"] == double) {
+          try{
+            double data = double.parse(value);
+
+            // User has entered negative value
+            if(data < 0){
+              redFlag = true;
+              flagDesc = "Negative value is not allowed.";
+              break;
+            }
+            details[elem["heading"]] = data;
+
+            continue; // No need to check other conditions
+          }
+          catch(e){
+            redFlag = true;
+            flagDesc = "Invalid value.";
+            break;
+          }
+        }
+      }
 
       // User has entered important field
       if (isRequired && value.isNotEmpty) {
@@ -353,6 +399,7 @@ class _AddNewStockState extends State<AddNewStock> {
       // User hasn't entered important field
       else if (isRequired && value.isEmpty) {
         redFlag = true;
+        flagDesc = "Missing required fields.";
         break; // No need to add since necessary field is empty
       }
 
@@ -367,6 +414,7 @@ class _AddNewStockState extends State<AddNewStock> {
     log(userInput.toString());
     return {
       "redFlag": redFlag,
+      "flagDesc": flagDesc,
       "userInput": userInput,
     };
   }

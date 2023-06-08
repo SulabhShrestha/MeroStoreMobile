@@ -10,7 +10,7 @@ import 'package:merostore_mobile/view_models/sales_view_model.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/add_new_sales_transaction/utils/sales_helper.dart';
-import 'package:merostore_mobile/views/add_new_stock/utils/required_marking.dart';
+import 'package:merostore_mobile/views/add_new_stock/widgets/required_marking.dart';
 import 'package:merostore_mobile/views/add_new_stock/utils/stock_helper.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
