@@ -1,10 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:merostore_mobile/models/stores.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
+import 'package:merostore_mobile/view_models/stock_view_model.dart';
+import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/add_new_sales_transaction/utils/sales_helper.dart';
+import 'package:merostore_mobile/views/add_new_sales_transaction/widgets/textfield_with_suggestions.dart';
 import 'package:merostore_mobile/views/add_new_stock/utils/required_marking.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
@@ -25,18 +30,46 @@ class AddNewSalesTransaction extends StatefulWidget {
 }
 
 class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
-  String _currentTransactionType =
-      ""; // Holds what the user has currently selected
-
-  List<String> _allTransactionType = []; // Stores all the transaction type
-
   String _currentStoreName = "";
+
+  // Transaction type related
+  String _currentTransactionType = "";
+  List<String> _allTransactionTypes = [];
+
+  // quantity type related
+  String _currentQuantityType = "";
+  List<String> _allBroughtQuantities = [];
+
+  Map<String, TextEditingController> controllers =
+      {}; // Holds the controllers for all fields
+
+  List<Map> allFormFields = []; // Holds all the form data
+
+  List<String> allMaterialNames = []; // Holds all the material names
 
   @override
   void initState() {
-    _allTransactionType = SalesHelper().getTransactionTypes();
-    _currentTransactionType = _allTransactionType.first;
     _currentStoreName = widget.stores.allStoresNames.first;
+
+    // Transaction types
+    _allTransactionTypes = SalesHelper().getTransactionTypes();
+    _currentTransactionType = _allTransactionTypes.first;
+
+    // Handling related to form data
+    allFormFields =
+        SalesHelper().getInformation(transactionType: _currentTransactionType);
+
+    // Initialize controllers based on initial transaction type
+    for (Map elem in allFormFields) {
+      controllers[elem["heading"]] = TextEditingController();
+    }
+
+    // Brought quantity type
+    _allBroughtQuantities =
+        widget.stores.allQuantityTypes(storeName: _currentStoreName);
+    _currentQuantityType = _allBroughtQuantities.first;
+
+
     super.initState();
   }
 
@@ -44,143 +77,290 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: CustomBox(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: 16.0,
-          ),
-
-          // wrapping with scroll view since max height is used
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // store name
-                Row(
-                  children: [
-                    Text(
-                      "Store Names:",
-                      style: ConstantTextStyles.normalStyle20.copyWith(
-                        color: ConstantAppColors.primaryColor.withOpacity(0.6),
-                      ),
-                    ),
-                    CustomDropDownBtn(
-                      options: widget.stores.allStoresNames,
-                      tooltip: "Store selection",
-                      onTap: (value) {
-                        setState(() {
-                          _currentStoreName = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-
-                ConstantSpaces.height12,
-
-                // Transaction type
-                Row(
-                  children: [
-                    Text(
-                      "Transaction Type:",
-                      style: ConstantTextStyles.normalStyle20.copyWith(
-                        color: ConstantAppColors.primaryColor.withOpacity(0.6),
-                      ),
-                    ),
-                    CustomDropDownBtn(
-                      options: widget.stores
-                          .allTransactionTypes(storeName: _currentStoreName),
-                      tooltip: "Transaction type selection",
-                      onTap: (value) {
-                        setState(() => _currentTransactionType = value);
-                      },
-                    ),
-                  ],
-                ),
-
-                ConstantSpaces.height12,
-
-                for (Map elem in SalesHelper()
-                    .getInformation(transactionType: _currentTransactionType))
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // required heading
-                      if (elem["required"])
-                        RequiredMarking(heading: elem["heading"]),
-
-                      if (elem["required"] == false)
-                        NormalHeadingForAddingNewItem(text: elem["heading"]),
-
-                      // textfield
-                      if (elem["quantityOption"] == null)
-                        DottedUnderlineTextField(
-                          controller: TextEditingController(),
-                          keyboardType:
-                              elem["keyboardType"] ?? TextInputType.text,
-                        ),
-
-                      // textfield with quantity selection option
-                      if (elem["quantityOption"] != null)
-                        DottedUnderlineTextFieldWithDropDownBtn(
-                          keyboardType:
-                              elem["keyboardType"] ?? TextInputType.text,
-                          quantityTypes: widget.stores
-                              .allQuantityTypes(storeName: _currentStoreName),
-                          onSelected: (newQuantityType) {},
-                        ),
-
-                      ConstantSpaces.height12,
-                    ],
+        child: FutureBuilder<List<String>>(
+            future: StockViewModel()
+                .getAllMaterialNames(storeName: _currentStoreName),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return const Center(child: Text("Error occurred"));
+              } else {
+                log("All material names: ${snapshot.data}");
+                return CustomBox(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 16.0,
                   ),
 
-                // Today's date
-                Row(
-                  children: [
-                    Icon(
-                      Icons.today_outlined,
-                      color: ConstantAppColors.primaryColor.withOpacity(0.6),
-                    ),
-                    Text(
-                      DateFormat("yyyy-MM-dd")
-                          .format(DateTime.now())
-                          .toString(),
-                      style: ConstantTextStyles.normalStyle20.copyWith(
-                        color: ConstantAppColors.primaryColor.withOpacity(0.6),
-                      ),
-                    ),
-                  ],
-                ),
+                  // wrapping with scroll view since max height is used
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // store name
+                        Row(
+                          children: [
+                            Text(
+                              "Store Names:",
+                              style: ConstantTextStyles.normalStyle20.copyWith(
+                                color: ConstantAppColors.primaryColor
+                                    .withOpacity(0.6),
+                              ),
+                            ),
+                            CustomDropDownBtn(
+                              options: widget.stores.allStoresNames,
+                              tooltip: "Store selection",
+                              onTap: (storeName) {
+                                setState(() {
+                                  _currentStoreName = storeName;
+                                  // changing transaction type related
+                                  _allTransactionTypes = widget.stores
+                                      .allTransactionTypes(
+                                          storeName: _currentStoreName);
+                                  _currentTransactionType =
+                                      _allTransactionTypes.first;
 
-                ConstantSpaces.height20,
+                                  // changing brought quantity related
+                                  _allBroughtQuantities = widget.stores
+                                      .allQuantityTypes(
+                                          storeName: _currentStoreName);
+                                  _currentQuantityType =
+                                      _allBroughtQuantities.first;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
 
-                // submit button
-                Align(
-                  alignment: Alignment.center,
-                  child: CustomShadowContainer(
-                    onTap: () {},
-                    height: 42,
-                    width: 96,
-                    foregroundColor: ConstantAppColors.greenColor,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    child: const Text(
-                      "Submit",
-                      style: TextStyle(
-                          color: ConstantAppColors.primaryColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500),
+                        ConstantSpaces.height12,
+
+                        // Transaction type
+                        Row(
+                          children: [
+                            Text(
+                              "Transaction Type:",
+                              style: ConstantTextStyles.normalStyle20.copyWith(
+                                color: ConstantAppColors.primaryColor
+                                    .withOpacity(0.6),
+                              ),
+                            ),
+                            CustomDropDownBtn(
+                              options: _allTransactionTypes,
+                              tooltip: "Transaction type selection",
+                              initialValue: _currentTransactionType,
+                              onTap: (value) {
+                                Map<String, dynamic> previousUserInput = {};
+
+                                _currentTransactionType = value;
+
+                                // Changing current form fields
+                                setState(
+                                  () => allFormFields = SalesHelper()
+                                      .getInformation(
+                                          transactionType:
+                                              _currentTransactionType),
+                                );
+
+                                // Store the previous user input
+                                for (Map elem in allFormFields) {
+                                  String heading = elem["heading"];
+                                  if (controllers.containsKey(heading)) {
+                                    previousUserInput[heading] =
+                                        controllers[heading]?.text;
+                                  }
+                                }
+
+                                // Clear the controllers
+                                controllers.clear();
+
+                                // Changing controllers according to form fields
+                                for (Map elem in allFormFields) {
+                                  String heading = elem["heading"];
+                                  controllers[heading] = TextEditingController(
+                                      text: previousUserInput[heading]);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+
+                        ConstantSpaces.height12,
+
+                        ..._populateOptions(snapshot.data!),
+
+                        // Today's date
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.today_outlined,
+                              color: ConstantAppColors.primaryColor
+                                  .withOpacity(0.6),
+                            ),
+                            Text(
+                              DateFormat("yyyy-MM-dd")
+                                  .format(DateTime.now())
+                                  .toString(),
+                              style: ConstantTextStyles.normalStyle20.copyWith(
+                                color: ConstantAppColors.primaryColor
+                                    .withOpacity(0.6),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        ConstantSpaces.height20,
+
+                        // submit button
+                        Align(
+                          alignment: Alignment.center,
+                          child: CustomShadowContainer(
+                            onTap: () async {
+                              final userInput = _getAllDataFromUserInputs();
+
+                              // User didn't added required fields
+                              if (userInput["redFlag"]) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text("Missing required fields.")));
+                              }
+                              // User has inserted required fields
+                              else {
+                                StockViewModel().addNewStock(
+                                  userInput: userInput["userInput"],
+                                  onStockAdded: () {
+                                    Navigator.of(context).pop(
+                                        true); // indicating data is successfully saved
+                                  },
+                                  onFailure: () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content:
+                                                Text("Something went wrong.")));
+                                  },
+                                );
+                              }
+                            },
+                            height: 42,
+                            width: 96,
+                            foregroundColor: ConstantAppColors.greenColor,
+                            backgroundColor:
+                                Theme.of(context).scaffoldBackgroundColor,
+                            child: const Text(
+                              "Submit",
+                              style: TextStyle(
+                                  color: ConstantAppColors.primaryColor,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
+
+                        ConstantSpaces.height16,
+                      ],
                     ),
                   ),
-                ),
-
-                ConstantSpaces.height16,
-              ],
-            ),
-          ),
-        ),
+                );
+              }
+            }),
       ),
     );
+  }
+
+  List<Widget> _populateOptions(List<String> textSuggestions) {
+    List<Widget> widgets = [];
+
+    for (Map elem in allFormFields) {
+      // Adding to widget
+      widgets.add(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // required heading
+            if (elem["required"]) RequiredMarking(heading: elem["heading"]),
+
+            if (elem["required"] == false)
+              NormalHeadingForAddingNewItem(text: elem["heading"]),
+
+            // material name
+            if (elem["heading"] == "Material Name")
+              TextFieldWithSuggestions(
+                suggestions: textSuggestions,
+              ),
+
+            // Except quantity selection option and material name
+            if (elem["quantityOption"] == null &&
+                elem['heading'] != "Material Name")
+              DottedUnderlineTextField(
+                controller: controllers[elem["heading"]],
+                keyboardType: elem["keyboardType"] ?? TextInputType.text,
+              ),
+
+            // TextField with quantity selection option
+            if (elem["quantityOption"] != null)
+              DottedUnderlineTextFieldWithDropDownBtn(
+                controller: controllers[elem["heading"]],
+                displayingText: _currentQuantityType,
+                keyboardType: elem["keyboardType"] ?? TextInputType.text,
+                quantityTypes: _allBroughtQuantities,
+                onSelected: (newQuantityType) {
+                  _currentQuantityType = newQuantityType;
+                },
+              ),
+
+            ConstantSpaces.height12,
+          ],
+        ),
+      );
+    }
+
+    return widgets;
+  }
+
+  Map<String, dynamic> _getAllDataFromUserInputs() {
+    bool redFlag = false; // if user hasn't entered required fields
+    Map<String, dynamic> userInput = {};
+    Map<String, dynamic> details = {}; // holds all stock details
+
+    userInput["Transaction Type"] = _currentTransactionType;
+    userInput["Store Name"] = _currentStoreName;
+
+    details["Brought Quantity"] = _currentQuantityType;
+
+    // length of controllers and allFormFields is same.
+    for (int i = 0; i < allFormFields.length; i++) {
+      Map elem = allFormFields[i]; // Returning Map data of each form item
+      // Getting controller using the form's heading
+      TextEditingController controller = controllers[elem["heading"]]!;
+      String value = controller.text;
+      bool isRequired = elem["required"];
+
+      // User has entered important field
+      if (isRequired && value.isNotEmpty) {
+        details[elem["heading"]] = value;
+      }
+
+      // User hasn't entered important field
+      else if (isRequired && value.isEmpty) {
+        redFlag = true;
+        break; // No need to add since necessary field is empty
+      }
+
+      // User has entered not important field such as description
+      else if (value.isNotEmpty) {
+        details[elem["heading"]] = value;
+      }
+    }
+
+    userInput["details"] = details;
+
+    log(userInput.toString());
+    return {
+      "redFlag": redFlag,
+      "userInput": userInput,
+    };
   }
 }

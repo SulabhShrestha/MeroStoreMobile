@@ -45,4 +45,24 @@ class StockWebServices {
 
     return stocks;
   }
+
+  Future<List<String>> getAllMaterialNames({required String storeName}) async {
+    final response = await http.get(
+      Uri.parse("http://10.0.2.2:3000/instock/materialNames/$storeName"),
+      headers: _headers,
+    );
+
+    List<String> names = [];
+
+    if (response.statusCode == 200) {
+      log("Response: ${response.body}");
+      for (String elem in jsonDecode(response.body)) {
+        names.add(elem);
+      }
+    } else {
+      log("Something went wrong");
+    }
+
+    return names;
+  }
 }

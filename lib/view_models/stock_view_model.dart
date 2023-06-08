@@ -23,4 +23,8 @@ class StockViewModel {
   Future<List<Stock>> getAllStocks() async {
     return _stockWebServices.getAllStocks();
   }
+
+  Future<List<String>> getAllMaterialNames({required String storeName}) async {
+    return _stockWebServices.getAllMaterialNames(storeName: storeName);
+  }
 }
