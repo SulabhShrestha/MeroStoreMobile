@@ -11,21 +11,25 @@ class SalesHelper {
       {
         "heading": "Material Name",
         "required": true,
+        "dataType": String,
       },
       {
         "heading": "Sold Quantity",
         "required": true,
         "quantityOption": true,
+        "dataType": int,
         "keyboardType": TextInputType.number,
       },
       {
         "heading": "Total Price",
         "required": true,
         "keyboardType": TextInputType.number,
+        "dataType": int,
       },
       {
         "heading": "Description",
         "required": false,
+        "dataType": String,
       },
     ];
   }
@@ -35,29 +39,35 @@ class SalesHelper {
       {
         "heading": "Material Name",
         "required": true,
+        "dataType": String,
       },
       {
         "heading": "Sold Quantity",
         "required": true,
         "quantityOption": true,
         "keyboardType": TextInputType.number,
+        "dataType": int,
       },
       {
         "heading": "Total Price",
         "required": true,
         "keyboardType": TextInputType.number,
+        "dataType": int,
       },
       {
         "heading": "Debtor's Name",
         "required": true,
+        "dataType": String,
       },
       {
         "heading": "Debtor's Information",
         "required": false,
+        "dataType": String,
       },
       {
         "heading": "Description",
         "required": false,
+        "dataType": String,
       },
     ];
   }
@@ -67,29 +77,35 @@ class SalesHelper {
       {
         "heading": "Material Name",
         "required": true,
+        "dataType": String,
       },
       {
         "heading": "For Quantity",
         "required": false,
         "quantityOption": true,
         "keyboardType": TextInputType.number,
+        "dataType": int,
       },
       {
         "heading": "Money Given",
         "required": true,
         "keyboardType": TextInputType.number,
+        "dataType": int,
       },
       {
         "heading": "Creditor's Name",
         "required": true,
+        "dataType": String,
       },
       {
         "heading": "Creditor's Information",
         "required": false,
+        "dataType": String,
       },
       {
         "heading": "Description",
         "required": false,
+        "dataType": String,
       },
     ];
   }
@@ -99,21 +115,25 @@ class SalesHelper {
       {
         "heading": "Material Name",
         "required": true,
+        "dataType": String,
       },
       {
         "heading": "Returned Quantity",
         "required": true,
         "quantityOption": true,
         "keyboardType": TextInputType.number,
+        "dataType": int,
       },
       {
         "heading": "Returned Amount",
         "required": true,
         "keyboardType": TextInputType.number,
+        "dataType": int,
       },
       {
         "heading": "Description",
         "required": false,
+        "dataType": String,
       },
     ];
   }
@@ -123,15 +143,18 @@ class SalesHelper {
       {
         "heading": "Debtor Name",
         "required": true,
+        "dataType": String,
       },
       {
         "heading": "Money Given",
         "required": true,
         "keyboardType": TextInputType.number,
+        "dataType": int,
       },
       {
         "heading": "Description",
         "required": false,
+        "dataType": String,
       },
     ];
   }
@@ -141,15 +164,18 @@ class SalesHelper {
       {
         "heading": "Organization Name",
         "required": true,
+        "dataType": String,
       },
       {
         "heading": "Amount",
         "required": true,
         "keyboardType": TextInputType.number,
+        "dataType": int,
       },
       {
         "heading": "Description",
         "required": false,
+        "dataType": String,
       },
     ];
   }

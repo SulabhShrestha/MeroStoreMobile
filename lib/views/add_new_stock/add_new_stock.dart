@@ -399,7 +399,7 @@ class _AddNewStockState extends State<AddNewStock> {
       // User hasn't entered important field
       else if (isRequired && value.isEmpty) {
         redFlag = true;
-        flagDesc = "Missing required fields.";
+        flagDesc = "Please fill all the required fields.";
         break; // No need to add since necessary field is empty
       }
 

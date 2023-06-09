@@ -8,7 +8,6 @@ import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/view_models/sales_view_model.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
-import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/add_new_sales_transaction/utils/sales_helper.dart';
 import 'package:merostore_mobile/views/add_new_stock/widgets/required_marking.dart';
 import 'package:merostore_mobile/views/add_new_stock/utils/stock_helper.dart';
@@ -248,9 +247,9 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                               // User didn't added required fields
                               if (userInput["redFlag"]) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
+                                    SnackBar(
                                         content:
-                                            Text("Missing required fields.")));
+                                            Text(userInput["flagDesc"])));
                               }
                               // User has inserted required fields
                               else {
@@ -348,6 +347,8 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
 
   Map<String, dynamic> _getAllDataFromUserInputs() {
     bool redFlag = false; // if user hasn't entered required fields
+    String flagDesc = ""; // cause of red flag
+
     Map<String, dynamic> userInput = {};
     Map<String, dynamic> details = {}; // holds all stock details
 
@@ -364,6 +365,51 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
       String value = controller.text;
       bool isRequired = elem["required"];
 
+      // Trying to convert to it's defined data type from string
+      if (elem["dataType"] != String) {
+        if(elem["dataType"] == int){
+          try{
+            int data = int.parse(value);
+
+            // User has entered negative value
+            if(data < 0){
+              redFlag = true;
+              flagDesc = "Negative value is not allowed.";
+              break;
+            }
+            details[elem["heading"]] = data;
+
+            continue; // No need to check other conditions
+
+          }
+          catch(e){
+            redFlag = true;
+            flagDesc = "Invalid value.";
+            break;
+          }
+        }
+        else if(elem["dataType"] == double) {
+          try{
+            double data = double.parse(value);
+
+            // User has entered negative value
+            if(data < 0){
+              redFlag = true;
+              flagDesc = "Negative value is not allowed.";
+              break;
+            }
+            details[elem["heading"]] = data;
+
+            continue; // No need to check other conditions
+          }
+          catch(e){
+            redFlag = true;
+            flagDesc = "Invalid value.";
+            break;
+          }
+        }
+      }
+
       // User has entered important field
       if (isRequired && value.isNotEmpty) {
         details[elem["heading"]] = value;
@@ -372,6 +418,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
       // User hasn't entered important field
       else if (isRequired && value.isEmpty) {
         redFlag = true;
+        flagDesc = "Please fill all the required fields.";
         break; // No need to add since necessary field is empty
       }
 
@@ -386,6 +433,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
     log(userInput.toString());
     return {
       "redFlag": redFlag,
+      "flagDesc": flagDesc,
       "userInput": userInput,
     };
   }
