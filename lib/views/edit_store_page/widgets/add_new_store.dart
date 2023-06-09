@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:merostore_mobile/extensions/string_ext.dart';
 import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:merostore_mobile/utils/constants/messages_constant.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/edit_store_page/widgets/dynamic_checkbox_list.dart';
 
@@ -31,23 +32,38 @@ class _AddNewStoreState extends State<AddNewStore> {
             onPressed: () {
               if (_storeNameController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Store name not entered.")),
+                  SnackBar(
+                      content: Text(
+                    MessagesConstant().storeRelatedMessages.storeNameNotEntered,
+                  )),
                 );
               } else if (userSelectedTransactionTypes.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text("Transaction types not selected.")),
+                  SnackBar(
+                      content: Text(
+                    MessagesConstant()
+                        .storeRelatedMessages
+                        .transactionTypesNotSelected,
+                  )),
                 );
               } else if (userSelectedQuantityTypes.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Quantity types not selected.")),
+                  SnackBar(
+                      content: Text(
+                    MessagesConstant()
+                        .storeRelatedMessages
+                        .quantityTypesNotSelected,
+                  )),
                 );
               }
               // checking if previously entered
               else if (Stores().contains(
                   _storeNameController.text.trim().capitalizeFirstLetter())) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Store already added.")),
+                  SnackBar(
+                      content: Text(MessagesConstant()
+                          .storeRelatedMessages
+                          .storeAlreadyAdded)),
                 );
               } else {
                 Map<String, dynamic> newStoreDetails = {
@@ -67,7 +83,7 @@ class _AddNewStoreState extends State<AddNewStore> {
                   },
                   onFailure: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Something went wrong.")),
+                      SnackBar(content: Text(MessagesConstant().somethingWentWrong)),
                     );
                   },
                 );

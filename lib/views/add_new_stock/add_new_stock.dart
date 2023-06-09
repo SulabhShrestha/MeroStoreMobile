@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:merostore_mobile/models/stores_model.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
+import 'package:merostore_mobile/utils/constants/messages_constant.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
@@ -250,9 +251,9 @@ class _AddNewStockState extends State<AddNewStock> {
                                 },
                                 onFailure: () {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
+                                      SnackBar(
                                           content:
-                                              Text("Something went wrong.")));
+                                              Text(MessagesConstant().somethingWentWrong)));
                                 },
                               );
                             }
@@ -355,7 +356,7 @@ class _AddNewStockState extends State<AddNewStock> {
             // User has entered negative value
             if(data < 0){
               redFlag = true;
-              flagDesc = "Negative value is not allowed.";
+              flagDesc = MessagesConstant().invalidPrice;
               break;
             }
             details[elem["heading"]] = data;
@@ -365,7 +366,7 @@ class _AddNewStockState extends State<AddNewStock> {
           }
           catch(e){
             redFlag = true;
-            flagDesc = "Invalid value.";
+            flagDesc = MessagesConstant().invalidQuantity;
             break;
           }
         }
@@ -376,7 +377,7 @@ class _AddNewStockState extends State<AddNewStock> {
             // User has entered negative value
             if(data < 0){
               redFlag = true;
-              flagDesc = "Negative value is not allowed.";
+              flagDesc = MessagesConstant().invalidPrice;
               break;
             }
             details[elem["heading"]] = data;
@@ -385,7 +386,7 @@ class _AddNewStockState extends State<AddNewStock> {
           }
           catch(e){
             redFlag = true;
-            flagDesc = "Invalid value.";
+            flagDesc = MessagesConstant().invalidQuantity;
             break;
           }
         }
@@ -399,7 +400,7 @@ class _AddNewStockState extends State<AddNewStock> {
       // User hasn't entered important field
       else if (isRequired && value.isEmpty) {
         redFlag = true;
-        flagDesc = "Please fill all the required fields.";
+        flagDesc = MessagesConstant().missingRequiredFields;
         break; // No need to add since necessary field is empty
       }
 
