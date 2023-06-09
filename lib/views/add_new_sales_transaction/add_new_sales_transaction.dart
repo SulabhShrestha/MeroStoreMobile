@@ -254,17 +254,18 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                               }
                               // User has inserted required fields
                               else {
+
                                 SalesViewModel().addNewSales(
-                                  userInput: userInput["userInput"],
+                                  userInput: userInput["salesRecord"],
                                   onStockAdded: () {
                                     Navigator.of(context).pop(
                                         true); // indicating data is successfully saved
                                   },
-                                  onFailure: () {
+                                  onFailure: (message) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             content:
-                                            Text(MessagesConstant().somethingWentWrong)));
+                                            Text(message)),);
                                   },
                                 );
                               }
@@ -350,11 +351,11 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
     bool redFlag = false; // if user hasn't entered required fields
     String flagDesc = ""; // cause of red flag
 
-    Map<String, dynamic> userInput = {};
+    Map<String, dynamic> salesRecord = {};
     Map<String, dynamic> details = {}; // holds all stock details
 
-    userInput["Transaction Type"] = _currentTransactionType;
-    userInput["Store Name"] = _currentStoreName;
+    salesRecord["Transaction Type"] = _currentTransactionType;
+    salesRecord["Store Name"] = _currentStoreName;
 
     details["Sold Quantity"] = _currentQuantityType;
 
@@ -429,13 +430,13 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
       }
     }
 
-    userInput["details"] = details;
+    salesRecord["details"] = details;
 
-    log(userInput.toString());
+    log(salesRecord.toString());
     return {
       "redFlag": redFlag,
       "flagDesc": flagDesc,
-      "userInput": userInput,
+      "salesRecord": salesRecord,
     };
   }
 }

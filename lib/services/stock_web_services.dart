@@ -21,7 +21,6 @@ class StockWebServices {
 
       return true;
     } else {
-      log("Something went wrong");
       return false;
     }
   }

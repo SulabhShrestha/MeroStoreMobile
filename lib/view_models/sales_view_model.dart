@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:merostore_mobile/models/sales_model.dart';
 import 'package:merostore_mobile/services/sales_web_services.dart';
+import 'package:merostore_mobile/utils/constants/messages_constant.dart';
 
 
 class SalesViewModel {
@@ -12,15 +13,18 @@ class SalesViewModel {
   Future<void> addNewSales({
     required Map<String, dynamic> userInput,
     required VoidCallback onStockAdded,
-    required VoidCallback onFailure,
+    required Function(String) onFailure,
   }) async {
-    bool isAdded = await _salesWebServices.addNew(userInput: userInput);
 
-    if (isAdded) {
+    Map<String, dynamic> res = await _salesWebServices.addNew(salesRecord: userInput);
+
+    if (res["isAdded"]) {
       onStockAdded();
     } else {
-      onFailure();
+      onFailure(res["desc"]);
     }
+
+
   }
 
   /// Return all the sales record

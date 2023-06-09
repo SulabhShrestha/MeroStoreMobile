@@ -5,11 +5,13 @@ class MessagesConstant{
 
   String get somethingWentWrong => "Something went wrong.";
 
-  _StoreRelatedMessages get storeRelatedMessages => _StoreRelatedMessages();
+  String get materialNotFound => "Material not found.";
+
+  StoreRelatedMessages get storeRelatedMessages => StoreRelatedMessages();
 }
 
 /// Messages related to store
-class _StoreRelatedMessages{
+class StoreRelatedMessages{
   String get storeNameNotEntered => "Store name not entered.";
   String get transactionTypesNotSelected => "Transaction types not selected.";
   String get quantityTypesNotSelected => "Quantity types not selected.";
