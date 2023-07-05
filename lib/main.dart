@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
-import 'package:merostore_mobile/views/root_page/root_page.dart';
+import 'package:merostore_mobile/views/auth_page/auth_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const RootPage(),
+      home: const AuthPage(),
     );
   }
 }

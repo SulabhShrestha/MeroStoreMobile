@@ -15,42 +15,6 @@ class SalesWebServices {
   final _headers = {"Content-Type": "application/json"};
   final _stockWebServices = StockWebServices();
 
-  /// Adds new sales to the database
-  ///
-  /// Returns true (in isAdded) if the sales record is added successfully,
-  /// desc is not added if when it's added to the db
-  ///
-  /// Returns desc (in desc) if any type of error is occurred
-  Future<Map<String, dynamic>> addNew(
-      {required Map<String, dynamic> salesRecord}) async {
-    try {
-      await _validateMaterial(
-          materialName: salesRecord["details"]["Material Name"],
-          storeName: salesRecord["Store Name"]);
-    } on CustomException catch (e) {
-
-      return {
-        "isAdded": false,
-        "desc": e.message,
-      }; // Material not present, so returning false
-    }
-
-    final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/sales/addNew'),
-      headers: _headers,
-      body: json.encode(salesRecord),
-    );
-    if (response.statusCode == 200) {
-      return {"isAdded": true};
-    } else {
-
-      return {
-        "isAdded": false,
-        "desc": MessagesConstant().somethingWentWrong,
-      };
-    }
-  }
-
   /// Returns all the sales record
   Future<List<Sales>> getAllSalesRecords() async {
     final response = await http.get(
@@ -74,11 +38,58 @@ class SalesWebServices {
     return sales;
   }
 
+  /// Adds new sales to the database
+  ///
+  /// Returns true (in isAdded) if the sales record is added successfully,
+  /// desc is not added if when it's added to the db
+  ///
+  /// Returns desc (in desc) if any type of error is occurred
+  Future<Map<String, dynamic>> addNew(
+      {required Map<String, dynamic> salesRecord}) async {
+    try {
+      await _validateMaterial(
+          materialName: salesRecord["details"]["Material Name"],
+          storeName: salesRecord["Store Name"]);
+    } on CustomException catch (e) {
+      return {
+        "isAdded": false,
+        "desc": e.message,
+      }; // Material not present, so returning false
+    }
+
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:3000/sales/add'),
+      headers: _headers,
+      body: json.encode(salesRecord),
+    );
+    if (response.statusCode == 200) {
+      return {"isAdded": true};
+    } else {
+      return {
+        "isAdded": false,
+        "desc": MessagesConstant().somethingWentWrong,
+      };
+    }
+  }
+
   /// Validating if the material that the user had sold is present or not in the db
-  /// true means material is present, and can proceed to add new sales record
-  /// false means material is not present
+
   Future<void> _validateMaterial(
       {required String materialName, required String storeName}) async {
+    var allMaterials =
+        await _stockWebServices.getAllMaterialNames(storeName: storeName);
+    if (!allMaterials.contains(materialName)) {
+      throw CustomException(MessagesConstant().materialNotFound);
+    }
+  }
+
+  /// Validating if the sold quantity is less than the available quantity
+  ///
+
+  Future<void> _validateQuantity(
+      {required String materialName,
+      required String storeName,
+      required int quantity}) async {
     var allMaterials =
         await _stockWebServices.getAllMaterialNames(storeName: storeName);
     if (!allMaterials.contains(materialName)) {

@@ -10,9 +10,10 @@ import 'package:merostore_mobile/models/stock_model.dart';
 class StockWebServices {
   final _headers = {"Content-Type": "application/json"};
 
+  /// Adding new data to the db
   Future<bool> addNewData({required Map<String, dynamic> userInput}) async {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/instock/addNew'),
+      Uri.parse('http://10.0.2.2:3000/instock/add'),
       headers: _headers,
       body: json.encode(userInput),
     );
@@ -25,6 +26,7 @@ class StockWebServices {
     }
   }
 
+  /// Returns all the stocks
   Future<List<Stock>> getAllStocks() async {
     final response = await http.get(
       Uri.parse("http://10.0.2.2:3000/instock/"),
@@ -45,6 +47,7 @@ class StockWebServices {
     return stocks;
   }
 
+  /// Getting all the material names from the db according to storeName
   Future<List<String>> getAllMaterialNames({required String storeName}) async {
     final response = await http.get(
       Uri.parse("http://10.0.2.2:3000/instock/materialNames/$storeName"),
