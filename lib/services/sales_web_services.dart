@@ -52,7 +52,7 @@ class SalesWebServices {
       await _validateQuantity(
         materialName: salesRecord["details"]["Material Name"],
         storeName: salesRecord["Store Name"],
-        quantity: salesRecord["details"][
+        quantitySold: salesRecord["details"][
             "Brought Quantity"], //TODO: should be sold quantity, had to look for this
       );
     } on CustomException catch (e) {
@@ -94,12 +94,17 @@ class SalesWebServices {
   Future<void> _validateQuantity(
       {required String materialName,
       required String storeName,
-      required int quantity}) async {
+      required int quantitySold}) async {
     try {
-      var allMaterials = await _stockWebServices.getMaterialDetails(
+      var materialDetails = await _stockWebServices.getMaterialDetails(
           storeName: storeName, materialName: materialName);
 
-      log("allMaterial: $allMaterials");
+      // trying to sold more than we have
+      if (quantitySold > int.parse(materialDetails["details"]["Brought Quantity"])) {
+        throw CustomException(MessagesConstant().soldQuantityExceeded);
+      }
+
+      log("allMaterial: $materialDetails");
     } on FormatException catch (e) {
       if (e.source.contains("material")) {
         // in case of material not found exception, source = "No material found
