@@ -13,7 +13,7 @@ class StoreWebServices {
   Future<Map<String, dynamic>> addNewStore(
       {required Map<String, dynamic> newStore}) async {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/store/addNew'),
+      Uri.parse('http://10.0.2.2:3000/store/add'),
       headers: _headers,
       body: json.encode(newStore),
     );

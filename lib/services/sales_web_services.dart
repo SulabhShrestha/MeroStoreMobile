@@ -46,10 +46,15 @@ class SalesWebServices {
   /// Returns desc (in desc) if any type of error is occurred
   Future<Map<String, dynamic>> addNew(
       {required Map<String, dynamic> salesRecord}) async {
+    log("SalesRecord: $salesRecord");
+
     try {
-      await _validateMaterial(
-          materialName: salesRecord["details"]["Material Name"],
-          storeName: salesRecord["Store Name"]);
+      await _validateQuantity(
+        materialName: salesRecord["details"]["Material Name"],
+        storeName: salesRecord["Store Name"],
+        quantity: salesRecord["details"][
+            "Brought Quantity"], //TODO: should be sold quantity, had to look for this
+      );
     } on CustomException catch (e) {
       return {
         "isAdded": false,
@@ -62,7 +67,7 @@ class SalesWebServices {
       headers: _headers,
       body: json.encode(salesRecord),
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       return {"isAdded": true};
     } else {
       return {
@@ -83,17 +88,24 @@ class SalesWebServices {
     }
   }
 
-  /// Validating if the sold quantity is less than the available quantity
+  /// Validating if the sold material is in stock or not,
+  /// and also if the volume is greater or not
   ///
-
   Future<void> _validateQuantity(
       {required String materialName,
       required String storeName,
       required int quantity}) async {
-    var allMaterials =
-        await _stockWebServices.getAllMaterialNames(storeName: storeName);
-    if (!allMaterials.contains(materialName)) {
-      throw CustomException(MessagesConstant().materialNotFound);
+    try {
+      var allMaterials = await _stockWebServices.getMaterialDetails(
+          storeName: storeName, materialName: materialName);
+
+      log("allMaterial: $allMaterials");
+    } on FormatException catch (e) {
+      if (e.source.contains("material")) {
+        // in case of material not found exception, source = "No material found
+        throw CustomException(MessagesConstant().materialNotFound);
+      }
+      log("catch: $e");
     }
   }
 }

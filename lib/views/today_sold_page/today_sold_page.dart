@@ -17,7 +17,6 @@ class TodaySoldPage extends StatefulWidget {
 }
 
 class _TodaySoldPageState extends State<TodaySoldPage> {
-
   late Future<List<Sales>> salesFuture;
   bool newStockAdded = false;
 
@@ -55,13 +54,17 @@ class _TodaySoldPageState extends State<TodaySoldPage> {
         },
         body: Stack(
           children: [
-
             // list of sales transactions
             FutureBuilder(
                 future: newStockAdded ? fetchSalesRecords() : salesFuture,
                 builder: (context, snapshot) {
                   log("Fetching");
                   if (snapshot.hasData) {
+                    if (snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text("Nothing to display."),
+                      );
+                    }
                     return SingleChildScrollView(
                       child: Column(
                         children: [
@@ -74,6 +77,10 @@ class _TodaySoldPageState extends State<TodaySoldPage> {
                             ),
                         ],
                       ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Something went wrong."),
                     );
                   }
                   return const Center(child: CircularProgressIndicator());
@@ -88,8 +95,7 @@ class _TodaySoldPageState extends State<TodaySoldPage> {
                 height: 58,
                 duration: const Duration(milliseconds: 250),
                 child: FloatingActionButton(
-                  onPressed: () async{
-
+                  onPressed: () async {
                     bool? result = await Navigator.of(context)
                         .push<bool?>(MaterialPageRoute(
                       builder: (_) => AddNewSalesTransaction(stores: stores),
@@ -100,7 +106,6 @@ class _TodaySoldPageState extends State<TodaySoldPage> {
                         newStockAdded = true;
                       });
                     }
-
                   },
                   tooltip: "Add new sales transaction",
                   child: const Icon(

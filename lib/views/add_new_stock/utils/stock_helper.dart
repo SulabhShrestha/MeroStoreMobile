@@ -14,7 +14,7 @@ class StockHelper {
         "dataType": String,
       },
       {
-        "heading": "Sold Quantity",
+        "heading": "Brought Quantity",
         "required": true,
         "quantityOption": true,
         "keyboardType": TextInputType.number,

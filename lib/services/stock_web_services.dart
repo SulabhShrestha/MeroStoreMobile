@@ -17,7 +17,8 @@ class StockWebServices {
       headers: _headers,
       body: json.encode(userInput),
     );
-    if (response.statusCode == 200) {
+
+    if (response.statusCode == 201) {
       log("Response: $response");
 
       return true;
@@ -66,5 +67,19 @@ class StockWebServices {
     }
 
     return names;
+  }
+
+  /// Returns material details of specific store based on material provided
+  Future<Map> getMaterialDetails(
+      {required String storeName, required materialName}) async {
+    final response = await http.get(
+      Uri.parse(
+          "http://10.0.2.2:3000/instock/materialDetails/$storeName/$materialName"),
+      headers: _headers,
+    );
+
+    final jsonDecoded = jsonDecode(response.body);
+
+    return jsonDecoded;
   }
 }

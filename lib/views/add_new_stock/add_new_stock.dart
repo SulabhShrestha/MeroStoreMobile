@@ -9,8 +9,8 @@ import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
-import 'package:merostore_mobile/views/add_new_stock/widgets/required_marking.dart';
 import 'package:merostore_mobile/views/add_new_stock/utils/stock_helper.dart';
+import 'package:merostore_mobile/views/add_new_stock/widgets/required_marking.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
@@ -238,8 +238,7 @@ class _AddNewStockState extends State<AddNewStock> {
                             if (userInput["redFlag"]) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                      content:
-                                          Text(userInput["flagDesc"])));
+                                      content: Text(userInput["flagDesc"])));
                             }
                             // User has inserted required fields
                             else {
@@ -252,8 +251,8 @@ class _AddNewStockState extends State<AddNewStock> {
                                 onFailure: () {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                          content:
-                                              Text(MessagesConstant().somethingWentWrong)));
+                                          content: Text(MessagesConstant()
+                                              .somethingWentWrong)));
                                 },
                               );
                             }
@@ -333,10 +332,10 @@ class _AddNewStockState extends State<AddNewStock> {
     Map<String, dynamic> userInput = {};
     Map<String, dynamic> details = {}; // holds all stock details
 
-    userInput["Transaction Type"] = _currentTransactionType;
-    userInput["Store Name"] = _currentStoreName;
+    userInput["transactionType"] = _currentTransactionType;
+    userInput["storeName"] = _currentStoreName;
 
-    details["Brought Quantity"] = _currentQuantityType;
+    details["broughtQuantity"] = _currentQuantityType;
 
     // length of controllers and allFormFields is same.
     for (int i = 0; i < allFormFields.length; i++) {
@@ -349,12 +348,12 @@ class _AddNewStockState extends State<AddNewStock> {
 
       // Trying to convert to it's defined data type from string
       if (elem["dataType"] != String) {
-        if(elem["dataType"] == int){
-          try{
+        if (elem["dataType"] == int) {
+          try {
             int data = int.parse(value);
 
             // User has entered negative value
-            if(data < 0){
+            if (data < 0) {
               redFlag = true;
               flagDesc = MessagesConstant().invalidPrice;
               break;
@@ -362,20 +361,17 @@ class _AddNewStockState extends State<AddNewStock> {
             details[elem["heading"]] = data;
 
             continue; // No need to check other conditions
-
-          }
-          catch(e){
+          } catch (e) {
             redFlag = true;
             flagDesc = MessagesConstant().invalidQuantity;
             break;
           }
-        }
-        else if(elem["dataType"] == double) {
-          try{
+        } else if (elem["dataType"] == double) {
+          try {
             double data = double.parse(value);
 
             // User has entered negative value
-            if(data < 0){
+            if (data < 0) {
               redFlag = true;
               flagDesc = MessagesConstant().invalidPrice;
               break;
@@ -383,8 +379,7 @@ class _AddNewStockState extends State<AddNewStock> {
             details[elem["heading"]] = data;
 
             continue; // No need to check other conditions
-          }
-          catch(e){
+          } catch (e) {
             redFlag = true;
             flagDesc = MessagesConstant().invalidQuantity;
             break;
