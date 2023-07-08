@@ -3,18 +3,19 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:merostore_mobile/models/store_model.dart';
+import 'package:merostore_mobile/utils/constants/urls_constant.dart';
 
 /// [StoreWebServices] handles everything related to store
 ///
 
 class StoreWebServices {
-  final _headers = {"Content-Type": "application/json"};
+  final _urls = UrlsConstant();
 
   Future<Map<String, dynamic>> addNewStore(
       {required Map<String, dynamic> newStore}) async {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/store/add'),
-      headers: _headers,
+      Uri.parse(_urls.addStoreUrl),
+      headers: _urls.headers,
       body: json.encode(newStore),
     );
     if (response.statusCode == 200) {
@@ -34,8 +35,8 @@ class StoreWebServices {
 
   Future<List<Store>> getAllStores() async {
     final response = await http.get(
-      Uri.parse("http://10.0.2.2:3000/store/"),
-      headers: _headers,
+      Uri.parse(_urls.allStoresUrl),
+      headers: _urls.headers,
     );
 
     List<Store> stocks = [];

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:merostore_mobile/exceptions/custom_exception.dart';
 import 'package:merostore_mobile/models/sales_model.dart';
 import 'package:merostore_mobile/utils/constants/messages_constant.dart';
+import 'package:merostore_mobile/utils/constants/urls_constant.dart';
 import 'package:merostore_mobile/views/today_sold_page/today_sold_page.dart';
 
 import 'stock_web_services.dart';
@@ -12,14 +13,14 @@ import 'stock_web_services.dart';
 /// Handles everything related to [TodaySoldPage]
 ///
 class SalesWebServices {
-  final _headers = {"Content-Type": "application/json"};
   final _stockWebServices = StockWebServices();
+  final _urls = UrlsConstant();
 
   /// Returns all the sales record
   Future<List<Sales>> getAllSalesRecords() async {
     final response = await http.get(
-      Uri.parse("http://10.0.2.2:3000/sales/"),
-      headers: _headers,
+      Uri.parse(_urls.allSalesUrl),
+      headers: _urls.headers,
     );
 
     List<Sales> sales = [];
@@ -63,8 +64,8 @@ class SalesWebServices {
     }
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/sales/add'),
-      headers: _headers,
+      Uri.parse(_urls.addSalesUrl),
+      headers: _urls.headers,
       body: json.encode(salesRecord),
     );
     if (response.statusCode == 201) {
@@ -100,7 +101,8 @@ class SalesWebServices {
           storeName: storeName, materialName: materialName);
 
       // trying to sold more than we have
-      if (quantitySold > int.parse(materialDetails["details"]["Brought Quantity"])) {
+      if (quantitySold >
+          int.parse(materialDetails["details"]["Brought Quantity"])) {
         throw CustomException(MessagesConstant().soldQuantityExceeded);
       }
 

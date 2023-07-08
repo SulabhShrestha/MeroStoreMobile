@@ -3,18 +3,19 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:merostore_mobile/models/stock_model.dart';
+import 'package:merostore_mobile/utils/constants/urls_constant.dart';
 
 /// Handles everything related to [InStockPage]
 ///
 
 class StockWebServices {
-  final _headers = {"Content-Type": "application/json"};
+  final _urls = UrlsConstant();
 
   /// Adding new data to the db
   Future<bool> addNewData({required Map<String, dynamic> userInput}) async {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/instock/add'),
-      headers: _headers,
+      Uri.parse(_urls.addStockUrl),
+      headers: _urls.headers,
       body: json.encode(userInput),
     );
 
@@ -30,8 +31,8 @@ class StockWebServices {
   /// Returns all the stocks
   Future<List<Stock>> getAllStocks() async {
     final response = await http.get(
-      Uri.parse("http://10.0.2.2:3000/instock/"),
-      headers: _headers,
+      Uri.parse(_urls.allStocksUrl),
+      headers: _urls.headers,
     );
 
     List<Stock> stocks = [];
@@ -51,8 +52,8 @@ class StockWebServices {
   /// Getting all the material names from the db according to storeName
   Future<List<String>> getAllMaterialNames({required String storeName}) async {
     final response = await http.get(
-      Uri.parse("http://10.0.2.2:3000/instock/materialNames/$storeName"),
-      headers: _headers,
+      Uri.parse("${_urls.allMaterialNamesUrl}/$storeName"),
+      headers: _urls.headers,
     );
 
     List<String> names = [];
@@ -73,9 +74,8 @@ class StockWebServices {
   Future<Map> getMaterialDetails(
       {required String storeName, required materialName}) async {
     final response = await http.get(
-      Uri.parse(
-          "http://10.0.2.2:3000/instock/materialDetails/$storeName/$materialName"),
-      headers: _headers,
+      Uri.parse("${_urls.materialDetailsUrl}/$storeName/$materialName"),
+      headers: _urls.headers,
     );
 
     final jsonDecoded = jsonDecode(response.body);
