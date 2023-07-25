@@ -1,0 +1,4 @@
+enum ArrangementOrder {
+  ascending,
+  descending,
+}

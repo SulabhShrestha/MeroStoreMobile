@@ -45,6 +45,7 @@ dependencies:
   flutter_typeahead: ^4.6.1
   google_sign_in: ^6.1.4
   shared_preferences: ^2.2.0
+  dartx: ^1.2.0
 
 dev_dependencies:
   flutter_test:

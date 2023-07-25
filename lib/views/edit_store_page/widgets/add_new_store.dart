@@ -1,7 +1,7 @@
 import 'dart:developer';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
-import 'package:merostore_mobile/extensions/string_ext.dart';
 import 'package:merostore_mobile/models/stores_model.dart';
 import 'package:merostore_mobile/utils/constants/messages_constant.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
@@ -57,8 +57,8 @@ class _AddNewStoreState extends State<AddNewStore> {
                 );
               }
               // checking if previously entered
-              else if (Stores().contains(
-                  _storeNameController.text.trim().capitalizeFirstLetter())) {
+              else if (Stores()
+                  .contains(_storeNameController.text.trim().capitalize())) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                       content: Text(MessagesConstant()
@@ -67,8 +67,7 @@ class _AddNewStoreState extends State<AddNewStore> {
                 );
               } else {
                 Map<String, dynamic> newStoreDetails = {
-                  "storeName":
-                      _storeNameController.text.trim().capitalizeFirstLetter(),
+                  "storeName": _storeNameController.text.trim().capitalize(),
                   "quantityTypes": userSelectedQuantityTypes,
                   "transactionTypes": userSelectedTransactionTypes,
                 };
@@ -83,7 +82,8 @@ class _AddNewStoreState extends State<AddNewStore> {
                   },
                   onFailure: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(MessagesConstant().somethingWentWrong)),
+                      SnackBar(
+                          content: Text(MessagesConstant().somethingWentWrong)),
                     );
                   },
                 );

@@ -1,11 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:merostore_mobile/utils/arrangement_order.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
+import 'package:merostore_mobile/view_models/sales_view_model.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
+import 'package:merostore_mobile/views/summary_page/item_card.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -125,79 +130,53 @@ class _SummaryPageState extends State<SummaryPage> {
               child: Column(
                 children: [
                   ConstantSpaces.height4,
-
                   const Text(
                     "Most sold items",
                     style: ConstantTextStyles.redHeading20,
                   ),
                   ConstantSpaces.height16,
 
-                  // items
-                  for (int a = 0; a < 10; a++)
-                    Card(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(12),
-                          ),
-                          side: BorderSide(
-                              color: ConstantAppColors.primaryColor
-                                  .withOpacity(0.2))),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            // Logo
-                            Container(
-                              width: 46,
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: ConstantAppColors.blueColor,
-                                border: Border.all(),
-                              ),
-                              child: const FittedBox(
-                                fit: BoxFit.cover,
-                                child: Text("G"),
-                              ),
-                            ),
-                            ConstantSpaces.width12,
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: const [
-                                Text(
-                                  "G1",
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Text(
-                                  "ads",
-                                  style: ConstantTextStyles.dimStyle14,
-                                ),
-                              ],
-                            ),
+                  // Most sold items
+                  FutureBuilder(
+                    future: SalesViewModel().getAllSales(
+                        arrangementOrder: ArrangementOrder.descending),
+                    builder: (context, snapshot) {
+                      // showing indicator
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
 
-                            Expanded(
-                              child: Text(
-                                "Rs 12121",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: ConstantAppColors.primaryColor
-                                      .withOpacity(0.7),
-                                ),
-                                textAlign: TextAlign.end,
+                      // if we have data, can be empty or not
+                      else if (snapshot.hasData) {
+                        log("Summary page; ${snapshot.data}, ${snapshot.data!.length}");
+
+                        // if it is empty
+                        if (snapshot.data!.isEmpty) {
+                          return const Center(
+                            child: Text("No data found"),
+                          );
+                        }
+
+                        return Column(
+                          children: [
+                            // we are having some data
+                            for (var data in snapshot.data!)
+                              ItemCard(
+                                title: data.details["Material Name"].toString(),
+                                amount: data.details["Total Price"].toString(),
                               ),
-                            )
-                            // Name,
                           ],
-                        ),
-                      ),
-                    ),
+                        );
+                      }
+
+                      // Something unexpected happened
+                      return const Center(
+                        child: Text("Something went wrong."),
+                      );
+                    },
+                  )
                 ],
               ),
             ),

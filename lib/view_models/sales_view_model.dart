@@ -1,7 +1,9 @@
 import 'dart:ui';
 
+import 'package:dartx/dartx.dart';
 import 'package:merostore_mobile/models/sales_model.dart';
 import 'package:merostore_mobile/services/sales_web_services.dart';
+import 'package:merostore_mobile/utils/arrangement_order.dart';
 
 class SalesViewModel {
   final _salesWebServices = SalesWebServices();
@@ -23,7 +25,19 @@ class SalesViewModel {
   }
 
   /// Return all the sales record
-  Future<List<Sales>> getAllSales() async {
-    return _salesWebServices.getAllSalesRecords();
+  Future<List<Sales>> getAllSales({ArrangementOrder? arrangementOrder}) async {
+    var allSalesRecord = await _salesWebServices.getAllSalesRecords();
+
+    if (arrangementOrder == null) {
+      return allSalesRecord;
+    } else if (arrangementOrder == ArrangementOrder.ascending) {
+      final sorted =
+          allSalesRecord.sortedBy((sales) => sales.details["Total Price"]);
+      return sorted;
+    }
+
+    // descending
+    return allSalesRecord
+        .sortedByDescending((sales) => sales.details["Total Price"]);
   }
 }
