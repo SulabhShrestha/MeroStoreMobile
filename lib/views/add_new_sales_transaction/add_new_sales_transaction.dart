@@ -10,11 +10,11 @@ import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/view_models/sales_view_model.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/views/add_new_sales_transaction/utils/sales_helper.dart';
-import 'package:merostore_mobile/views/add_new_stock/widgets/required_marking.dart';
 import 'package:merostore_mobile/views/add_new_stock/utils/stock_helper.dart';
+import 'package:merostore_mobile/views/add_new_stock/widgets/required_marking.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
-import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
+import 'package:merostore_mobile/views/core_widgets/custom_text_button.dart';
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_.dart';
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_with_dropdownbtn.dart';
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
@@ -241,7 +241,8 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                         // submit button
                         Align(
                           alignment: Alignment.center,
-                          child: CustomShadowContainer(
+                          child: CustomTextButton(
+                            text: "Submit",
                             onTap: () async {
                               final userInput = _getAllDataFromUserInputs();
 
@@ -249,12 +250,10 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                               if (userInput["redFlag"]) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                        content:
-                                            Text(userInput["flagDesc"])));
+                                        content: Text(userInput["flagDesc"])));
                               }
                               // User has inserted required fields
                               else {
-
                                 SalesViewModel().addNewSales(
                                   userInput: userInput["salesRecord"],
                                   onStockAdded: () {
@@ -263,25 +262,12 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                                   },
                                   onFailure: (message) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content:
-                                            Text(message)),);
+                                      SnackBar(content: Text(message)),
+                                    );
                                   },
                                 );
                               }
                             },
-                            height: 42,
-                            width: 96,
-                            foregroundColor: ConstantAppColors.greenColor,
-                            backgroundColor:
-                                Theme.of(context).scaffoldBackgroundColor,
-                            child: const Text(
-                              "Submit",
-                              style: TextStyle(
-                                  color: ConstantAppColors.primaryColor,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500),
-                            ),
                           ),
                         ),
 
@@ -369,12 +355,12 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
 
       // Trying to convert to it's defined data type from string
       if (elem["dataType"] != String) {
-        if(elem["dataType"] == int){
-          try{
+        if (elem["dataType"] == int) {
+          try {
             int data = int.parse(value);
 
             // User has entered negative value
-            if(data < 0){
+            if (data < 0) {
               redFlag = true;
               flagDesc = MessagesConstant().invalidPrice;
               break;
@@ -382,20 +368,17 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
             details[elem["heading"]] = data;
 
             continue; // No need to check other conditions
-
-          }
-          catch(e){
+          } catch (e) {
             redFlag = true;
             flagDesc = MessagesConstant().invalidQuantity;
             break;
           }
-        }
-        else if(elem["dataType"] == double) {
-          try{
+        } else if (elem["dataType"] == double) {
+          try {
             double data = double.parse(value);
 
             // User has entered negative value
-            if(data < 0){
+            if (data < 0) {
               redFlag = true;
               flagDesc = MessagesConstant().invalidPrice;
               break;
@@ -403,8 +386,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
             details[elem["heading"]] = data;
 
             continue; // No need to check other conditions
-          }
-          catch(e){
+          } catch (e) {
             redFlag = true;
             flagDesc = MessagesConstant().invalidQuantity;
             break;

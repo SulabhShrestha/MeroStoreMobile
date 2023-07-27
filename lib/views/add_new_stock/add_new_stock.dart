@@ -13,7 +13,7 @@ import 'package:merostore_mobile/views/add_new_stock/utils/stock_helper.dart';
 import 'package:merostore_mobile/views/add_new_stock/widgets/required_marking.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
-import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
+import 'package:merostore_mobile/views/core_widgets/custom_text_button.dart';
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_.dart';
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_with_dropdownbtn.dart';
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
@@ -230,7 +230,8 @@ class _AddNewStockState extends State<AddNewStock> {
                       // submit button
                       Align(
                         alignment: Alignment.center,
-                        child: CustomShadowContainer(
+                        child: CustomTextButton(
+                          text: "Submit",
                           onTap: () async {
                             final userInput = _getAllDataFromUserInputs();
 
@@ -257,18 +258,6 @@ class _AddNewStockState extends State<AddNewStock> {
                               );
                             }
                           },
-                          height: 42,
-                          width: 96,
-                          foregroundColor: ConstantAppColors.greenColor,
-                          backgroundColor:
-                              Theme.of(context).scaffoldBackgroundColor,
-                          child: const Text(
-                            "Submit",
-                            style: TextStyle(
-                                color: ConstantAppColors.primaryColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500),
-                          ),
                         ),
                       ),
 

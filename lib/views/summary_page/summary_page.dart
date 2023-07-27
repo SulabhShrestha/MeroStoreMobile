@@ -10,7 +10,8 @@ import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/view_models/sales_view_model.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
-import 'package:merostore_mobile/views/summary_page/item_card.dart';
+import 'package:merostore_mobile/views/summary_page/widgets/duration_filter_buttons.dart';
+import 'package:merostore_mobile/views/summary_page/widgets/item_card.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -56,34 +57,37 @@ class _SummaryPageState extends State<SummaryPage> {
         headerSliverBuilder: (_, isScrolled) {
           return [
             SliverAppBar(
-              backgroundColor: Colors.transparent,
-              floating: true,
-              flexibleSpace: CustomDropDownBtn(
-                tooltip: "Store selection",
-                options: stores.allStoresNames,
-                onTap: (val) {},
-              ),
-              actions: [
-                CircleAvatar(
-                  radius: 22,
-                  backgroundColor: ConstantAppColors.primaryColor,
-                  child: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: ConstantAppColors.greenColor,
-                    child: IconButton(
-                      color: Colors.green,
-                      splashRadius: 32,
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.calendar_today_outlined,
-                        color: ConstantAppColors.primaryColor,
-                        size: 24,
+                backgroundColor: Colors.transparent,
+                floating: true,
+                flexibleSpace: CustomDropDownBtn(
+                  tooltip: "Store selection",
+                  options: stores.allStoresNames,
+                  onTap: (val) {},
+                ),
+                actions: [
+                  CircleAvatar(
+                    radius: 22,
+                    backgroundColor: ConstantAppColors.primaryColor,
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: ConstantAppColors.greenColor,
+                      child: IconButton(
+                        color: Colors.green,
+                        splashRadius: 32,
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.calendar_today_outlined,
+                          color: ConstantAppColors.primaryColor,
+                          size: 24,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(48),
+                  child: DurationFilterButtons(),
+                )),
           ];
         },
         body: ListView(
