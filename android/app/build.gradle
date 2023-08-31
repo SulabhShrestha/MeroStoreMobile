@@ -45,14 +45,14 @@ android {
         versionName flutterVersionName
     }
 
-    signingConfigs{
-        debug{
-            keyAlias 'upload' // android debug key
-            keyPassword '123456'
-            storeFile file("key.jks")
-            storePassword '123456'
-        }
-    }
+//    signingConfigs{
+//        debug{
+//            keyAlias 'upload' // android debug key
+//            keyPassword '123456'
+//            storeFile file("key.jks")
+//            storePassword '123456'
+//        }
+//    }
 
     buildTypes {
         debug {
