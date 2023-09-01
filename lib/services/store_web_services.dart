@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/utils/constants/urls_constant.dart';
 
+import 'local_storage_services.dart';
+
 /// [StoreWebServices] handles everything related to store
 ///
 
@@ -34,10 +36,17 @@ class StoreWebServices {
   }
 
   Future<List<Store>> getAllStores() async {
+    var token = await LocalStorageServices().getId();
     final response = await http.get(
       Uri.parse(_urls.allStoresUrl),
-      headers: _urls.headers,
+      headers: {
+        ..._urls.headers,
+        "Authorization": token,
+      },
     );
+
+    log("URL: ${_urls.allStoresUrl}, headers: ${{..._urls.headers,
+      "Authorization": token}}");
 
     List<Store> stocks = [];
 
@@ -47,7 +56,7 @@ class StoreWebServices {
         stocks.add(Store.fromJSON(elem));
       }
     } else {
-      log("Something went wrong");
+      log("Something went wrong${response.reasonPhrase}");
     }
     log("Response: $stocks");
     return stocks;

@@ -22,6 +22,12 @@ class LocalStorageServices {
     return encodedMap != null ? jsonDecode(encodedMap) : {};
   }
 
+  Future<String> getId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final encodedMap = prefs.getString(_uniqueKey);
+    return encodedMap != null ? jsonDecode(encodedMap)["uid"] : "";
+  }
+
   /// Removes the data saved from local storage
   Future<void> removeUserInfo() async {
     final prefs = await SharedPreferences.getInstance();

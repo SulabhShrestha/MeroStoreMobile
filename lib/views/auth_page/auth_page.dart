@@ -34,9 +34,10 @@ class AuthPage extends StatelessWidget {
                         ),
                       );
                     }).onError((error, stackTrace) {
+                      log(error.toString());
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(error.toString()),
+                        const SnackBar(
+                          content: Text("Some error occured"),
                         ),
                       );
                     });

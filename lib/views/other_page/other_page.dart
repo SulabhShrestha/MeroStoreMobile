@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:merostore_mobile/services/user_web_services.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
+import 'package:merostore_mobile/views/auth_page/auth_page.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
 import 'package:merostore_mobile/views/edit_store_page/edit_store_page.dart';
@@ -179,7 +183,15 @@ class OtherPage extends StatelessWidget {
         // Sign out
         Center(
           child: CustomShadowContainer(
-            onTap: () {},
+            onTap: () async {
+              log("Going to logout");
+              UserWebServices()
+                  .logout()
+                  .then((value) => Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => const AuthPage()),
+                      ))
+                  .onError((error, stackTrace) => log(error.toString()));
+            },
             height: 46,
             width: MediaQuery.of(context).size.width * 0.4,
             foregroundColor: ConstantAppColors.redColor,
