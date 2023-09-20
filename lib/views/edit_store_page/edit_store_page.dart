@@ -20,7 +20,6 @@ class EditStorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log("Inside edit store: ${Provider.of<Stores>(context)}");
     return Scaffold(
       appBar: AppBar(
         title: Text(title),

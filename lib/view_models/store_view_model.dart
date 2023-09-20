@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:merostore_mobile/models/store_model.dart';
@@ -23,6 +24,8 @@ class StoreViewModel {
   }
 
   Future<List<Store>> getAllStores() async {
-    return _storeWebServices.getAllStores();
+    List<Store> stores = await _storeWebServices.getAllStores();
+    log("Stores: ${stores.first.storeName}");
+    return stores;
   }
 }

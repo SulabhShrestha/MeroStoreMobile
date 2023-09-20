@@ -48,7 +48,7 @@ class ItemCard extends StatelessWidget {
               children: [
                 Text(
                   title.capitalize(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w500,
                   ),

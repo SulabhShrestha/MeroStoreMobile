@@ -72,6 +72,8 @@ class _AddNewStoreState extends State<AddNewStore> {
                   "transactionTypes": userSelectedTransactionTypes,
                 };
 
+                log(newStoreDetails.toString());
+
                 StoreViewModel().addNewStore(
                   newStore: newStoreDetails,
                   onStockAdded: (addedStore) {

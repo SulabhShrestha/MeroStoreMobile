@@ -23,7 +23,7 @@ class _RootPageState extends State<RootPage> {
   int _selectedIndex = 0;
   late List<Widget> _pagesList;
 
-  Stores _stores = Stores();
+  final Stores _stores = Stores();
 
   bool showLoading = true; // show loading indicator while fetching data
 

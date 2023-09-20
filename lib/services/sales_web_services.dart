@@ -8,6 +8,7 @@ import 'package:merostore_mobile/utils/constants/messages_constant.dart';
 import 'package:merostore_mobile/utils/constants/urls_constant.dart';
 import 'package:merostore_mobile/views/today_sold_page/today_sold_page.dart';
 
+import 'local_storage_services.dart';
 import 'stock_web_services.dart';
 
 /// Handles everything related to [TodaySoldPage]
@@ -18,9 +19,13 @@ class SalesWebServices {
 
   /// Returns all the sales record
   Future<List<Sales>> getAllSalesRecords() async {
+    var token = await LocalStorageServices().getId();
     final response = await http.get(
       Uri.parse(_urls.allSalesUrl),
-      headers: _urls.headers,
+      headers: {
+        ..._urls.headers,
+        "Authorization": token,
+      },
     );
 
     List<Sales> sales = [];
@@ -47,8 +52,6 @@ class SalesWebServices {
   /// Returns desc (in desc) if any type of error is occurred
   Future<Map<String, dynamic>> addNew(
       {required Map<String, dynamic> salesRecord}) async {
-    log("SalesRecord: $salesRecord");
-
     try {
       await _validateQuantity(
         materialName: salesRecord["details"]["Material Name"],
@@ -63,9 +66,11 @@ class SalesWebServices {
       }; // Material not present, so returning false
     }
 
+    var token = await LocalStorageServices().getId();
+
     final response = await http.post(
       Uri.parse(_urls.addSalesUrl),
-      headers: _urls.headers,
+      headers: {..._urls.headers, "Authorization": token},
       body: json.encode(salesRecord),
     );
     if (response.statusCode == 201) {

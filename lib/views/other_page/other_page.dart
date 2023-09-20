@@ -36,9 +36,9 @@ class OtherPage extends StatelessWidget {
                     "https://avatars.dicebear.com/api/bottts/s.svg"),
               ),
               ConstantSpaces.width8,
-              Column(
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     "Sulabh Shrestha",
                     style: ConstantTextStyles.blueHeading22,
@@ -54,10 +54,10 @@ class OtherPage extends StatelessWidget {
         ),
         ConstantSpaces.height8,
         // Content
-        CustomBox(
+        const CustomBox(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
                 "Content",
                 style: ConstantTextStyles.redHeading20,
@@ -125,10 +125,10 @@ class OtherPage extends StatelessWidget {
         ConstantSpaces.height8,
 
         // Support
-        CustomBox(
+        const CustomBox(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
                 "Support",
                 style: ConstantTextStyles.redHeading20,
@@ -150,10 +150,10 @@ class OtherPage extends StatelessWidget {
         ConstantSpaces.height8,
 
         // Other
-        CustomBox(
+        const CustomBox(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
                 "Other",
                 style: ConstantTextStyles.redHeading20,

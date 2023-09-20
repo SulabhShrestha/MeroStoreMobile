@@ -84,8 +84,8 @@ class _SummaryPageState extends State<SummaryPage> {
                     ),
                   ),
                 ],
-                bottom: PreferredSize(
-                  preferredSize: const Size.fromHeight(48),
+                bottom: const PreferredSize(
+                  preferredSize: Size.fromHeight(48),
                   child: DurationFilterButtons(),
                 )),
           ];

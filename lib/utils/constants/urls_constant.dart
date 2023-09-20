@@ -1,4 +1,3 @@
-import 'package:merostore_mobile/services/local_storage_services.dart';
 
 class UrlsConstant {
   // String get _url => "http://10.0.2.2:3000";
