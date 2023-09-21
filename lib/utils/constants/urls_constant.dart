@@ -1,4 +1,3 @@
-
 class UrlsConstant {
   // String get _url => "http://10.0.2.2:3000";
   String get _url => "https://merostore-nodejs.vercel.app";
@@ -21,4 +20,5 @@ class UrlsConstant {
   // stores related
   String get allStoresUrl => "$_url/store/";
   String get addStoreUrl => "$_url/store/add";
+  String get deleteStoreUrl => "$_url/store";
 }

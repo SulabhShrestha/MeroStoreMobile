@@ -43,9 +43,12 @@ class EditStorePage extends StatelessWidget {
               for (Store element in stores.allStores)
                 CustomCard(
                   displaying: "Store",
+                  id: element.id,
                   storeName: element.storeName,
                   quantityTypes: element.quantityTypes,
                   transactionTypes: element.transactionTypes,
+                  enableDeleteOption:
+                      stores.allStores.length == 1 ? false : true,
                 ),
             ],
           );

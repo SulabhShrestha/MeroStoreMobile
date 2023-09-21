@@ -1,10 +1,20 @@
 /// This button helps to edit and delete a record
 ///
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:merostore_mobile/view_models/store_view_model.dart';
 
 class EditDeleteButton extends StatelessWidget {
-  const EditDeleteButton({super.key});
+  final String id;
+  final bool enableDeleteOption;
+
+  const EditDeleteButton({
+    super.key,
+    required this.id,
+    required this.enableDeleteOption,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +43,14 @@ class EditDeleteButton extends StatelessWidget {
                 onTap: () async {},
               ),
               PopupMenuItem(
+                enabled: enableDeleteOption,
+                onTap: () {
+                  StoreViewModel().deleteStore(id: id).then((value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Deleted successfully")));
+                  });
+                },
                 child: const Text('Delete'),
-                onTap: () {},
               ),
             ];
           },

@@ -28,4 +28,8 @@ class StoreViewModel {
     log("Stores: ${stores.first.storeName}");
     return stores;
   }
+
+  Future<void> deleteStore({required String id}) async {
+    await _storeWebServices.deleteStore(id: id);
+  }
 }

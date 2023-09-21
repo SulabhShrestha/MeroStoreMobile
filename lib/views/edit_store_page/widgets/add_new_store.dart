@@ -79,6 +79,7 @@ class _AddNewStoreState extends State<AddNewStore> {
                   onStockAdded: (addedStore) {
                     // Adding newly added store to the stores list
                     widget.stores.addStore(addedStore);
+                    log("Newly added store: $addedStore");
 
                     Navigator.of(context).pop();
                   },

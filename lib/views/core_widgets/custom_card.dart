@@ -8,6 +8,9 @@ class CustomCard extends StatelessWidget {
   // What to display
   final String displaying;
 
+  // id of this record
+  final String id;
+
   // For Stock
   final String? transactionType;
   final Map<String, dynamic>? stockDetails;
@@ -17,6 +20,9 @@ class CustomCard extends StatelessWidget {
   final List<dynamic>? quantityTypes;
   final List<dynamic>? transactionTypes;
 
+  // Display delete button or not from [EditDeleteButton]
+  final bool enableDeleteOption;
+
   const CustomCard({
     Key? key,
     this.transactionType,
@@ -24,7 +30,9 @@ class CustomCard extends StatelessWidget {
     this.storeName,
     this.quantityTypes,
     this.transactionTypes,
+    this.enableDeleteOption = true,
     required this.displaying,
+    required this.id,
   }) : super(key: key);
 
   @override
@@ -58,7 +66,11 @@ class CustomCard extends StatelessWidget {
                 ),
 
                 // Option
-                const EditDeleteButton(),
+
+                EditDeleteButton(
+                  id: id,
+                  enableDeleteOption: enableDeleteOption,
+                ),
               ],
             ),
           ],

@@ -24,12 +24,12 @@ class StoreWebServices {
       },
       body: json.encode(newStore),
     );
-    if (response.statusCode == 200) {
-      log("Response res: ${jsonDecode(response.body)}");
+    if (response.statusCode == 201) {
+      log("Response res: ${newStore}");
 
       return {
         "isSaved": true,
-        "savedStore": Store.fromJSON(jsonDecode(response.body)["newStore"])
+        "savedStore": Store.fromJSON(jsonDecode(response.body))
       };
     } else {
       log("Something went wrong ${response.statusCode}");
@@ -66,5 +66,21 @@ class StoreWebServices {
     }
     log("Response: $stocks");
     return stocks;
+  }
+
+  Future<void> deleteStore({required String id}) async {
+    var token = await LocalStorageServices().getId();
+    final response = await http.delete(
+      Uri.parse("${_urls.deleteStoreUrl}/$id"),
+      headers: {
+        ..._urls.headers,
+        "Authorization": token,
+      },
+    );
+    if (response.statusCode == 200) {
+      log("Deleted");
+    } else {
+      log("Something went wrong ${response.statusCode}");
+    }
   }
 }
