@@ -4,7 +4,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:merostore_mobile/models/stores_model.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
+import 'package:provider/provider.dart';
 
 class EditDeleteButton extends StatelessWidget {
   final String id;
@@ -46,6 +48,10 @@ class EditDeleteButton extends StatelessWidget {
                 enabled: enableDeleteOption,
                 onTap: () {
                   StoreViewModel().deleteStore(id: id).then((value) {
+                    // removing store from the cached store list
+                    context.read<Stores>().deleteStore(id);
+
+                    // displaying information
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Deleted successfully")));
                   });

@@ -15,8 +15,9 @@ class Stores extends ChangeNotifier {
   List<Store> get allStores => _stores;
 
   // deleting old store
-  void deleteStore(Store oldStore) {
-    _stores.removeWhere((store) => store.storeName == oldStore.storeName);
+  void deleteStore(String id) {
+    _stores.removeWhere((store) => store.id == id);
+    notifyListeners();
   }
 
   /// checks if currently adding store is already added
@@ -27,7 +28,6 @@ class Stores extends ChangeNotifier {
   /// Returns all the names of the stores stored
   List<String> get allStoresNames =>
       _stores.map((store) => store.storeName).toList();
-
 
   /// Returns all the quantity types of the stores stored
   List<String> allQuantityTypes({required String storeName}) {

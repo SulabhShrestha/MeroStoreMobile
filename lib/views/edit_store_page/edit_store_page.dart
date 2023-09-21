@@ -28,7 +28,7 @@ class EditStorePage extends StatelessWidget {
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (_) => AddNewStore(
-                    stores: Provider.of<Stores>(context, listen: false),
+                    stores: Provider.of<Stores>(context),
                   )));
         },
         tooltip: "Add new sales transaction",
