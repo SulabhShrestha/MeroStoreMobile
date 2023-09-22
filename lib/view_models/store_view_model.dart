@@ -32,4 +32,9 @@ class StoreViewModel {
   Future<void> deleteStore({required String id}) async {
     await _storeWebServices.deleteStore(id: id);
   }
+
+  Future<void> updateStore(
+      {required String id, required Map<String, dynamic> updatedStore}) async {
+    await _storeWebServices.updateStore(id: id, updatedStore: updatedStore);
+  }
 }

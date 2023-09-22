@@ -14,12 +14,26 @@ class Store {
   });
 
   factory Store.fromJSON(Map<String, dynamic> json) {
-    log("Json: $json");
     return Store(
       id: json["_id"],
       storeName: json["storeName"],
       quantityTypes: json["quantityTypes"],
       transactionTypes: json["transactionTypes"],
+    );
+  }
+
+  // Useful for updating current store value
+  Store copyWith({
+    String? id,
+    String? storeName,
+    List<dynamic>? quantityTypes,
+    List<dynamic>? transactionTypes,
+  }) {
+    return Store(
+      id: id ?? this.id,
+      storeName: storeName ?? this.storeName,
+      quantityTypes: quantityTypes ?? this.quantityTypes,
+      transactionTypes: transactionTypes ?? this.transactionTypes,
     );
   }
 }

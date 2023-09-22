@@ -8,7 +8,6 @@ class Stores extends ChangeNotifier {
   // adding new store
   void addStore(Store newStore) {
     _stores.add(newStore);
-
     notifyListeners();
   }
 
@@ -16,6 +15,24 @@ class Stores extends ChangeNotifier {
 
   Store getStoreById(String id) {
     return _stores.firstWhere((store) => store.id == id);
+  }
+
+  void updateStoreById(
+      {required String id, required Map<String, dynamic> data}) {
+    int index = _stores
+        .indexWhere((store) => store.id == id); // getting index of passed store
+
+    // copy of store to be updated
+    final updatedStore = _stores[index].copyWith(
+      id: data['id'],
+      storeName: data['storeName'],
+      quantityTypes: data['quantityTypes'],
+      transactionTypes: data['transactionTypes'],
+    );
+
+    // updating store
+    _stores[index] = updatedStore;
+    notifyListeners();
   }
 
   // deleting old store

@@ -71,7 +71,7 @@ class StoreWebServices {
   Future<void> deleteStore({required String id}) async {
     var token = await LocalStorageServices().getId();
     final response = await http.delete(
-      Uri.parse("${_urls.deleteStoreUrl}/$id"),
+      Uri.parse("${_urls.operationStoreUrl}/$id"),
       headers: {
         ..._urls.headers,
         "Authorization": token,
@@ -79,6 +79,25 @@ class StoreWebServices {
     );
     if (response.statusCode == 200) {
       log("Deleted");
+    } else {
+      log("Something went wrong ${response.statusCode}");
+    }
+  }
+
+  Future<void> updateStore(
+      {required String id, required Map<String, dynamic> updatedStore}) async {
+    var token = await LocalStorageServices().getId();
+    final response = await http.patch(
+      Uri.parse("${_urls.operationStoreUrl}/$id"),
+      headers: {
+        ..._urls.headers,
+        "Authorization": token,
+      },
+      body: jsonEncode(updatedStore),
+    );
+
+    if (response.statusCode == 200) {
+      log("Updated");
     } else {
       log("Something went wrong ${response.statusCode}");
     }

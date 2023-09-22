@@ -20,5 +20,5 @@ class UrlsConstant {
   // stores related
   String get allStoresUrl => "$_url/store/";
   String get addStoreUrl => "$_url/store/add";
-  String get deleteStoreUrl => "$_url/store";
+  String get operationStoreUrl => "$_url/store";
 }

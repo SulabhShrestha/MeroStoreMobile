@@ -50,6 +50,7 @@ class EditDeleteButton extends StatelessWidget {
                             showEditPage: true,
                             store:
                                 Provider.of<Stores>(context).getStoreById(id),
+                            stores: Provider.of<Stores>(context, listen: false),
                           )));
                 },
               ),

@@ -17,10 +17,14 @@ class HandleStore extends StatefulWidget {
   // if edit store page to be displayed, then store object must be passed
   final Store? store;
 
+  // for updating store
+  final Stores? stores;
+
   const HandleStore({
     Key? key,
     this.showEditPage = false,
     this.store,
+    this.stores,
   }) : super(key: key);
 
   @override
@@ -28,10 +32,19 @@ class HandleStore extends StatefulWidget {
 }
 
 class _HandleStoreState extends State<HandleStore> {
-  List<String> userSelectedTransactionTypes = [];
-  List<String> userSelectedQuantityTypes = [];
+  List<dynamic> userSelectedTransactionTypes = [];
+  List<dynamic> userSelectedQuantityTypes = [];
 
   final _storeNameController = TextEditingController();
+
+  @override
+  void initState() {
+    // adding default value to field when
+    _storeNameController.text = widget.store?.storeName ?? "";
+    userSelectedTransactionTypes = widget.store?.transactionTypes ?? [];
+    userSelectedQuantityTypes = widget.store?.quantityTypes ?? [];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +52,12 @@ class _HandleStoreState extends State<HandleStore> {
       return _showEditStore();
     }
     return _showAddNewStore();
+  }
+
+  @override
+  void dispose() {
+    log("${_storeNameController.text}, $userSelectedQuantityTypes, $userSelectedTransactionTypes");
+    super.dispose();
   }
 
   // true means everything's perfect, can be added to the db
@@ -74,7 +93,6 @@ class _HandleStoreState extends State<HandleStore> {
 
   // Displays editing old store widget
   Widget _showEditStore() {
-    log(widget.store!.quantityTypes.toString());
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit store"),
@@ -84,39 +102,28 @@ class _HandleStoreState extends State<HandleStore> {
               if (!_validateInputData()) {
                 return;
               }
-              // checking if previously entered
-              else if (Stores()
-                  .contains(_storeNameController.text.trim().capitalize())) {
-                Map<String, dynamic> newStoreDetails = {
-                  "storeName": _storeNameController.text.trim().capitalize(),
-                  "quantityTypes": userSelectedQuantityTypes,
-                  "transactionTypes": userSelectedTransactionTypes,
-                };
+              Map<String, dynamic> updateStoreDetails = {
+                "storeName": _storeNameController.text.trim().capitalize(),
+                "quantityTypes": userSelectedQuantityTypes,
+                "transactionTypes": userSelectedTransactionTypes,
+              };
 
-                log(newStoreDetails.toString());
+              log(updateStoreDetails.toString());
 
-                StoreViewModel().addNewStore(
-                  newStore: newStoreDetails,
-                  onStockAdded: (addedStore) {
-                    // Adding newly added store to the stores list
-                    Provider.of<Stores>(context).addStore(addedStore);
-                    log("Newly added store: $addedStore");
-
-                    Navigator.of(context).pop();
-                  },
-                  onFailure: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text(MessagesConstant().somethingWentWrong)),
-                    );
-                  },
-                );
-              } else {
+              StoreViewModel()
+                  .updateStore(
+                      id: widget.store!.id, updatedStore: updateStoreDetails)
+                  .then((value) {
+                widget.stores!.updateStoreById(
+                    id: widget.store!.id, data: updateStoreDetails);
+                Navigator.of(context).pop();
+              }).onError((error, stackTrace) {
+                log(error.toString());
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                       content: Text(MessagesConstant().somethingWentWrong)),
                 );
-              }
+              });
             },
             child: const Icon(Icons.check, color: Colors.white),
           )
@@ -252,7 +259,6 @@ class _HandleStoreState extends State<HandleStore> {
         const Text("Store Name: "),
         Expanded(
           child: TextField(
-            enabled: storeName.isNotNullOrBlank ? false : true,
             decoration: InputDecoration(
               hintText: storeName ?? "",
             ),
