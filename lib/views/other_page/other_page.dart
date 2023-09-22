@@ -10,7 +10,7 @@ import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/views/auth_page/auth_page.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
-import 'package:merostore_mobile/views/edit_store_page/edit_store_page.dart';
+import 'package:merostore_mobile/views/store_page/store_page.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/custom_list_tile.dart';
@@ -101,7 +101,7 @@ class OtherPage extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => ListenableProvider<Stores>.value(
                         value: stores,
-                        child: const EditStorePage(title: "Edit stores"),
+                        child: const StorePage(),
                       ),
                     ),
                   );

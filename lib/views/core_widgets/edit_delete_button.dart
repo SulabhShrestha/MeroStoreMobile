@@ -6,6 +6,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:merostore_mobile/models/stores_model.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
+import 'package:merostore_mobile/views/store_page/pages/handle_store.dart';
 import 'package:provider/provider.dart';
 
 class EditDeleteButton extends StatelessWidget {
@@ -42,7 +43,14 @@ class EditDeleteButton extends StatelessWidget {
             return [
               PopupMenuItem(
                 child: const Text('Edit'),
-                onTap: () async {},
+                onTap: () async {
+                  // Navigating to edit store page
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => HandleStore(
+                            stores: Provider.of<Stores>(context, listen: false),
+                            showEditPage: true,
+                          )));
+                },
               ),
               PopupMenuItem(
                 enabled: enableDeleteOption,

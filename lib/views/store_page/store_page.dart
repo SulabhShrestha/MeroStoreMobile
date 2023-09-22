@@ -4,31 +4,30 @@ import 'package:flutter/material.dart';
 import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/models/stores_model.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
-import 'package:merostore_mobile/views/edit_store_page/widgets/add_new_store.dart';
+import 'package:merostore_mobile/views/store_page/pages/handle_store.dart';
 import 'package:provider/provider.dart';
 
 /// This page is responsible for providing interface to edit salesTransactionType,
 /// Quantity type and stores.
 ///
 
-class EditStorePage extends StatelessWidget {
-  final String title;
-  const EditStorePage({
+class StorePage extends StatelessWidget {
+  const StorePage({
     Key? key,
-    required this.title,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: const Text("Stores"),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => AddNewStore(
+              builder: (_) => HandleStore(
                     stores: Provider.of<Stores>(context),
+                    showEditPage: false,
                   )));
         },
         tooltip: "Add new sales transaction",
