@@ -96,8 +96,7 @@ class _InStockPageState extends State<InStockPage> {
                         children: [
                           for (Stock element in snapshot.data!)
                             CustomCard(
-                              id: element.id,
-                              storeName: element.storeName,
+                              // id: element.id,
                               transactionType: element.transactionType,
                               stockDetails: element.details,
                               displaying: "Stock",

@@ -47,8 +47,9 @@ class EditDeleteButton extends StatelessWidget {
                   // Navigating to edit store page
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (_) => HandleStore(
-                            stores: Provider.of<Stores>(context, listen: false),
                             showEditPage: true,
+                            store:
+                                Provider.of<Stores>(context).getStoreById(id),
                           )));
                 },
               ),

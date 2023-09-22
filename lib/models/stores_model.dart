@@ -14,6 +14,10 @@ class Stores extends ChangeNotifier {
 
   List<Store> get allStores => _stores;
 
+  Store getStoreById(String id) {
+    return _stores.firstWhere((store) => store.id == id);
+  }
+
   // deleting old store
   void deleteStore(String id) {
     _stores.removeWhere((store) => store.id == id);

@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 
 class DynamicCheckboxList extends StatefulWidget {
@@ -5,9 +6,12 @@ class DynamicCheckboxList extends StatefulWidget {
   final String heading;
   final ValueChanged<List<String>> onSelectOptionsChanged;
   final bool showOtherOption;
+  final List<dynamic>?
+      selectedOptions; // if it is edit, it might have some data
 
   const DynamicCheckboxList({
     Key? key,
+    this.selectedOptions,
     required this.heading,
     required this.options,
     required this.onSelectOptionsChanged,
@@ -30,6 +34,13 @@ class _DynamicCheckboxListState extends State<DynamicCheckboxList> {
   void initState() {
     controller = TextEditingController();
     options = List.from(widget.options);
+
+    // adding previously selected option to the [selectedOptions]
+    for (String option in widget.selectedOptions ?? []) {
+      selectedOptions.add(option.capitalize());
+    }
+    // this is crucial when editing store, passing already selected options back to the parent for handling
+    widget.onSelectOptionsChanged(selectedOptions);
     super.initState();
   }
 

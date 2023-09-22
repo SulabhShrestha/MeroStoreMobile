@@ -25,8 +25,7 @@ class StorePage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => HandleStore(
-                    stores: Provider.of<Stores>(context),
+              builder: (_) => const HandleStore(
                     showEditPage: false,
                   )));
         },
@@ -42,10 +41,8 @@ class StorePage extends StatelessWidget {
               for (Store element in stores.allStores)
                 CustomCard(
                   displaying: "Store",
-                  id: element.id,
-                  storeName: element.storeName,
-                  quantityTypes: element.quantityTypes,
-                  transactionTypes: element.transactionTypes,
+                  // id: element.id,
+                  store: element,
                   enableDeleteOption:
                       stores.allStores.length == 1 ? false : true,
                 ),

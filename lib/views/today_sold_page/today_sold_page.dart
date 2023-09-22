@@ -70,8 +70,8 @@ class _TodaySoldPageState extends State<TodaySoldPage> {
                         children: [
                           for (Sales element in snapshot.data!)
                             CustomCard(
-                              id: element.id,
-                              storeName: element.storeName,
+                              // id: element.id,
+                              // storeName: element.storeName,
                               transactionType: element.transactionType,
                               stockDetails: element.details,
                               displaying: "Stock",

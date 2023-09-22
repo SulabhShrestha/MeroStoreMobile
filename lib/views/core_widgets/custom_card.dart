@@ -1,24 +1,20 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
+import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/views/core_widgets/bold_first_word_from_text.dart';
 import 'package:merostore_mobile/views/core_widgets/edit_delete_button.dart';
 
 /// This card is responsible for displaying for stock, store and sales transaction
 class CustomCard extends StatelessWidget {
-  // What to display
+  // What to display, store or sales
   final String displaying;
 
-  // id of this record
-  final String id;
+  // for store data
+  final Store? store;
 
   // For Stock
   final String? transactionType;
   final Map<String, dynamic>? stockDetails;
-
-  // For Store displaying
-  final String? storeName;
-  final List<dynamic>? quantityTypes;
-  final List<dynamic>? transactionTypes;
 
   // Display delete button or not from [EditDeleteButton]
   final bool enableDeleteOption;
@@ -27,12 +23,9 @@ class CustomCard extends StatelessWidget {
     Key? key,
     this.transactionType,
     this.stockDetails,
-    this.storeName,
-    this.quantityTypes,
-    this.transactionTypes,
     this.enableDeleteOption = true,
+    this.store,
     required this.displaying,
-    required this.id,
   }) : super(key: key);
 
   @override
@@ -60,16 +53,23 @@ class CustomCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (displaying == "Stock") ..._displayingStock(),
-                      if (displaying == "Store") ..._displayingStore(),
+                      if (displaying == "Store")
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: _displayingStore())),
+                            EditDeleteButton(
+                              id: store!.id,
+                              enableDeleteOption: enableDeleteOption,
+                            ),
+                          ],
+                        ),
                     ],
                   ),
-                ),
-
-                // Option
-
-                EditDeleteButton(
-                  id: id,
-                  enableDeleteOption: enableDeleteOption,
                 ),
               ],
             ),
@@ -81,19 +81,21 @@ class CustomCard extends StatelessWidget {
 
   _displayingStore() {
     return [
-      BoldFirstWordFromText(boldWord: "Store Name", normalWord: storeName!),
       BoldFirstWordFromText(
-          boldWord: "Quantity Types", normalWord: quantityTypes!.toString()),
+          boldWord: "Store Name", normalWord: store!.storeName),
+      BoldFirstWordFromText(
+          boldWord: "Quantity Types",
+          normalWord: store!.quantityTypes.toString()),
       BoldFirstWordFromText(
           boldWord: "Transaction Type",
-          normalWord: transactionTypes!.toString()),
+          normalWord: store!.transactionTypes.toString()),
     ];
   }
 
   _displayingStock() {
     return [
       Text(transactionType!),
-      Text(storeName!),
+      // Text(storeName!),
       ...stockDetails!.entries.map((entry) {
         return BoldFirstWordFromText(
           boldWord: entry.key,
