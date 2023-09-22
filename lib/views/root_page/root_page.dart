@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
@@ -8,22 +9,19 @@ import 'package:merostore_mobile/views/instock_page/in_stock_page.dart';
 import 'package:merostore_mobile/views/other_page/other_page.dart';
 import 'package:merostore_mobile/views/summary_page/summary_page.dart';
 import 'package:merostore_mobile/views/today_sold_page/today_sold_page.dart';
-import 'package:provider/provider.dart';
 
 /// This widget is responsible for changing screen and acts as container to host other responsible screen
 
-class RootPage extends StatefulWidget {
+class RootPage extends ConsumerStatefulWidget {
   const RootPage({Key? key}) : super(key: key);
 
   @override
-  State<RootPage> createState() => _RootPageState();
+  ConsumerState<RootPage> createState() => _RootPageState();
 }
 
-class _RootPageState extends State<RootPage> {
+class _RootPageState extends ConsumerState<RootPage> {
   int _selectedIndex = 0;
   late List<Widget> _pagesList;
-
-  final Stores _stores = Stores();
 
   bool showLoading = true; // show loading indicator while fetching data
 
@@ -43,10 +41,11 @@ class _RootPageState extends State<RootPage> {
     setState(() => showLoading = true);
 
     var allStores = await StoreViewModel().getAllStores();
+    var storesProv = ref.read(storesProvider.notifier);
 
     // Adding stores
     for (var store in allStores) {
-      _stores.addStore(store);
+      storesProv.addStore(store);
     }
 
     setState(() => showLoading = false);
@@ -60,13 +59,8 @@ class _RootPageState extends State<RootPage> {
       // body part
       body: showLoading
           ? const Center(child: CircularProgressIndicator())
-          : ChangeNotifierProvider<Stores>(
-              create: (_) => _stores,
-              builder: (context, child) {
-                return SafeArea(
-                  child: _pagesList.elementAt(_selectedIndex),
-                );
-              },
+          : SafeArea(
+              child: _pagesList.elementAt(_selectedIndex),
             ),
 
       // Bottom nav part

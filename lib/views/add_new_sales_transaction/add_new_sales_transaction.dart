@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/messages_constant.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
@@ -21,19 +22,18 @@ import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_ne
 
 import 'widgets/textfield_with_suggestions.dart';
 
-class AddNewSalesTransaction extends StatefulWidget {
-  final Stores stores; // for getting info about user's all stores
-
+class AddNewSalesTransaction extends ConsumerStatefulWidget {
   const AddNewSalesTransaction({
     Key? key,
-    required this.stores,
   }) : super(key: key);
 
   @override
-  State<AddNewSalesTransaction> createState() => _AddNewSalesTransactionState();
+  ConsumerState<AddNewSalesTransaction> createState() =>
+      _AddNewSalesTransactionState();
 }
 
-class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
+class _AddNewSalesTransactionState
+    extends ConsumerState<AddNewSalesTransaction> {
   String _currentStoreName = "";
 
   // Transaction type related
@@ -49,9 +49,13 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
 
   List<Map> allFormFields = []; // Holds all the form data
 
+  // Store provider reference
+  late StoreNotifier storesProv;
+
   @override
   void initState() {
-    _currentStoreName = widget.stores.allStoresNames.first;
+    storesProv = ref.read(storesProvider.notifier);
+    _currentStoreName = storesProv.allStoresNames.first;
 
     // Transaction types
     _allTransactionTypes = StockHelper().getTransactionTypes();
@@ -68,7 +72,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
 
     // Brought quantity type
     _allBroughtQuantities =
-        widget.stores.allQuantityTypes(storeName: _currentStoreName);
+        storesProv.allQuantityTypes(storeName: _currentStoreName);
     _currentQuantityType = _allBroughtQuantities.first;
     super.initState();
   }
@@ -110,7 +114,7 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                               ),
                             ),
                             CustomDropDownBtn(
-                              options: widget.stores.allStoresNames,
+                              options: storesProv.allStoresNames,
                               initialValue: _currentStoreName,
                               tooltip: "Store selection",
                               onTap: (storeName) {
@@ -118,8 +122,8 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                                 setState(() {
                                   _currentStoreName = storeName;
                                   // changing transaction type related
-                                  _allTransactionTypes = widget.stores
-                                      .allTransactionTypes(
+                                  _allTransactionTypes =
+                                      storesProv.allTransactionTypes(
                                           storeName: _currentStoreName);
                                   _currentTransactionType =
                                       _allTransactionTypes.first;
@@ -149,8 +153,8 @@ class _AddNewSalesTransactionState extends State<AddNewSalesTransaction> {
                                   }
 
                                   // changing brought quantity related
-                                  _allBroughtQuantities = widget.stores
-                                      .allQuantityTypes(
+                                  _allBroughtQuantities =
+                                      storesProv.allQuantityTypes(
                                           storeName: _currentStoreName);
                                   _currentQuantityType =
                                       _allBroughtQuantities.first;

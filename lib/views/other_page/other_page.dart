@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/services/user_web_services.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
@@ -11,8 +11,6 @@ import 'package:merostore_mobile/views/auth_page/auth_page.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
 import 'package:merostore_mobile/views/store_page/store_page.dart';
-import 'package:provider/provider.dart';
-
 import 'widgets/custom_list_tile.dart';
 
 /// Handles every settings related to user
@@ -94,15 +92,9 @@ class OtherPage extends StatelessWidget {
                 googleIconData: Icons.store_outlined,
                 trailingIcon: const Icon(Icons.navigate_next_outlined),
                 onTap: () {
-                  final Stores stores =
-                      Provider.of<Stores>(context, listen: false);
-
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => ListenableProvider<Stores>.value(
-                        value: stores,
-                        child: const StorePage(),
-                      ),
+                      builder: (context) => const StorePage(),
                     ),
                   );
                 },

@@ -1,15 +1,13 @@
 /// This button helps to edit and delete a record
 ///
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/store_page/pages/handle_store.dart';
-import 'package:provider/provider.dart';
 
-class EditDeleteButton extends StatelessWidget {
+class EditDeleteButton extends ConsumerWidget {
   final String id;
   final bool enableDeleteOption;
 
@@ -20,7 +18,7 @@ class EditDeleteButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
         PopupMenuButton(
@@ -48,9 +46,9 @@ class EditDeleteButton extends StatelessWidget {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (_) => HandleStore(
                             showEditPage: true,
-                            store:
-                                Provider.of<Stores>(context).getStoreById(id),
-                            stores: Provider.of<Stores>(context, listen: false),
+                            store: ref
+                                .read(storesProvider.notifier)
+                                .getStoreById(id),
                           )));
                 },
               ),
@@ -59,7 +57,7 @@ class EditDeleteButton extends StatelessWidget {
                 onTap: () {
                   StoreViewModel().deleteStore(id: id).then((value) {
                     // removing store from the cached store list
-                    context.read<Stores>().deleteStore(id);
+                    ref.read(storesProvider.notifier).deleteStore(id);
 
                     // displaying information
                     ScaffoldMessenger.of(context).showSnackBar(

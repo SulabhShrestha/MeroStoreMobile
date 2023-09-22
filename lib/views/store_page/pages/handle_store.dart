@@ -2,43 +2,42 @@ import 'dart:developer';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/store_model.dart';
-import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/messages_constant.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/store_page/widgets/dynamic_checkbox_list.dart';
-import 'package:provider/provider.dart';
 
 /// Responsible for providing both edit and adding new store widget
-class HandleStore extends StatefulWidget {
+class HandleStore extends ConsumerStatefulWidget {
   // if edit store page to be displayed
   final bool showEditPage;
 
   // if edit store page to be displayed, then store object must be passed
   final Store? store;
 
-  // for updating store
-  final Stores? stores;
-
   const HandleStore({
     Key? key,
     this.showEditPage = false,
     this.store,
-    this.stores,
   }) : super(key: key);
 
   @override
-  State<HandleStore> createState() => _HandleStoreState();
+  ConsumerState<HandleStore> createState() => _HandleStoreState();
 }
 
-class _HandleStoreState extends State<HandleStore> {
+class _HandleStoreState extends ConsumerState<HandleStore> {
   List<dynamic> userSelectedTransactionTypes = [];
   List<dynamic> userSelectedQuantityTypes = [];
 
   final _storeNameController = TextEditingController();
 
+  late StoreNotifier storesProv;
+
   @override
   void initState() {
+    storesProv = ref.read(storesProvider.notifier);
     // adding default value to field when
     _storeNameController.text = widget.store?.storeName ?? "";
     userSelectedTransactionTypes = widget.store?.transactionTypes ?? [];
@@ -114,7 +113,7 @@ class _HandleStoreState extends State<HandleStore> {
                   .updateStore(
                       id: widget.store!.id, updatedStore: updateStoreDetails)
                   .then((value) {
-                widget.stores!.updateStoreById(
+                storesProv.updateStoreById(
                     id: widget.store!.id, data: updateStoreDetails);
                 Navigator.of(context).pop();
               }).onError((error, stackTrace) {
@@ -178,7 +177,7 @@ class _HandleStoreState extends State<HandleStore> {
                 return;
               }
               // checking if previously entered
-              else if (Stores()
+              else if (storesProv
                   .contains(_storeNameController.text.trim().capitalize())) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -199,7 +198,7 @@ class _HandleStoreState extends State<HandleStore> {
                   newStore: newStoreDetails,
                   onStockAdded: (addedStore) {
                     // Adding newly added store to the stores list
-                    Provider.of<Stores>(context).addStore(addedStore);
+                    storesProv.addStore(addedStore);
 
                     log("Newly added store: $addedStore");
 

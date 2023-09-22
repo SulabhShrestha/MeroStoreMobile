@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/messages_constant.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
@@ -18,19 +19,16 @@ import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_.
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_with_dropdownbtn.dart';
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
 
-class AddNewStock extends StatefulWidget {
-  final Stores stores; // for getting info about user's all stores
-
+class AddNewStock extends ConsumerStatefulWidget {
   const AddNewStock({
     Key? key,
-    required this.stores,
   }) : super(key: key);
 
   @override
-  State<AddNewStock> createState() => _AddNewStockState();
+  ConsumerState<AddNewStock> createState() => _AddNewStockState();
 }
 
-class _AddNewStockState extends State<AddNewStock> {
+class _AddNewStockState extends ConsumerState<AddNewStock> {
   String _currentStoreName = "";
 
   // Transaction type related
@@ -46,9 +44,13 @@ class _AddNewStockState extends State<AddNewStock> {
 
   List<Map> allFormFields = []; // Holds all the form data
 
+  // Store provider reference
+  late StoreNotifier storesProv;
+
   @override
   void initState() {
-    _currentStoreName = widget.stores.allStoresNames.first;
+    storesProv = ref.read(storesProvider.notifier);
+    _currentStoreName = storesProv.allStoresNames.first;
 
     // Transaction types
     _allTransactionTypes = StockHelper().getTransactionTypes();
@@ -65,7 +67,7 @@ class _AddNewStockState extends State<AddNewStock> {
 
     // Brought quantity type
     _allBroughtQuantities =
-        widget.stores.allQuantityTypes(storeName: _currentStoreName);
+        storesProv.allQuantityTypes(storeName: _currentStoreName);
     _currentQuantityType = _allBroughtQuantities.first;
     super.initState();
   }
@@ -101,15 +103,15 @@ class _AddNewStockState extends State<AddNewStock> {
                             ),
                           ),
                           CustomDropDownBtn(
-                            options: widget.stores.allStoresNames,
+                            options: storesProv.allStoresNames,
                             tooltip: "Store selection",
                             onTap: (storeName) {
                               Map<String, dynamic> previousUserInput = {};
                               setState(() {
                                 _currentStoreName = storeName;
                                 // changing transaction type related
-                                _allTransactionTypes = widget.stores
-                                    .allTransactionTypes(
+                                _allTransactionTypes =
+                                    storesProv.allTransactionTypes(
                                         storeName: _currentStoreName);
                                 _currentTransactionType =
                                     _allTransactionTypes.first;
@@ -138,8 +140,8 @@ class _AddNewStockState extends State<AddNewStock> {
                                 }
 
                                 // changing brought quantity related
-                                _allBroughtQuantities = widget.stores
-                                    .allQuantityTypes(
+                                _allBroughtQuantities =
+                                    storesProv.allQuantityTypes(
                                         storeName: _currentStoreName);
                                 _currentQuantityType =
                                     _allBroughtQuantities.first;

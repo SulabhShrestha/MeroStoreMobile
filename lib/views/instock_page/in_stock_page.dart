@@ -1,23 +1,23 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
-import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/views/add_new_stock/add_new_stock.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
-import 'package:provider/provider.dart';
 
-class InStockPage extends StatefulWidget {
+class InStockPage extends ConsumerStatefulWidget {
   const InStockPage({Key? key}) : super(key: key);
 
   @override
-  State<InStockPage> createState() => _InStockPageState();
+  ConsumerState<InStockPage> createState() => _InStockPageState();
 }
 
-class _InStockPageState extends State<InStockPage> {
+class _InStockPageState extends ConsumerState<InStockPage> {
   late Future<List<Stock>> stocksFuture;
   bool newStockAdded = false;
 
@@ -36,7 +36,7 @@ class _InStockPageState extends State<InStockPage> {
 
   @override
   Widget build(BuildContext context) {
-    final stores = Provider.of<Stores>(context);
+    final storesProv = ref.watch(storesProvider.notifier);
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
@@ -47,7 +47,7 @@ class _InStockPageState extends State<InStockPage> {
               floating: true,
               flexibleSpace: CustomDropDownBtn(
                 tooltip: "Store selection",
-                options: stores.allStoresNames,
+                options: storesProv.allStoresNames,
                 onTap: (val) {},
               ),
               actions: [
@@ -120,7 +120,7 @@ class _InStockPageState extends State<InStockPage> {
                   onPressed: () async {
                     bool? result = await Navigator.of(context)
                         .push<bool?>(MaterialPageRoute(
-                      builder: (_) => AddNewStock(stores: stores),
+                      builder: (_) => AddNewStock(),
                     ));
 
                     if (result == true) {

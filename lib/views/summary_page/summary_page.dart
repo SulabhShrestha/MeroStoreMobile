@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/arrangement_order.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
@@ -12,7 +13,6 @@ import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 import 'package:merostore_mobile/views/summary_page/widgets/duration_filter_buttons.dart';
 import 'package:merostore_mobile/views/summary_page/widgets/item_card.dart';
-import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class _SalesData {
@@ -22,14 +22,14 @@ class _SalesData {
   final double sales;
 }
 
-class SummaryPage extends StatefulWidget {
+class SummaryPage extends ConsumerStatefulWidget {
   const SummaryPage({Key? key}) : super(key: key);
 
   @override
-  State<SummaryPage> createState() => _SummaryPageState();
+  ConsumerState<SummaryPage> createState() => _SummaryPageState();
 }
 
-class _SummaryPageState extends State<SummaryPage> {
+class _SummaryPageState extends ConsumerState<SummaryPage> {
   final List<_SalesData> data = [
     _SalesData('Jan', 3000),
     _SalesData('Feb', 280),
@@ -50,7 +50,7 @@ class _SummaryPageState extends State<SummaryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final stores = Provider.of<Stores>(context);
+    final storesProv = ref.watch(storesProvider.notifier);
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
@@ -61,7 +61,7 @@ class _SummaryPageState extends State<SummaryPage> {
                 floating: true,
                 flexibleSpace: CustomDropDownBtn(
                   tooltip: "Store selection",
-                  options: stores.allStoresNames,
+                  options: storesProv.allStoresNames,
                   onTap: (val) {},
                 ),
                 actions: [

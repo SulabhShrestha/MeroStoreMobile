@@ -41,11 +41,11 @@ dependencies:
   syncfusion_flutter_charts: ^21.2.3
   dotted_line: ^3.1.0
   http: ^0.13.5
-  provider: ^6.0.5
   flutter_typeahead: ^4.6.1
   google_sign_in: ^6.1.4
   shared_preferences: ^2.2.0
   dartx: ^1.2.0
+  flutter_riverpod: ^2.4.0
 
 dev_dependencies:
   flutter_test:

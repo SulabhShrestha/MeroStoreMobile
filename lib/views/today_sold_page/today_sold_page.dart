@@ -1,22 +1,22 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/sales_model.dart';
-import 'package:merostore_mobile/models/stores_model.dart';
+import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/view_models/sales_view_model.dart';
 import 'package:merostore_mobile/views/add_new_sales_transaction/add_new_sales_transaction.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
-import 'package:provider/provider.dart';
 
-class TodaySoldPage extends StatefulWidget {
+class TodaySoldPage extends ConsumerStatefulWidget {
   const TodaySoldPage({Key? key}) : super(key: key);
 
   @override
-  State<TodaySoldPage> createState() => _TodaySoldPageState();
+  ConsumerState<TodaySoldPage> createState() => _TodaySoldPageState();
 }
 
-class _TodaySoldPageState extends State<TodaySoldPage> {
+class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
   late Future<List<Sales>> salesFuture;
   bool newStockAdded = false;
 
@@ -34,7 +34,7 @@ class _TodaySoldPageState extends State<TodaySoldPage> {
 
   @override
   Widget build(BuildContext context) {
-    final stores = Provider.of<Stores>(context);
+    StoreNotifier storesProv = ref.read(storesProvider.notifier);
 
     return Scaffold(
       body: NestedScrollView(
@@ -46,7 +46,7 @@ class _TodaySoldPageState extends State<TodaySoldPage> {
               floating: true,
               flexibleSpace: CustomDropDownBtn(
                 tooltip: "Store selection",
-                options: stores.allStoresNames,
+                options: storesProv.allStoresNames,
                 onTap: (val) {},
               ),
             ),
@@ -99,7 +99,7 @@ class _TodaySoldPageState extends State<TodaySoldPage> {
                   onPressed: () async {
                     bool? result = await Navigator.of(context)
                         .push<bool?>(MaterialPageRoute(
-                      builder: (_) => AddNewSalesTransaction(stores: stores),
+                      builder: (_) => const AddNewSalesTransaction(),
                     ));
 
                     if (result == true) {
