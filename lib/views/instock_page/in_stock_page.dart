@@ -71,7 +71,7 @@ class InStockPage extends ConsumerWidget {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  for (StockModel element in stocksProv.allStocks)
+                  for (StockModel element in stocksProv.state)
                     CustomCard(
                       // id: element.id,
                       transactionType: element.transactionType,

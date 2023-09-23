@@ -16,9 +16,9 @@ class StockViewModel {
     Map<String, dynamic> res =
         await _stockWebServices.addNewData(userInput: userInput);
 
-    if (res["isAdded"]) {
+    if (res["isSaved"] ?? false) {
       onStockAdded(res["data"]);
-    } else if (res["isUpdated"]) {
+    } else if (res["isUpdated"] ?? false) {
       onUpdated(res["data"]);
     } else {
       onFailure();
