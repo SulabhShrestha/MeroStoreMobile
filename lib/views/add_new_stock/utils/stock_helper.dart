@@ -12,6 +12,7 @@ class StockHelper {
         "heading": "Material Name",
         "required": true,
         "dataType": String,
+        "fieldName": "materialName", // used for sending data to the db
       },
       {
         "heading": "Brought Quantity",
@@ -19,17 +20,20 @@ class StockHelper {
         "quantityOption": true,
         "keyboardType": TextInputType.number,
         "dataType": int,
+        "fieldName": "broughtQuantity",
       },
       {
         "heading": "Total Price",
         "required": true,
         "keyboardType": TextInputType.number,
         "dataType": double,
+        "fieldName": "totalPrice",
       },
       {
         "heading": "Description",
         "required": false,
         "dataType": String,
+        "fieldName": "description",
       },
     ];
   }
@@ -40,6 +44,7 @@ class StockHelper {
         "heading": "Material Name",
         "required": true,
         "dataType": String,
+        "fieldName": "materialName",
       },
       {
         "heading": "Sold Quantity",
@@ -47,27 +52,32 @@ class StockHelper {
         "quantityOption": true,
         "keyboardType": TextInputType.number,
         "dataType": int,
+        "fieldName": "soldQuantity",
       },
       {
         "heading": "Total Price",
         "required": true,
         "keyboardType": TextInputType.number,
         "dataType": double,
+        "fieldName": "totalPrice",
       },
       {
         "heading": "Creditor's Name",
         "required": true,
         "dataType": String,
+        "fieldName": "creditorName",
       },
       {
         "heading": "Creditor's Information",
         "required": false,
         "dataType": String,
+        "fieldName": "creditorInformation",
       },
       {
         "heading": "Description",
         "required": false,
         "dataType": String,
+        "fieldName": "description",
       },
     ];
   }
@@ -78,6 +88,7 @@ class StockHelper {
         "heading": "Material Name",
         "required": true,
         "dataType": String,
+        "fieldName": "materialName",
       },
       {
         "heading": "For Quantity",
@@ -85,27 +96,32 @@ class StockHelper {
         "quantityOption": true,
         "keyboardType": TextInputType.number,
         "dataType": int,
+        "fieldName": "forQuantity",
       },
       {
         "heading": "Money Given",
         "required": true,
         "keyboardType": TextInputType.number,
         "dataType": int,
+        "fieldName": "moneyGiven",
       },
       {
         "heading": "Debtor's Name",
         "required": true,
         "dataType": String,
+        "fieldName": "debtorName",
       },
       {
         "heading": "Debtor's Information",
         "required": false,
         "dataType": String,
+        "fieldName": "debtorInformation",
       },
       {
         "heading": "Description",
         "required": false,
         "dataType": String,
+        "fieldName": "description",
       },
     ];
   }
@@ -116,6 +132,7 @@ class StockHelper {
         "heading": "Material Name",
         "required": true,
         "dataType": String,
+        "fieldName": "materialName",
       },
       {
         "heading": "Returned Quantity",
@@ -123,17 +140,20 @@ class StockHelper {
         "quantityOption": true,
         "keyboardType": TextInputType.number,
         "dataType": int,
+        "fieldName": "returnedQuantity",
       },
       {
         "heading": "Returned Amount",
         "required": true,
         "keyboardType": TextInputType.number,
         "dataType": int,
+        "fieldName": "returnedAmount",
       },
       {
         "heading": "Description",
         "required": false,
         "dataType": String,
+        "fieldName": "description",
       },
     ];
   }

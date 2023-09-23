@@ -107,7 +107,8 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
                             options: storesProv.allStoresNames,
                             tooltip: "Store selection",
                             onTap: (storeName) {
-                              Map<String, dynamic> previousUserInput = {};
+                              Map<String, dynamic> previousUserInput =
+                                  {}; // for storing previously added data
                               setState(() {
                                 _currentStoreName = storeName;
                                 // changing transaction type related
@@ -327,7 +328,7 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
     userInput["transactionType"] = _currentTransactionType;
     userInput["storeName"] = _currentStoreName;
 
-    details["broughtQuantity"] = _currentQuantityType;
+    details["broughtQuantityType"] = _currentQuantityType;
 
     // length of controllers and allFormFields is same.
     for (int i = 0; i < allFormFields.length; i++) {
@@ -350,7 +351,7 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
               flagDesc = MessagesConstant().invalidPrice;
               break;
             }
-            details[elem["heading"]] = data;
+            details[elem["fieldName"]] = data;
 
             continue; // No need to check other conditions
           } catch (e) {
@@ -368,7 +369,7 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
               flagDesc = MessagesConstant().invalidPrice;
               break;
             }
-            details[elem["heading"]] = data;
+            details[elem["fieldName"]] = data;
 
             continue; // No need to check other conditions
           } catch (e) {
@@ -381,7 +382,7 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
 
       // User has entered important field
       if (isRequired && value.isNotEmpty) {
-        details[elem["heading"]] = value;
+        details[elem["fieldName"]] = value;
       }
 
       // User hasn't entered important field
@@ -393,7 +394,7 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
 
       // User has entered not important field such as description
       else if (value.isNotEmpty) {
-        details[elem["heading"]] = value;
+        details[elem["fieldName"]] = value;
       }
     }
 
