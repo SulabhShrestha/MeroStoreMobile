@@ -49,11 +49,13 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
 
   @override
   void initState() {
+    super.initState();
     storesProv = ref.read(storesProvider.notifier);
     _currentStoreName = storesProv.allStoresNames.first;
 
     // Transaction types
-    _allTransactionTypes = StockHelper().getTransactionTypes();
+    _allTransactionTypes =
+        storesProv.allTransactionTypes(storeName: _currentStoreName);
     _currentTransactionType = _allTransactionTypes.first;
 
     // Handling related to form data
@@ -69,7 +71,6 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
     _allBroughtQuantities =
         storesProv.allQuantityTypes(storeName: _currentStoreName);
     _currentQuantityType = _allBroughtQuantities.first;
-    super.initState();
   }
 
   @override
