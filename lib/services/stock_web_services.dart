@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:merostore_mobile/models/stock_model.dart';
+import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/services/local_storage_services.dart';
 import 'package:merostore_mobile/utils/constants/urls_constant.dart';
 
@@ -13,7 +14,8 @@ class StockWebServices {
   final _urls = UrlsConstant();
 
   /// Adding new data to the db
-  Future<bool> addNewData({required Map<String, dynamic> userInput}) async {
+  Future<Map<String, dynamic>> addNewData(
+      {required Map<String, dynamic> userInput}) async {
     var token = await LocalStorageServices().getId();
     final response = await http.post(
       Uri.parse(_urls.addStockUrl),
@@ -24,12 +26,23 @@ class StockWebServices {
       body: json.encode(userInput),
     );
 
+    // created
     if (response.statusCode == 201) {
       log("Response: $response");
 
-      return true;
+      return {
+        "isSaved": true,
+        "data": StockModel.fromJSON(jsonDecode(response.body))
+      };
+    }
+    // updated
+    else if (response.statusCode == 200) {
+      return {
+        "isUpdated": true,
+        "data": StoreModel.fromJSON(jsonDecode(response.body))
+      };
     } else {
-      return false;
+      return {};
     }
   }
 

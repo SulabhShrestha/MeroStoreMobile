@@ -54,7 +54,6 @@ class _RootPageState extends ConsumerState<RootPage> {
     for (var store in allStores) {
       storesProv.addStore(store);
     }
-
     // Adding stocks
     for (StockModel stock in allStocks) {
       stocksProv.addStock(stock);

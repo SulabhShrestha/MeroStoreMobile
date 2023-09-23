@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
+import 'package:merostore_mobile/extensions/double_extension.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/views/core_widgets/bold_first_word_from_text.dart';
@@ -101,9 +102,10 @@ class CustomCard extends StatelessWidget {
 
   _displayingStock() {
     String materialName = stock!.details["materialName"];
-    double totalBroughtQty = stock!.details["broughtQuantity"] as double;
-    double totalPrice = stock!.details["totalPrice"] as double;
-    String avgPrice = (totalPrice / totalBroughtQty).toStringAsFixed(2);
+    var totalBroughtQty = stock!.details["broughtQuantity"];
+    var totalPrice = stock!.details["totalPrice"];
+    String avgPrice =
+        ((totalPrice / totalBroughtQty) as double).formatWithIntegerCheck();
     String broughtQuantityType = stock!.details["broughtQuantityType"];
     return [
       Text(transactionType!),

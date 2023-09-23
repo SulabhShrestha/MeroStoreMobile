@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/messages_constant.dart';
@@ -76,6 +77,7 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
 
   @override
   Widget build(BuildContext context) {
+    StocksNotifier stocksProv = ref.read(stocksProvider.notifier);
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
@@ -250,9 +252,14 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
                             else {
                               StockViewModel().addNewStock(
                                 userInput: userInput["userInput"],
-                                onStockAdded: () {
-                                  Navigator.of(context).pop(
-                                      true); // indicating data is successfully saved
+                                onStockAdded: (addedStock) {
+                                  stocksProv.addStock(addedStock);
+                                  Navigator.of(context).pop();
+                                },
+                                onUpdated: (updatedStock) {
+                                  stocksProv.updateStockById(
+                                      id: updatedStock.id, data: {});
+                                  Navigator.of(context).pop();
                                 },
                                 onFailure: () {
                                   ScaffoldMessenger.of(context).showSnackBar(

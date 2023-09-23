@@ -6,15 +6,20 @@ import 'package:merostore_mobile/services/stock_web_services.dart';
 class StockViewModel {
   final _stockWebServices = StockWebServices();
 
+  /// if the material name, price is same then it is updated.
   Future<void> addNewStock({
     required Map<String, dynamic> userInput,
-    required VoidCallback onStockAdded,
+    required Function(StockModel store) onStockAdded,
     required VoidCallback onFailure,
+    required Function(StockModel store) onUpdated,
   }) async {
-    bool isAdded = await _stockWebServices.addNewData(userInput: userInput);
+    Map<String, dynamic> res =
+        await _stockWebServices.addNewData(userInput: userInput);
 
-    if (isAdded) {
-      onStockAdded();
+    if (res["isAdded"]) {
+      onStockAdded(res["data"]);
+    } else if (res["isUpdated"]) {
+      onUpdated(res["data"]);
     } else {
       onFailure();
     }

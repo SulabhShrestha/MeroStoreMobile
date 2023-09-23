@@ -25,7 +25,7 @@ class StoreWebServices {
       body: json.encode(newStore),
     );
     if (response.statusCode == 201) {
-      log("Response res: ${newStore}");
+      log("Response res: $newStore");
 
       return {
         "isSaved": true,
