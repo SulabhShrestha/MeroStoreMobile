@@ -34,7 +34,7 @@ class StockWebServices {
   }
 
   /// Returns all the stocks
-  Future<List<Stock>> getAllStocks() async {
+  Future<List<StockModel>> getAllStocks() async {
     var token = await LocalStorageServices().getId();
     final response = await http.get(
       Uri.parse(_urls.allStocksUrl),
@@ -44,12 +44,12 @@ class StockWebServices {
       },
     );
 
-    List<Stock> stocks = [];
+    List<StockModel> stocks = [];
 
     if (response.statusCode == 200) {
       log("Response: ${response.body}");
       for (Map<String, dynamic> elem in jsonDecode(response.body)) {
-        stocks.add(Stock.fromJSON(elem));
+        stocks.add(StockModel.fromJSON(elem));
       }
     } else {
       log("Something went wrong");

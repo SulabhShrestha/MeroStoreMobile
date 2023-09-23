@@ -1,22 +1,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/store_model.dart';
 
-final storesProvider = StateNotifierProvider<StoreNotifier, List<Store>>((ref) {
+final storesProvider =
+    StateNotifierProvider<StoreNotifier, List<StoreModel>>((ref) {
   return StoreNotifier();
 });
 
-/// This stores list of [Store] and uses [Provider] to update them in real-time
-class StoreNotifier extends StateNotifier<List<Store>> {
+/// This stores list of [StockModel] and uses [Provider] to update them in real-time
+class StoreNotifier extends StateNotifier<List<StoreModel>> {
   StoreNotifier() : super([]); // initializing with empty list
 
   // adding new store
-  void addStore(Store newStore) {
+  void addStore(StoreModel newStore) {
     state = [...state, newStore];
   }
 
-  List<Store> get allStores => state;
+  List<StoreModel> get allStores => state;
 
-  Store getStoreById(String id) {
+  StoreModel getStoreById(String id) {
     return state.firstWhere((store) => store.id == id);
   }
 
@@ -44,7 +45,7 @@ class StoreNotifier extends StateNotifier<List<Store>> {
   // deleting old store
   void deleteStore(String id) {
     state = [
-      for (Store store in state)
+      for (StoreModel store in state)
         if (store.id != id) store
     ];
   }

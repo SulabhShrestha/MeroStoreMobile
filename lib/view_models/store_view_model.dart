@@ -9,7 +9,7 @@ class StoreViewModel {
 
   Future<void> addNewStore({
     required Map<String, dynamic> newStore,
-    required Function(Store store) onStockAdded,
+    required Function(StoreModel store) onStockAdded,
     required VoidCallback onFailure,
   }) async {
     Map<String, dynamic> response = await _storeWebServices.addNewStore(
@@ -23,8 +23,8 @@ class StoreViewModel {
     }
   }
 
-  Future<List<Store>> getAllStores() async {
-    List<Store> stores = await _storeWebServices.getAllStores();
+  Future<List<StoreModel>> getAllStores() async {
+    List<StoreModel> stores = await _storeWebServices.getAllStores();
     log("Stores: ${stores.first.storeName}");
     return stores;
   }

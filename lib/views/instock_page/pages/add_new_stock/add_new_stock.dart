@@ -10,14 +10,15 @@ import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
-import 'package:merostore_mobile/views/add_new_stock/utils/stock_helper.dart';
-import 'package:merostore_mobile/views/add_new_stock/widgets/required_marking.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_text_button.dart';
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_.dart';
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_with_dropdownbtn.dart';
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
+
+import 'utils/stock_helper.dart';
+import 'widgets/required_marking.dart';
 
 class AddNewStock extends ConsumerStatefulWidget {
   const AddNewStock({
@@ -341,42 +342,22 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
 
       // Trying to convert to it's defined data type from string
       if (elem["dataType"] != String) {
-        if (elem["dataType"] == int) {
-          try {
-            int data = int.parse(value);
+        try {
+          double data = double.parse(value);
 
-            // User has entered negative value
-            if (data < 0) {
-              redFlag = true;
-              flagDesc = MessagesConstant().invalidPrice;
-              break;
-            }
-            details[elem["fieldName"]] = data;
-
-            continue; // No need to check other conditions
-          } catch (e) {
+          // User has entered negative value
+          if (data < 0) {
             redFlag = true;
-            flagDesc = MessagesConstant().invalidQuantity;
+            flagDesc = MessagesConstant().invalidPrice;
             break;
           }
-        } else if (elem["dataType"] == double) {
-          try {
-            double data = double.parse(value);
+          details[elem["fieldName"]] = data;
 
-            // User has entered negative value
-            if (data < 0) {
-              redFlag = true;
-              flagDesc = MessagesConstant().invalidPrice;
-              break;
-            }
-            details[elem["fieldName"]] = data;
-
-            continue; // No need to check other conditions
-          } catch (e) {
-            redFlag = true;
-            flagDesc = MessagesConstant().invalidQuantity;
-            break;
-          }
+          continue; // No need to check other conditions
+        } catch (e) {
+          redFlag = true;
+          flagDesc = MessagesConstant().invalidQuantity;
+          break;
         }
       }
 

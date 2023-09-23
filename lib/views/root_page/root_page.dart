@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:merostore_mobile/models/stock_model.dart';
+import 'package:merostore_mobile/models/store_model.dart';
+import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
+import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
 import 'package:merostore_mobile/views/instock_page/in_stock_page.dart';
@@ -41,11 +45,19 @@ class _RootPageState extends ConsumerState<RootPage> {
     setState(() => showLoading = true);
 
     var allStores = await StoreViewModel().getAllStores();
+    var allStocks = await StockViewModel().getAllStocks();
+
     var storesProv = ref.read(storesProvider.notifier);
+    var stocksProv = ref.read(stocksProvider.notifier);
 
     // Adding stores
     for (var store in allStores) {
       storesProv.addStore(store);
+    }
+
+    // Adding stocks
+    for (StockModel stock in allStocks) {
+      stocksProv.addStock(stock);
     }
 
     setState(() => showLoading = false);

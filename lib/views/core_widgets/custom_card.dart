@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
+import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/views/core_widgets/bold_first_word_from_text.dart';
 import 'package:merostore_mobile/views/core_widgets/edit_delete_button.dart';
@@ -9,8 +12,11 @@ class CustomCard extends StatelessWidget {
   // What to display, store or sales
   final String displaying;
 
-  // for store data
-  final Store? store;
+  // for displaying store data
+  final StoreModel? store;
+
+  // for displaying stocks
+  final StockModel? stock;
 
   // For Stock
   final String? transactionType;
@@ -25,6 +31,7 @@ class CustomCard extends StatelessWidget {
     this.stockDetails,
     this.enableDeleteOption = true,
     this.store,
+    this.stock,
     required this.displaying,
   }) : super(key: key);
 
@@ -93,15 +100,23 @@ class CustomCard extends StatelessWidget {
   }
 
   _displayingStock() {
+    String materialName = stock!.details["materialName"];
+    double totalBroughtQty = stock!.details["broughtQuantity"] as double;
+    double totalPrice = stock!.details["totalPrice"] as double;
+    String avgPrice = (totalPrice / totalBroughtQty).toStringAsFixed(2);
+    String broughtQuantityType = stock!.details["broughtQuantityType"];
     return [
       Text(transactionType!),
-      // Text(storeName!),
-      ...stockDetails!.entries.map((entry) {
-        return BoldFirstWordFromText(
-          boldWord: entry.key,
-          normalWord: entry.value.toString().capitalize(),
-        );
-      }).toList(),
+      BoldFirstWordFromText(
+        boldWord: "Material Name:",
+        normalWord: materialName,
+      ),
+      BoldFirstWordFromText(
+        boldWord: "Total Brought:",
+        normalWord: totalBroughtQty.toString(),
+      ),
+      BoldFirstWordFromText(
+          boldWord: "Price: ", normalWord: "$avgPrice/$broughtQuantityType"),
     ];
   }
 }

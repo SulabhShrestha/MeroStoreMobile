@@ -15,7 +15,7 @@ class HandleStore extends ConsumerStatefulWidget {
   final bool showEditPage;
 
   // if edit store page to be displayed, then store object must be passed
-  final Store? store;
+  final StoreModel? store;
 
   const HandleStore({
     Key? key,

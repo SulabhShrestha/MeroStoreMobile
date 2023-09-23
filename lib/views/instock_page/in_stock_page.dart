@@ -3,40 +3,22 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
+import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
-import 'package:merostore_mobile/view_models/stock_view_model.dart';
-import 'package:merostore_mobile/views/add_new_stock/add_new_stock.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
+
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 
-class InStockPage extends ConsumerStatefulWidget {
+import 'pages/add_new_stock/add_new_stock.dart';
+
+class InStockPage extends ConsumerWidget {
   const InStockPage({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<InStockPage> createState() => _InStockPageState();
-}
-
-class _InStockPageState extends ConsumerState<InStockPage> {
-  late Future<List<Stock>> stocksFuture;
-  bool newStockAdded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    stocksFuture = fetchStocks(); // when [InStockPage] is initially loaded
-  }
-
-  // when any update is taken place
-  Future<List<Stock>> fetchStocks() async {
-    final stockViewModel = StockViewModel();
-    final stocks = await stockViewModel.getAllStocks();
-    return stocks;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final storesProv = ref.watch(storesProvider.notifier);
+    final stocksProv = ref.watch(stocksProvider.notifier);
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
@@ -86,27 +68,20 @@ class _InStockPageState extends ConsumerState<InStockPage> {
         },
         body: Stack(
           children: [
-            FutureBuilder(
-                future: newStockAdded ? fetchStocks() : stocksFuture,
-                builder: (context, snapshot) {
-                  log("Fetching");
-                  if (snapshot.hasData) {
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          for (Stock element in snapshot.data!)
-                            CustomCard(
-                              // id: element.id,
-                              transactionType: element.transactionType,
-                              stockDetails: element.details,
-                              displaying: "Stock",
-                            ),
-                        ],
-                      ),
-                    );
-                  }
-                  return const Center(child: CircularProgressIndicator());
-                }),
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (StockModel element in stocksProv.allStocks)
+                    CustomCard(
+                      // id: element.id,
+                      transactionType: element.transactionType,
+                      stockDetails: element.details,
+                      stock: element,
+                      displaying: "Stock",
+                    ),
+                ],
+              ),
+            ),
 
             // add new transaction
             Positioned(
@@ -118,16 +93,9 @@ class _InStockPageState extends ConsumerState<InStockPage> {
                 duration: const Duration(milliseconds: 250),
                 child: FloatingActionButton(
                   onPressed: () async {
-                    bool? result = await Navigator.of(context)
-                        .push<bool?>(MaterialPageRoute(
-                      builder: (_) => AddNewStock(),
+                    await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => const AddNewStock(),
                     ));
-
-                    if (result == true) {
-                      setState(() {
-                        newStockAdded = true;
-                      });
-                    }
                   },
                   tooltip: "Add new stock",
                   child: const Icon(

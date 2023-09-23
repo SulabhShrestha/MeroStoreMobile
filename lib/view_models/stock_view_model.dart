@@ -20,7 +20,7 @@ class StockViewModel {
     }
   }
 
-  Future<List<Stock>> getAllStocks() async {
+  Future<List<StockModel>> getAllStocks() async {
     return _stockWebServices.getAllStocks();
   }
 

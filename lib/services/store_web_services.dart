@@ -29,7 +29,7 @@ class StoreWebServices {
 
       return {
         "isSaved": true,
-        "savedStore": Store.fromJSON(jsonDecode(response.body))
+        "savedStore": StoreModel.fromJSON(jsonDecode(response.body))
       };
     } else {
       log("Something went wrong ${response.statusCode}");
@@ -39,7 +39,7 @@ class StoreWebServices {
     }
   }
 
-  Future<List<Store>> getAllStores() async {
+  Future<List<StoreModel>> getAllStores() async {
     var token = await LocalStorageServices().getId();
     log("TOken: $token");
     log("url: ${{
@@ -54,12 +54,12 @@ class StoreWebServices {
       },
     );
 
-    List<Store> stocks = [];
+    List<StoreModel> stocks = [];
 
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
       for (Map<String, dynamic> elem in body) {
-        stocks.add(Store.fromJSON(elem));
+        stocks.add(StoreModel.fromJSON(elem));
       }
     } else {
       log("Something went wrong${response.reasonPhrase} ${response.statusCode}");

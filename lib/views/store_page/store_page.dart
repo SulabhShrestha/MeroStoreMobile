@@ -37,7 +37,7 @@ class StorePage extends ConsumerWidget {
       ),
       body: ListView(
         children: [
-          for (Store element in stores)
+          for (StoreModel element in stores)
             CustomCard(
               displaying: "Store",
               // id: element.id,
