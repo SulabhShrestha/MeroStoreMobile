@@ -73,9 +73,6 @@ class InStockPage extends ConsumerWidget {
                 children: [
                   for (StockModel element in stocksProv.state)
                     CustomCard(
-                      // id: element.id,
-                      transactionType: element.transactionType,
-                      stockDetails: element.details,
                       stock: element,
                       displaying: "Stock",
                     ),

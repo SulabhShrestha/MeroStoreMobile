@@ -19,17 +19,11 @@ class CustomCard extends StatelessWidget {
   // for displaying stocks
   final StockModel? stock;
 
-  // For Stock
-  final String? transactionType;
-  final Map<String, dynamic>? stockDetails;
-
   // Display delete button or not from [EditDeleteButton]
   final bool enableDeleteOption;
 
   const CustomCard({
     Key? key,
-    this.transactionType,
-    this.stockDetails,
     this.enableDeleteOption = true,
     this.store,
     this.stock,
@@ -52,35 +46,34 @@ class CustomCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // Written
-            Row(
-              children: [
-                // Description
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (displaying == "Stock") ..._displayingStock(),
-                      if (displaying == "Store")
-                        Row(
-                          children: [
-                            Expanded(
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: _displayingStore())),
-                            EditDeleteButton(
-                              id: store!.id,
-                              enableDeleteOption: enableDeleteOption,
-                            ),
-                          ],
-                        ),
-                    ],
+            if (displaying == "Stock")
+              Row(
+                children: [
+                  Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: _displayingStock())),
+                  EditDeleteButton(
+                    id: stock!.id,
+                    enableDeleteOption: enableDeleteOption,
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            if (displaying == "Store")
+              Row(
+                children: [
+                  Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: _displayingStore())),
+                  EditDeleteButton(
+                    id: store!.id,
+                    enableDeleteOption: enableDeleteOption,
+                  ),
+                ],
+              ),
           ],
         ),
       ),
@@ -108,7 +101,7 @@ class CustomCard extends StatelessWidget {
         ((totalPrice / totalBroughtQty) as double).formatWithIntegerCheck();
     String broughtQuantityType = stock!.details["broughtQuantityType"];
     return [
-      Text(transactionType!),
+      Text(stock!.transactionType),
       BoldFirstWordFromText(
         boldWord: "Material Name:",
         normalWord: materialName,
