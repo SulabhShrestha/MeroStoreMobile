@@ -1,16 +1,14 @@
-# mobile_app
+# Merostore - Manage your all stores using single app
 
-A new Flutter project.
+* This is my 6th sem project.
 
-## Getting Started
+___
 
-This project is a starting point for a Flutter application.
+## Errors with solution
 
-A few resources to get you started if this is your first Flutter project:
+### PlatformException(sign_in_failed, com.google.android.gms.common.api.ApiException: 10: , null, null)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* First make sure that you have java installed
+* Move to the android folder and type `./gradlew signingReport` to generate sha keys.
+* Copy the sha1 value of report having `varient` and `config` being debug and paste it in here: [Google Cloud](https://console.cloud.google.com/apis/credentials). Make sure that you have created project in google cloud.
+* There you go.
