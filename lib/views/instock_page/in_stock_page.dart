@@ -28,7 +28,6 @@ class _InStockPageState extends ConsumerState<InStockPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final storesProv = ref.watch(storesProvider.notifier);
     final stocksProv = ref.watch(stocksProvider.notifier);
 
@@ -82,45 +81,48 @@ class _InStockPageState extends ConsumerState<InStockPage> {
         body: Stack(
           children: [
             Listener(
-              onPointerDown: (event){
+              onPointerDown: (event) {
                 tapPosition = event.position;
               },
               child: DataTable2(
                   columnSpacing: 12,
                   horizontalMargin: 12,
                   minWidth: 600,
-                  columns: stocksProv.getUniqueProperties().map((prop){
-
-                      return DataColumn2(
-                        label: Text(prop["heading"]),
-
-                      );
-
-                    return const DataColumn2(label: Text(""));
+                  columns: stocksProv.getUniqueProperties().map((prop) {
+                    return DataColumn2(
+                      label: Align(alignment: Alignment.center, child: Text(prop["heading"])),
+                    );
                   }).toList(),
-
                   rows: List<DataRow2>.generate(
-                      100,
-                          (index) => DataRow2(
+                      stocksProv.state.length,
+                      (index) => DataRow2(
+                            onTap: () => changeSelectedIndex(index),
+                            onLongPress: () {
+                              // Show the popup menu
+                              _showPopupMenu(context);
+                            },
+                            color: index == selectedIndex
+                                ? MaterialStateProperty.all(ConstantAppColors
+                                    .blueColor
+                                    .withOpacity(0.5))
+                                : null,
+                            cells: stocksProv
+                                .getUniqueProperties()
+                                .map((prop) {
+                              final value = stocksProv.state[index].details[prop["fieldName"]];
+                              return DataCell(
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    value != null ? '$value' : '-', // Convert to string or use an empty string if null
 
-                          onTap: () => changeSelectedIndex(index),
-                          onLongPress: () {
-                            // Show the popup menu
-                            _showPopupMenu(context);
-                          },
-
-                          color: index == selectedIndex
-                              ? MaterialStateProperty.all(
-                              ConstantAppColors.blueColor.withOpacity(0.5))
-                              : null,
-                          cells: [
-                            DataCell(Text('A' * (10 - index % 10))),
-                            DataCell(Text('B' * (10 - (index + 5) % 10))),
-                            DataCell(Text('C' * (15 - (index + 5) % 10))),
-                            DataCell(Text('C' * (15 - (index + 5) % 10))),
-                          ],))),
+                                  ),
+                                ),
+                              );
+                            })
+                                .toList(),
+                          ))),
             ),
-
 
             // add new transaction
             Positioned(

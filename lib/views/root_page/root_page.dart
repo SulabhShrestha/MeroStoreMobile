@@ -50,13 +50,19 @@ class _RootPageState extends ConsumerState<RootPage> {
     var storesProv = ref.read(storesProvider.notifier);
     var stocksProv = ref.read(stocksProvider.notifier);
 
-    // Adding stores
-    for (var store in allStores) {
-      storesProv.addStore(store);
+    // Check if the data needs to be updated
+    if (storesProv.state.isEmpty) {
+      // Adding stores
+      for (var store in allStores) {
+        storesProv.addStore(store);
+      }
     }
-    // Adding stocks
-    for (StockModel stock in allStocks) {
-      stocksProv.addStock(stock);
+
+    if (stocksProv.state.isEmpty) {
+      // Adding stocks
+      for (StockModel stock in allStocks) {
+        stocksProv.addStock(stock);
+      }
     }
 
     setState(() => showLoading = false);
