@@ -17,8 +17,9 @@ import 'package:merostore_mobile/views/core_widgets/custom_text_button.dart';
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_.dart';
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_with_dropdownbtn.dart';
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
-import 'package:merostore_mobile/views/instock_page/pages/add_new_stock/utils/stock_helper.dart';
+
 import 'package:merostore_mobile/views/instock_page/pages/add_new_stock/widgets/required_marking.dart';
+import 'package:merostore_mobile/views/instock_page/utils/stock_helper.dart';
 
 import 'widgets/textfield_with_suggestions.dart';
 

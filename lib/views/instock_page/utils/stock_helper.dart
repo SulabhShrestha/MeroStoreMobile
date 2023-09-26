@@ -47,12 +47,12 @@ class StockHelper {
         "fieldName": "materialName",
       },
       {
-        "heading": "Sold Quantity",
+        "heading": "Brought Quantity",
         "required": true,
         "quantityOption": true,
         "keyboardType": TextInputType.number,
         "dataType": double,
-        "fieldName": "soldQuantity",
+        "fieldName": "broughtQuantity",
       },
       {
         "heading": "Total Price",
@@ -175,5 +175,26 @@ class StockHelper {
       default:
         return [];
     }
+  }
+
+  // store heading that is not to be displayed
+  List<String> getBlacklistedHeading() {
+    return <String>[
+      "broughtQuantityType",
+    ];
+  }
+
+  // returns heading that will contains numeric values
+  List<String> getHeadingContainingNumericValue() {
+    return <String>[
+      "broughtQuantity",
+      "totalPrice",
+      "soldQuantity",
+      "broughtQuantity",
+      "moneyGiven",
+      "forQuantity",
+      "returnedQuantity",
+      "returnedAmount",
+    ];
   }
 }

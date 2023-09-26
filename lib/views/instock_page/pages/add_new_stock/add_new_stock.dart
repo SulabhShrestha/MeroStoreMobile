@@ -18,8 +18,8 @@ import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_.
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_with_dropdownbtn.dart';
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
 
-import 'utils/stock_helper.dart';
 import 'widgets/required_marking.dart';
+import "../../utils/stock_helper.dart";
 
 class AddNewStock extends ConsumerStatefulWidget {
   const AddNewStock({

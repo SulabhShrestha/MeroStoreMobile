@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
@@ -10,15 +11,27 @@ import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 
+import 'package:merostore_mobile/views/instock_page/utils/stock_helper.dart';
+
 import 'pages/add_new_stock/add_new_stock.dart';
 
-class InStockPage extends ConsumerWidget {
+class InStockPage extends ConsumerStatefulWidget {
   const InStockPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<InStockPage> createState() => _InStockPageState();
+}
+
+class _InStockPageState extends ConsumerState<InStockPage> {
+  Offset? tapPosition; // for tracking the tap position
+  int selectedIndex = -1;
+
+  @override
+  Widget build(BuildContext context) {
+
     final storesProv = ref.watch(storesProvider.notifier);
     final stocksProv = ref.watch(stocksProvider.notifier);
+
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
@@ -68,17 +81,46 @@ class InStockPage extends ConsumerWidget {
         },
         body: Stack(
           children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  for (StockModel element in stocksProv.state)
-                    CustomCard(
-                      stock: element,
-                      displaying: "Stock",
-                    ),
-                ],
-              ),
+            Listener(
+              onPointerDown: (event){
+                tapPosition = event.position;
+              },
+              child: DataTable2(
+                  columnSpacing: 12,
+                  horizontalMargin: 12,
+                  minWidth: 600,
+                  columns: stocksProv.getUniqueProperties().map((prop){
+
+                      return DataColumn2(
+                        label: Text(prop["heading"]),
+
+                      );
+
+                    return const DataColumn2(label: Text(""));
+                  }).toList(),
+
+                  rows: List<DataRow2>.generate(
+                      100,
+                          (index) => DataRow2(
+
+                          onTap: () => changeSelectedIndex(index),
+                          onLongPress: () {
+                            // Show the popup menu
+                            _showPopupMenu(context);
+                          },
+
+                          color: index == selectedIndex
+                              ? MaterialStateProperty.all(
+                              ConstantAppColors.blueColor.withOpacity(0.5))
+                              : null,
+                          cells: [
+                            DataCell(Text('A' * (10 - index % 10))),
+                            DataCell(Text('B' * (10 - (index + 5) % 10))),
+                            DataCell(Text('C' * (15 - (index + 5) % 10))),
+                            DataCell(Text('C' * (15 - (index + 5) % 10))),
+                          ],))),
             ),
+
 
             // add new transaction
             Positioned(
@@ -105,5 +147,43 @@ class InStockPage extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  // Changes the selectedIndex to highlight the selected row
+  void changeSelectedIndex(int index) {
+    if (index != selectedIndex) {
+      setState(() => selectedIndex = index);
+    }
+  }
+
+  // displays pop up menu
+  void _showPopupMenu(BuildContext context) {
+    if (tapPosition != null) {
+      showMenu(
+        context: context,
+        position: RelativeRect.fromLTRB(
+          tapPosition!.dx,
+          tapPosition!.dy,
+          MediaQuery.of(context).size.width - tapPosition!.dx,
+          MediaQuery.of(context).size.height - tapPosition!.dy,
+        ),
+        items: [
+          PopupMenuItem(
+            child: Text('Edit'),
+            value: 'edit',
+          ),
+          PopupMenuItem(
+            child: Text('Delete'),
+            value: 'delete',
+          ),
+        ],
+      ).then((value) {
+        if (value == 'edit') {
+          // Handle edit action
+        } else if (value == 'delete') {
+          // Handle delete action
+        }
+      });
+    }
   }
 }

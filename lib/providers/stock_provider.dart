@@ -1,5 +1,9 @@
+import 'dart:developer';
+
+import 'package:dartx/dartx.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
+import 'package:merostore_mobile/views/instock_page/utils/stock_helper.dart';
 
 final stocksProvider =
     StateNotifierProvider<StocksNotifier, List<StockModel>>((ref) {
@@ -53,5 +57,41 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
   /// checks if currently adding store is already added
   bool contains(String storeName) {
     return state.any((store) => store.storeName == storeName);
+  }
+
+  // returns the map of unique properties along with additional information of the stock,
+  // used for heading of the table
+  List<Map<String, dynamic>> getUniqueProperties() {
+    // Extract details and collect unique property names
+    Set<String> propertyNames = <String>{};
+    for (var stock in state) {
+      propertyNames.addAll(stock.details.keys);
+    }
+
+
+    List<Map<String, dynamic>> transformedProperties = [];
+
+    // Split camelCase and join with spaces
+    for (var propertyName in propertyNames) {
+      List<String> words = [];
+
+      // skip blacklisted properties to be added to the heading
+      if(StockHelper().getBlacklistedHeading().contains(propertyName)) continue;
+
+      for(var word in propertyName.split(RegExp(r'(?=[A-Z])'))){
+        words.add(word.capitalize());
+      }
+
+      String pascalCaseWithSpaces = words.join(' ');
+      transformedProperties.add({
+        "heading": pascalCaseWithSpaces,
+        "fieldName": propertyName,
+        "numeric": StockHelper().getHeadingContainingNumericValue().contains(propertyName),
+      });
+    }
+
+    log("Unique properties: $transformedProperties");
+
+    return transformedProperties;
   }
 }
