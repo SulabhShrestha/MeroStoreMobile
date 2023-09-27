@@ -62,7 +62,7 @@ class RecordViewDialog extends ConsumerWidget {
           ),
 
           // record details
-          CustomCard(displaying: "Stock", stock: stockModel),
+          CustomCard(displaying: "Stock", stockModel: stockModel),
         ],
       ),
     );

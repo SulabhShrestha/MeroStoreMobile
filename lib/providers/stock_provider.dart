@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:merostore_mobile/extensions/string_extensions.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/views/instock_page/utils/stock_helper.dart';
@@ -74,7 +75,6 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
       propertyNames.addAll(stock.details.keys);
     }
 
-
     List<Map<String, dynamic>> transformedProperties = [];
 
     // Split camelCase and join with spaces
@@ -82,17 +82,15 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
       List<String> words = [];
 
       // skip blacklisted properties to be added to the heading
-      if(StockHelper().getBlacklistedHeading().contains(propertyName)) continue;
-
-      for(var word in propertyName.split(RegExp(r'(?=[A-Z])'))){
-        words.add(word.capitalize());
+      if (StockHelper().getBlacklistedHeading().contains(propertyName)) {
+        continue;
       }
-
-      String pascalCaseWithSpaces = words.join(' ');
       transformedProperties.add({
-        "heading": pascalCaseWithSpaces,
+        "heading": propertyName.camelCaseToWords(),
         "fieldName": propertyName,
-        "numeric": StockHelper().getHeadingContainingNumericValue().contains(propertyName),
+        "numeric": StockHelper()
+            .getHeadingContainingNumericValue()
+            .contains(propertyName),
       });
     }
 

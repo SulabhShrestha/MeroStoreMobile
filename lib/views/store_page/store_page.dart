@@ -41,7 +41,7 @@ class StorePage extends ConsumerWidget {
             CustomCard(
               displaying: "Store",
               // id: element.id,
-              store: element,
+              storeModel: element,
               enableDeleteOption: stores.length == 1 ? false : true,
             ),
         ],

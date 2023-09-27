@@ -1,8 +1,10 @@
+import 'dart:developer';
 import 'dart:ffi';
 
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:merostore_mobile/extensions/double_extension.dart';
+import 'package:merostore_mobile/extensions/string_extensions.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/views/core_widgets/bold_first_word_from_text.dart';
@@ -14,10 +16,10 @@ class CustomCard extends StatelessWidget {
   final String displaying;
 
   // for displaying store data,
-  final StoreModel? store;
+  final StoreModel? storeModel;
 
   // for displaying stocks
-  final StockModel? stock;
+  final StockModel? stockModel;
 
   // Display delete button or not from [EditDeleteButton]
   final bool enableDeleteOption;
@@ -25,8 +27,8 @@ class CustomCard extends StatelessWidget {
   const CustomCard({
     Key? key,
     this.enableDeleteOption = true,
-    this.store,
-    this.stock,
+    this.storeModel,
+    this.stockModel,
     required this.displaying,
   }) : super(key: key);
 
@@ -64,7 +66,7 @@ class CustomCard extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: _displayingStore())),
                   EditDeleteButton(
-                    id: store!.id,
+                    id: storeModel!.id,
                     enableDeleteOption: enableDeleteOption,
                   ),
                 ],
@@ -78,25 +80,47 @@ class CustomCard extends StatelessWidget {
   _displayingStore() {
     return [
       BoldFirstWordFromText(
-          boldWord: "Store Name", normalWord: store!.storeName),
+          boldWord: "Store Name", normalWord: storeModel!.storeName),
       BoldFirstWordFromText(
           boldWord: "Quantity Types",
-          normalWord: store!.quantityTypes.toString()),
+          normalWord: storeModel!.quantityTypes.toString()),
       BoldFirstWordFromText(
           boldWord: "Transaction Type",
-          normalWord: store!.transactionTypes.toString()),
+          normalWord: storeModel!.transactionTypes.toString()),
     ];
   }
 
   _displayingStock() {
-    String materialName = stock!.details["materialName"];
-    var totalBroughtQty = stock!.details["broughtQuantity"];
-    var totalPrice = stock!.details["totalPrice"];
+    String materialName = stockModel!.details["materialName"];
+    var totalBroughtQty = stockModel!.details["broughtQuantity"];
+    var totalPrice = stockModel!.details["totalPrice"];
     String avgPrice =
         ((totalPrice / totalBroughtQty) as double).formatWithIntegerCheck();
-    String broughtQuantityType = stock!.details["broughtQuantityType"];
+    String broughtQuantityType = stockModel!.details["broughtQuantityType"];
+
+    // since this is already captured
+    // and details might have other info such as creditor or debtor name, info, description etc
+    List<String> blacklistedFields = [
+      "materialName",
+      "broughtQuantity",
+      "totalPrice",
+      "broughtQuantityType",
+    ];
+
+    var widgetList = <Widget>[];
+    for (var key in stockModel!.details.keys) {
+      if (!blacklistedFields.contains(key)) {
+        widgetList.add(
+          BoldFirstWordFromText(
+            boldWord: key.camelCaseToWords(),
+            normalWord: stockModel!.details[key].toString(),
+          ),
+        );
+      }
+    }
+
     return [
-      Text(stock!.transactionType),
+      Text(stockModel!.transactionType),
       BoldFirstWordFromText(
         boldWord: "Material Name:",
         normalWord: materialName,
@@ -107,6 +131,9 @@ class CustomCard extends StatelessWidget {
       ),
       BoldFirstWordFromText(
           boldWord: "Price: ", normalWord: "$avgPrice/$broughtQuantityType"),
+
+      // displaying other details
+      ...widgetList,
     ];
   }
 }
