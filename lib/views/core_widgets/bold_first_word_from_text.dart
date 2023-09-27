@@ -23,7 +23,7 @@ class BoldFirstWordFromText extends StatelessWidget {
       text: TextSpan(
         children: <TextSpan>[
           TextSpan(
-            text: "$boldWord: ", // Color of this should be
+            text: "$boldWord ", // Color of this should be
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: boldWordColor ?? Colors.black,
