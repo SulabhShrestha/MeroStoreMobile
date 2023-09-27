@@ -245,9 +245,8 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
 
                             // User didn't added required fields
                             if (userInput["redFlag"]) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(userInput["flagDesc"])));
+                              SnackBarMessage().showMessage(context, userInput["flagDesc"]);
+
                             }
                             // User has inserted required fields
                             else {
@@ -260,9 +259,7 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
                                   Navigator.of(context).pop();
                                 },
                                 onUpdated: (updatedStock) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text("Stock updated successfully")));
+                                  SnackBarMessage().showMessage(context, "Stock updated successfully.");
                                   stocksProv.updateStockById(
                                       id: updatedStock["_id"], data: updatedStock);
                                   Navigator.of(context).pop();

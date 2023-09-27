@@ -10,6 +10,8 @@ import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
 
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
+import 'package:merostore_mobile/views/core_widgets/snackbar_message.dart';
+import 'package:merostore_mobile/views/instock_page/pages/edit_stock/edit_stock.dart';
 
 import 'pages/add_new_stock/add_new_stock.dart';
 
@@ -174,7 +176,9 @@ class _InStockPageState extends ConsumerState<InStockPage> {
         items: [
           PopupMenuItem(
             value: 'edit',
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_)=> const EditStock()));
+            },
             child: const Text('Edit'),
           ),
           PopupMenuItem(
@@ -185,19 +189,10 @@ class _InStockPageState extends ConsumerState<InStockPage> {
                   .then((value) {
                 // deleting from local
                 ref.read(stocksProvider.notifier).deleteStore(model.id);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text(
-                      "Deleted successfully",
-                    )));
-              })
-                  .onError((error, stackTrace) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(
-                  error.toString(),
-                )));
+                SnackBarMessage().showMessage(context, "Deleted successfully");
+              }).onError((error, stackTrace) {
+                SnackBarMessage().showMessage(context, error.toString());
               });
-
-
             },
             child: const Text('Delete'),
           ),

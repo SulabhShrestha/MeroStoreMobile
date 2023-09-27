@@ -7,6 +7,7 @@ import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/messages_constant.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
+import 'package:merostore_mobile/views/core_widgets/snackbar_message.dart';
 import 'package:merostore_mobile/views/store_page/widgets/dynamic_checkbox_list.dart';
 
 /// Responsible for providing both edit and adding new store widget
@@ -62,28 +63,19 @@ class _HandleStoreState extends ConsumerState<HandleStore> {
   // true means everything's perfect, can be added to the db
   bool _validateInputData() {
     if (_storeNameController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-          MessagesConstant().storeRelatedMessages.storeNameNotEntered,
-        )),
-      );
+      SnackBarMessage().showMessage(
+          context, MessagesConstant().storeRelatedMessages.storeNameNotEntered);
+
       return false;
     } else if (userSelectedTransactionTypes.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-          MessagesConstant().storeRelatedMessages.transactionTypesNotSelected,
-        )),
-      );
+      SnackBarMessage().showMessage(context,
+          MessagesConstant().storeRelatedMessages.transactionTypesNotSelected);
+
       return false;
     } else if (userSelectedQuantityTypes.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-          MessagesConstant().storeRelatedMessages.quantityTypesNotSelected,
-        )),
-      );
+      SnackBarMessage().showMessage(context,
+          MessagesConstant().storeRelatedMessages.quantityTypesNotSelected);
+
       return false;
     }
 
@@ -117,11 +109,8 @@ class _HandleStoreState extends ConsumerState<HandleStore> {
                     id: widget.store!.id, data: updateStoreDetails);
                 Navigator.of(context).pop();
               }).onError((error, stackTrace) {
-                log(error.toString());
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(MessagesConstant().somethingWentWrong)),
-                );
+                SnackBarMessage().showMessage(
+                    context, MessagesConstant().somethingWentWrong);
               });
             },
             child: const Icon(Icons.check, color: Colors.white),
@@ -179,12 +168,8 @@ class _HandleStoreState extends ConsumerState<HandleStore> {
               // checking if previously entered
               else if (storesProv
                   .contains(_storeNameController.text.trim().capitalize())) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(MessagesConstant()
-                          .storeRelatedMessages
-                          .storeAlreadyAdded)),
-                );
+                SnackBarMessage().showMessage(context,
+                    MessagesConstant().storeRelatedMessages.storeAlreadyAdded);
               } else {
                 Map<String, dynamic> newStoreDetails = {
                   "storeName": _storeNameController.text.trim().capitalize(),
@@ -199,16 +184,13 @@ class _HandleStoreState extends ConsumerState<HandleStore> {
                   onStockAdded: (addedStore) {
                     // Adding newly added store to the stores list
                     storesProv.addStore(addedStore);
-
-                    log("Newly added store: $addedStore");
-
+                    SnackBarMessage()
+                        .showMessage(context, "Store added successfully");
                     Navigator.of(context).pop();
                   },
                   onFailure: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text(MessagesConstant().somethingWentWrong)),
-                    );
+                    SnackBarMessage().showMessage(
+                        context, MessagesConstant().somethingWentWrong);
                   },
                 );
               }

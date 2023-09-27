@@ -7,6 +7,8 @@ import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/view_models/store_view_model.dart';
 import 'package:merostore_mobile/views/store_page/pages/handle_store.dart';
 
+import 'snackbar_message.dart';
+
 class EditDeleteButton extends ConsumerWidget {
   final String id;
   final bool enableDeleteOption;
@@ -60,8 +62,8 @@ class EditDeleteButton extends ConsumerWidget {
                     ref.read(storesProvider.notifier).deleteStore(id);
 
                     // displaying information
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Deleted successfully")));
+                    SnackBarMessage().showMessage(context, "Deleted successfully");
+
                   });
                 },
                 child: const Text('Delete'),

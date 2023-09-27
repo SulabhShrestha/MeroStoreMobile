@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:merostore_mobile/view_models/local_storage_view_model.dart';
 import 'package:merostore_mobile/view_models/user_view_model.dart';
+import 'package:merostore_mobile/views/core_widgets/snackbar_message.dart';
 import 'package:merostore_mobile/views/root_page/root_page.dart';
 
 /// Authentication page
@@ -35,11 +36,7 @@ class AuthPage extends StatelessWidget {
                       );
                     }).onError((error, stackTrace) {
                       log(error.toString());
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Some error occured"),
-                        ),
-                      );
+                      SnackBarMessage().showMessage(context, "Some error occurred");
                     });
                   },
                   child: const Text("Login with Google"),
