@@ -10,10 +10,10 @@ import 'package:merostore_mobile/views/core_widgets/edit_delete_button.dart';
 
 /// This card is responsible for displaying for stock, store and sales transaction
 class CustomCard extends StatelessWidget {
-  // What to display, store or sales
+  /// What to display, "Stock" or "Store"
   final String displaying;
 
-  // for displaying store data
+  // for displaying store data,
   final StoreModel? store;
 
   // for displaying stocks
@@ -49,15 +49,10 @@ class CustomCard extends StatelessWidget {
             if (displaying == "Stock")
               Row(
                 children: [
-                  Expanded(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: _displayingStock())),
-                  EditDeleteButton(
-                    id: stock!.id,
-                    enableDeleteOption: enableDeleteOption,
-                  ),
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: _displayingStock()),
                 ],
               ),
             if (displaying == "Store")
