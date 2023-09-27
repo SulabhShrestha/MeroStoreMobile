@@ -36,4 +36,14 @@ class StoreModel {
       transactionTypes: transactionTypes ?? this.transactionTypes,
     );
   }
+
+  /// Converts to JSON
+  Map<String, dynamic> toJSON() {
+    return {
+      "_id": id,
+      "storeName": storeName,
+      "quantityTypes": quantityTypes,
+      "transactionTypes": transactionTypes,
+    };
+  }
 }

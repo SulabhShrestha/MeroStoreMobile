@@ -41,4 +41,15 @@ class StockModel {
       details: details ?? this.details,
     );
   }
+
+  /// Converts to JSON
+  Map<String, dynamic> toJSON() {
+    return {
+      "_id": id,
+      "transactionType": transactionType,
+      "storeId": storeModel.id,
+      "storeName": storeName,
+      "details": details,
+    };
+  }
 }
