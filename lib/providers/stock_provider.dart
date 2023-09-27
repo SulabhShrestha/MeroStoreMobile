@@ -52,6 +52,8 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
       for (StockModel store in state)
         if (store.id != id) store
     ];
+
+    log("State: $state");
   }
 
   /// checks if currently adding store is already added

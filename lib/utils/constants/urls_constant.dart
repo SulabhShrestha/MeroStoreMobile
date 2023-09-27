@@ -1,6 +1,6 @@
 class UrlsConstant {
-  String get _url => "http://10.0.2.2:3000";
-  // String get _url => "https://merostore-nodejs.vercel.app";
+  // String get _url => "http://10.0.2.2:3000";
+  String get _url => "https://merostore-nodejs.vercel.app";
 
   Map<String, String> get headers => {"Content-Type": "application/json"};
 
@@ -9,7 +9,7 @@ class UrlsConstant {
 
   // stock related
   String get addStockUrl => "$_url/instock/add";
-  String get allStocksUrl => "$_url/instock/";
+  String get allStocksUrl => "$_url/instock";
   String get allMaterialNamesUrl => "$_url/instock/materialNames";
   String get materialDetailsUrl => "$_url/instock/materialDetails";
 

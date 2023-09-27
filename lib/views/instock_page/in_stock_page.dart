@@ -7,11 +7,9 @@ import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
-import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
+import 'package:merostore_mobile/view_models/stock_view_model.dart';
 
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
-
-import 'package:merostore_mobile/views/instock_page/utils/stock_helper.dart';
 
 import 'pages/add_new_stock/add_new_stock.dart';
 
@@ -30,6 +28,9 @@ class _InStockPageState extends ConsumerState<InStockPage> {
   Widget build(BuildContext context) {
     final storesProv = ref.watch(storesProvider.notifier);
     final stocksProv = ref.watch(stocksProvider.notifier);
+
+    List<StockModel> stocks =
+        ref.watch(stocksProvider); // listening for any changes
 
     return Scaffold(
       body: NestedScrollView(
@@ -87,40 +88,41 @@ class _InStockPageState extends ConsumerState<InStockPage> {
               child: DataTable2(
                   columnSpacing: 12,
                   horizontalMargin: 12,
-                  minWidth: 600,
+                  minWidth: 500,
                   columns: stocksProv.getUniqueProperties().map((prop) {
                     return DataColumn2(
-                      label: Align(alignment: Alignment.center, child: Text(prop["heading"])),
+                      label: Align(
+                          alignment: Alignment.center,
+                          child: Text(prop["heading"])),
                     );
                   }).toList(),
                   rows: List<DataRow2>.generate(
-                      stocksProv.state.length,
+                      stocks.length,
                       (index) => DataRow2(
                             onTap: () => changeSelectedIndex(index),
                             onLongPress: () {
                               // Show the popup menu
-                              _showPopupMenu(context);
+                              _showPopupMenu(context, stocks[index]);
                             },
                             color: index == selectedIndex
                                 ? MaterialStateProperty.all(ConstantAppColors
                                     .blueColor
                                     .withOpacity(0.5))
                                 : null,
-                            cells: stocksProv
-                                .getUniqueProperties()
-                                .map((prop) {
-                              final value = stocksProv.state[index].details[prop["fieldName"]];
+                            cells: stocksProv.getUniqueProperties().map((prop) {
+                              final value =
+                                  stocks[index].details[prop["fieldName"]];
                               return DataCell(
                                 Align(
                                   alignment: Alignment.center,
                                   child: Text(
-                                    value != null ? '$value' : '-', // Convert to string or use an empty string if null
-
+                                    value != null
+                                        ? '$value'
+                                        : '-', // Convert to string or use an empty string if null
                                   ),
                                 ),
                               );
-                            })
-                                .toList(),
+                            }).toList(),
                           ))),
             ),
 
@@ -159,7 +161,7 @@ class _InStockPageState extends ConsumerState<InStockPage> {
   }
 
   // displays pop up menu
-  void _showPopupMenu(BuildContext context) {
+  void _showPopupMenu(BuildContext context, StockModel model) {
     if (tapPosition != null) {
       showMenu(
         context: context,
@@ -171,21 +173,36 @@ class _InStockPageState extends ConsumerState<InStockPage> {
         ),
         items: [
           PopupMenuItem(
-            child: Text('Edit'),
             value: 'edit',
+            onTap: () {},
+            child: const Text('Edit'),
           ),
           PopupMenuItem(
-            child: Text('Delete'),
             value: 'delete',
+            onTap: () {
+              StockViewModel()
+                  .deleteStock(storeId: model.storeModel.id, stockId: model.id)
+                  .then((value) {
+                // deleting from local
+                ref.read(stocksProvider.notifier).deleteStore(model.id);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text(
+                      "Deleted successfully",
+                    )));
+              })
+                  .onError((error, stackTrace) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                  error.toString(),
+                )));
+              });
+
+
+            },
+            child: const Text('Delete'),
           ),
         ],
-      ).then((value) {
-        if (value == 'edit') {
-          // Handle edit action
-        } else if (value == 'delete') {
-          // Handle delete action
-        }
-      });
+      );
     }
   }
 }

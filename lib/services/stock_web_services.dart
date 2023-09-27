@@ -112,4 +112,20 @@ class StockWebServices {
 
     return jsonDecoded;
   }
+
+  /// Deletes the store
+  Future<int> deleteStock({required String storeId, required String stockId}) async {
+    var token = await LocalStorageServices().getId();
+    var url = "${_urls.allStocksUrl}/$storeId/$stockId";
+
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: {
+        ..._urls.headers,
+        "Authorization": token,
+      },
+    );
+
+    return response.statusCode;
+  }
 }

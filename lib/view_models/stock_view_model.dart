@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:merostore_mobile/models/stock_model.dart';
@@ -22,6 +23,16 @@ class StockViewModel {
       onUpdated(res["data"]);
     } else {
       onFailure();
+    }
+  }
+
+  /// Deletes stock
+  /// returns success or not found message
+  Future<void> deleteStock({required String storeId, required String stockId}) async {
+    int statusCode = await _stockWebServices.deleteStock(stockId: stockId, storeId: storeId);
+
+    if(statusCode == 404){
+      throw "Stock not found";
     }
   }
 
