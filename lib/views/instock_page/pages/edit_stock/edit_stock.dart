@@ -24,7 +24,6 @@ import 'package:merostore_mobile/views/instock_page/pages/add_new_stock/widgets/
 import "../../utils/stock_helper.dart";
 
 class EditStock extends ConsumerStatefulWidget {
-
   final StockModel stockModel;
   const EditStock({
     Key? key,
@@ -54,7 +53,6 @@ class _AddNewStockState extends ConsumerState<EditStock> {
   void initState() {
     super.initState();
 
-
     // Transaction types
     _currentTransactionType = widget.stockModel.transactionType;
 
@@ -69,6 +67,16 @@ class _AddNewStockState extends ConsumerState<EditStock> {
 
     // Brought quantity type
     _currentQuantityType = widget.stockModel.details["broughtQuantityType"];
+
+    // initializing the default value to all the controller
+    for (Map elem in allFormFields) {
+      String heading = elem["heading"];
+      if (controllers.containsKey(heading)) {
+        controllers[heading] = TextEditingController(
+            text: (widget.stockModel.details[elem["fieldName"]] ?? "")
+                .toString());
+      }
+    }
   }
 
   @override
@@ -109,7 +117,6 @@ class _AddNewStockState extends ConsumerState<EditStock> {
                           CustomDropDownBtn(
                             options: [widget.stockModel.storeName],
                             tooltip: "Store selection",
-
                           ),
                         ],
                       ),
@@ -127,7 +134,10 @@ class _AddNewStockState extends ConsumerState<EditStock> {
                             ),
                           ),
                           CustomDropDownBtn(
-                            options: widget.stockModel.storeModel.transactionTypes.map((e) => e.toString()).toList(),
+                            options: widget
+                                .stockModel.storeModel.transactionTypes
+                                .map((e) => e.toString())
+                                .toList(),
                             tooltip: "Transaction type selection",
                             initialValue: widget.stockModel.transactionType,
                             onTap: (value) {
@@ -196,7 +206,7 @@ class _AddNewStockState extends ConsumerState<EditStock> {
                       Align(
                         alignment: Alignment.center,
                         child: CustomTextButton(
-                          text: "Submit",
+                          text: "Update",
                           onTap: () async {
                             final userInput = _getAllDataFromUserInputs();
 
@@ -207,29 +217,22 @@ class _AddNewStockState extends ConsumerState<EditStock> {
                             }
                             // User has inserted required fields
                             else {
-                              StockViewModel().addNewStock(
-                                userInput: userInput["userInput"],
-                                onStockAdded: (addedStock) {
-                                  stocksProv.addStock(addedStock);
-                                  SnackBarMessage().showMessage(
-                                      context, "Stock added successfully.");
-                                  Navigator.of(context).pop();
-                                },
-                                onUpdated: (updatedStock) {
-                                  SnackBarMessage().showMessage(
-                                      context, "Stock updated successfully.");
-                                  stocksProv.updateStockById(
-                                      id: updatedStock["_id"],
-                                      data: updatedStock);
-                                  Navigator.of(context).pop();
-                                },
-                                onFailure: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(MessagesConstant()
-                                              .somethingWentWrong)));
-                                },
-                              );
+                              StockViewModel()
+                                  .updateStock(
+                                      storeId: widget.stockModel.storeModel.id,
+                                      stockId: widget.stockModel.id,
+                                      userInput: userInput["userInput"])
+                                  .then((value) {
+
+                                    stocksProv.updateStockById(id: widget.stockModel.id, data: value);
+
+                                SnackBarMessage().showMessage(
+                                    context, "Stock updated successfully.");
+                                Navigator.of(context).pop();
+                              }).onError((error, stackTrace) {
+                                SnackBarMessage().showMessage(
+                                    context, "Something went wrong.");
+                              });
                             }
                           },
                         ),
@@ -265,7 +268,6 @@ class _AddNewStockState extends ConsumerState<EditStock> {
               DottedUnderlineTextField(
                 controller: controllers[elem["heading"]],
                 keyboardType: elem["keyboardType"] ?? TextInputType.text,
-                hint: (widget.stockModel.details[elem["fieldName"]] ?? "").toString(),
               ),
 
             // TextField with quantity selection option
@@ -274,11 +276,12 @@ class _AddNewStockState extends ConsumerState<EditStock> {
                 controller: controllers[elem["heading"]],
                 displayingText: _currentQuantityType,
                 keyboardType: elem["keyboardType"] ?? TextInputType.text,
-                quantityTypes: widget.stockModel.storeModel.quantityTypes.map((e) => e.toString()).toList(),
+                quantityTypes: widget.stockModel.storeModel.quantityTypes
+                    .map((e) => e.toString())
+                    .toList(),
                 onSelected: (newQuantityType) {
                   _currentQuantityType = newQuantityType;
                 },
-                hint: (widget.stockModel.details[elem["fieldName"]] ?? "").toString(),
               ),
 
             ConstantSpaces.height12,
@@ -354,7 +357,7 @@ class _AddNewStockState extends ConsumerState<EditStock> {
 
     log(userInput.toString());
     return {
-      "redFlag": true,
+      "redFlag": redFlag,
       "flagDesc": flagDesc,
       "userInput": userInput,
     };

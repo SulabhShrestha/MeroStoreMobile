@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui';
 
@@ -34,6 +35,17 @@ class StockViewModel {
     if(statusCode == 404){
       throw "Stock not found";
     }
+  }
+
+  /// Updates the stock
+  Future<Map<String, dynamic>> updateStock({required String storeId, required String stockId, required Map<String, dynamic> userInput}) async {
+    final response = await _stockWebServices.updateStock(stockId: stockId, storeId: storeId, userInput: userInput);
+
+    if(response.statusCode == 404){
+      throw "Stock not found";
+    }
+    return jsonDecode(response.body);
+
   }
 
   Future<List<StockModel>> getAllStocks() async {

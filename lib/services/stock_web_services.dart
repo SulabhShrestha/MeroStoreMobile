@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/services/local_storage_services.dart';
@@ -44,6 +45,22 @@ class StockWebServices {
     } else {
       return {};
     }
+  }
+
+  /// Updates the stock
+  Future<Response> updateStock({required String storeId, required String stockId, required Map<String, dynamic> userInput}) async{
+    var token = await LocalStorageServices().getId();
+    var url = "${_urls.allStocksUrl}/$storeId/$stockId";
+    final response = await http.patch(
+      Uri.parse(url),
+      headers: {
+        ..._urls.headers,
+        "Authorization": token,
+      },
+      body: json.encode(userInput),
+    );
+
+    return response;
   }
 
   /// Returns all the stocks

@@ -91,7 +91,7 @@ class _CustomDropDownBtnState extends State<CustomDropDownBtn> {
             ),
           ),
           onSelected: (value) {
-            widget.onTap!(value);
+            if(widget.onTap != null) widget.onTap!(value);
             setState(() {
               _currentItemSelected = value;
             });

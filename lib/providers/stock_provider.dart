@@ -29,11 +29,11 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
   void updateStockById(
       {required String id, required Map<String, dynamic> data}) {
     log("Data; $data");
-    final updatedState = state.map((store) {
-      if (store.id == id) {
+    final updatedState = state.map((stock) {
+      if (stock.id == id) {
         // If this is the store to update, create a new store with the updated data
 
-        return store.copyWith(
+        return stock.copyWith(
           id: data['id'],
           storeName: data['storeName'],
           details: data['details'],
@@ -42,7 +42,7 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
         );
       } else {
         // If this is not the store to update, return the original store
-        return store;
+        return stock;
       }
     }).toList();
 
@@ -95,8 +95,6 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
         "numeric": StockHelper().getHeadingContainingNumericValue().contains(propertyName),
       });
     }
-
-    log("Unique properties: $transformedProperties");
 
     return transformedProperties;
   }

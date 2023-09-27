@@ -9,12 +9,12 @@ import '../../utils/constants/app_colors.dart';
 class DottedUnderlineTextField extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputType keyboardType;
-  final String? hint;
+
 
   const DottedUnderlineTextField({
     Key? key,
     this.controller,
-    this.hint,
+
     required this.keyboardType,
   }) : super(key: key);
 
@@ -27,9 +27,6 @@ class DottedUnderlineTextField extends StatelessWidget {
           maxLines: 1,
           keyboardType: keyboardType,
           cursorColor: ConstantAppColors.primaryColor,
-          decoration: InputDecoration(
-            hintText: hint,
-          ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
