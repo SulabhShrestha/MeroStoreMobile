@@ -12,7 +12,7 @@ class StockViewModel {
     required Map<String, dynamic> userInput,
     required Function(StockModel store) onStockAdded,
     required VoidCallback onFailure,
-    required Function(StockModel store) onUpdated,
+    required Function(Map<String, dynamic> store) onUpdated,
   }) async {
     Map<String, dynamic> res =
         await _stockWebServices.addNewData(userInput: userInput);

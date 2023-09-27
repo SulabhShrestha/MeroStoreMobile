@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class MessagesConstant {
   String get missingRequiredFields => "Please fill all the required fields.";
   String get invalidQuantity => "Please enter a valid quantity.";

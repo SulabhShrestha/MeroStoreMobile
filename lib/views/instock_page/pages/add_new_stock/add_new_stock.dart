@@ -17,6 +17,7 @@ import 'package:merostore_mobile/views/core_widgets/custom_text_button.dart';
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_.dart';
 import 'package:merostore_mobile/views/core_widgets/dotted_underline_textfield_with_dropdownbtn.dart';
 import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_new_item.dart';
+import 'package:merostore_mobile/views/core_widgets/snackbar_message.dart';
 
 import 'widgets/required_marking.dart';
 import "../../utils/stock_helper.dart";
@@ -253,12 +254,17 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
                               StockViewModel().addNewStock(
                                 userInput: userInput["userInput"],
                                 onStockAdded: (addedStock) {
+
                                   stocksProv.addStock(addedStock);
+                                  SnackBarMessage().showMessage(context, "Stock added successfully.");
                                   Navigator.of(context).pop();
                                 },
                                 onUpdated: (updatedStock) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text("Stock updated successfully")));
                                   stocksProv.updateStockById(
-                                      id: updatedStock.id, data: {});
+                                      id: updatedStock["_id"], data: updatedStock);
                                   Navigator.of(context).pop();
                                 },
                                 onFailure: () {

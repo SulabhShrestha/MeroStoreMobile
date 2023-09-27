@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dartx/dartx.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
+import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/views/instock_page/utils/stock_helper.dart';
 
 final stocksProvider =
@@ -27,14 +28,17 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
 
   void updateStockById(
       {required String id, required Map<String, dynamic> data}) {
+    log("Data; $data");
     final updatedState = state.map((store) {
       if (store.id == id) {
         // If this is the store to update, create a new store with the updated data
+
         return store.copyWith(
           id: data['id'],
           storeName: data['storeName'],
-          // quantityTypes: data['quantityTypes'],
-          // transactionTypes: data['transactionTypes'],
+          details: data['details'],
+          transactionType: data['transactionType'],
+          storeModel: StoreModel.fromJSON(data["storeId"]),
         );
       } else {
         // If this is not the store to update, return the original store

@@ -39,7 +39,7 @@ class StockWebServices {
     else if (response.statusCode == 200) {
       return {
         "isUpdated": true,
-        "data": StockModel.fromJSON(jsonDecode(response.body))
+        "data": jsonDecode(response.body),
       };
     } else {
       return {};
