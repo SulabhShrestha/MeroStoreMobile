@@ -14,11 +14,13 @@ class DottedUnderlineTextFieldWithDropDownBtn extends StatelessWidget {
   final TextInputType keyboardType;
   final List<String> quantityTypes;
   final ValueChanged<String> onSelected;
+  final String? hint;
 
   const DottedUnderlineTextFieldWithDropDownBtn(
       {Key? key,
       this.controller,
       this.displayingText,
+        this.hint,
       required this.keyboardType,
       required this.quantityTypes,
       required this.onSelected})
@@ -38,6 +40,9 @@ class DottedUnderlineTextFieldWithDropDownBtn extends StatelessWidget {
                 maxLines: 1,
                 keyboardType: keyboardType,
                 cursorColor: ConstantAppColors.primaryColor,
+                decoration: InputDecoration(
+                  hintText: hint,
+                )
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),

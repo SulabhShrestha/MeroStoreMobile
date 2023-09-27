@@ -393,7 +393,7 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
 
     log(userInput.toString());
     return {
-      "redFlag": redFlag,
+      "redFlag": true,
       "flagDesc": flagDesc,
       "userInput": userInput,
     };

@@ -177,7 +177,7 @@ class _InStockPageState extends ConsumerState<InStockPage> {
           PopupMenuItem(
             value: 'edit',
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_)=> const EditStock()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (_)=> EditStock(stockModel: model,)));
             },
             child: const Text('Edit'),
           ),

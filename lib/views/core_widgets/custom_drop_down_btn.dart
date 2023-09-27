@@ -6,7 +6,7 @@ import 'custom_shadow_container.dart';
 
 class CustomDropDownBtn extends StatefulWidget {
   final List<String> options;
-  final ValueChanged<String> onTap;
+  final ValueChanged<String>? onTap;
   final String tooltip;
   final bool? hideBackgroundUI;
   final double? width;
@@ -15,8 +15,9 @@ class CustomDropDownBtn extends StatefulWidget {
   const CustomDropDownBtn({
     Key? key,
     required this.options,
-    required this.onTap,
     required this.tooltip,
+    this.onTap,
+
     this.hideBackgroundUI,
     this.width,
     this.initialValue,
@@ -90,7 +91,7 @@ class _CustomDropDownBtnState extends State<CustomDropDownBtn> {
             ),
           ),
           onSelected: (value) {
-            widget.onTap(value);
+            widget.onTap!(value);
             setState(() {
               _currentItemSelected = value;
             });
