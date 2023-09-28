@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// Helper class responsible for assisting [StockPage]
 class StockHelper {
   List<String> getTransactionTypes() {
-    return ["Cash", "Credit", "Prepaid", "Return"];
+    return ["Cash", "Credit", "Prepaid"];
   }
 
   List<Map> _getCashInformation() {
@@ -100,7 +100,7 @@ class StockHelper {
       },
       {
         "heading": "Money Given",
-        "required": double,
+        "required": true,
         "keyboardType": TextInputType.number,
         "dataType": int,
         "fieldName": "moneyGiven",
@@ -126,38 +126,6 @@ class StockHelper {
     ];
   }
 
-  List<Map> _getReturnInformation() {
-    return [
-      {
-        "heading": "Material Name",
-        "required": true,
-        "dataType": String,
-        "fieldName": "materialName",
-      },
-      {
-        "heading": "Returned Quantity",
-        "required": true,
-        "quantityOption": true,
-        "keyboardType": TextInputType.number,
-        "dataType": double,
-        "fieldName": "returnedQuantity",
-      },
-      {
-        "heading": "Returned Amount",
-        "required": true,
-        "keyboardType": TextInputType.number,
-        "dataType": double,
-        "fieldName": "returnedAmount",
-      },
-      {
-        "heading": "Description",
-        "required": false,
-        "dataType": String,
-        "fieldName": "description",
-      },
-    ];
-  }
-
   List<Map> getInformation({required String transactionType}) {
     switch (transactionType.toLowerCase()) {
       case "cash":
@@ -169,9 +137,6 @@ class StockHelper {
       case "prepaid":
         return _getPrepaidInformation();
 
-      case "return":
-        return _getReturnInformation();
-
       default:
         return [];
     }
@@ -181,6 +146,8 @@ class StockHelper {
   List<String> getBlacklistedHeading() {
     return <String>[
       "broughtQuantityType",
+      "creditorInformation",
+      "debtorInformation",
     ];
   }
 
