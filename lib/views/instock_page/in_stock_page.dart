@@ -4,6 +4,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
+import 'package:merostore_mobile/providers/currently_selected_store_provider.dart';
 import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
@@ -35,6 +36,10 @@ class _InStockPageState extends ConsumerState<InStockPage> {
     List<StockModel> stocks =
         ref.watch(stocksProvider); // listening for any changes
 
+    Map<String, dynamic> selectedStore = ref.watch(selectedStoreProvider);
+
+    log("Selected store: $selectedStore");
+
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
@@ -46,6 +51,7 @@ class _InStockPageState extends ConsumerState<InStockPage> {
               flexibleSpace: CustomDropDownBtn(
                 tooltip: "Store selection",
                 options: storesProv.allStoresNames,
+                initialValue: selectedStore["stock"],
                 onTap: (val) {},
               ),
               actions: [
@@ -104,6 +110,7 @@ class _InStockPageState extends ConsumerState<InStockPage> {
                       (index) => DataRow2(
                             onTap: () => changeSelectedIndex(index),
                             onDoubleTap: () {
+                              log(stocks[index].toJSON().toString());
                               showDialog(
                                   context: context,
                                   builder: (_) => RecordViewDialog(

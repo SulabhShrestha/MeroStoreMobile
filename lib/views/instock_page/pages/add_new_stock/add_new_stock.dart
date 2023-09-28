@@ -36,7 +36,7 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
 
   // Transaction type related
   String _currentTransactionType = "";
-  List<String> _allTransactionTypes = [];
+  List<String> _allTransactionTypes = ["Cash", "Credit"];
 
   // quantity type related
   String _currentQuantityType = "";
@@ -57,8 +57,6 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
     _currentStoreName = storesProv.allStoresNames.first;
 
     // Transaction types
-    _allTransactionTypes =
-        storesProv.allTransactionTypes(storeName: _currentStoreName);
     _currentTransactionType = _allTransactionTypes.first;
 
     // Handling related to form data
@@ -245,23 +243,25 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
 
                             // User didn't added required fields
                             if (userInput["redFlag"]) {
-                              SnackBarMessage().showMessage(context, userInput["flagDesc"]);
-
+                              SnackBarMessage()
+                                  .showMessage(context, userInput["flagDesc"]);
                             }
                             // User has inserted required fields
                             else {
                               StockViewModel().addNewStock(
                                 userInput: userInput["userInput"],
                                 onStockAdded: (addedStock) {
-
                                   stocksProv.addStock(addedStock);
-                                  SnackBarMessage().showMessage(context, "Stock added successfully.");
+                                  SnackBarMessage().showMessage(
+                                      context, "Stock added successfully.");
                                   Navigator.of(context).pop();
                                 },
                                 onUpdated: (updatedStock) {
-                                  SnackBarMessage().showMessage(context, "Stock updated successfully.");
+                                  SnackBarMessage().showMessage(
+                                      context, "Stock updated successfully.");
                                   stocksProv.updateStockById(
-                                      id: updatedStock["_id"], data: updatedStock);
+                                      id: updatedStock["_id"],
+                                      data: updatedStock);
                                   Navigator.of(context).pop();
                                 },
                                 onFailure: () {

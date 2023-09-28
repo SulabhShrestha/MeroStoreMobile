@@ -82,50 +82,6 @@ class StockHelper {
     ];
   }
 
-  List<Map> _getPrepaidInformation() {
-    return [
-      {
-        "heading": "Material Name",
-        "required": true,
-        "dataType": String,
-        "fieldName": "materialName",
-      },
-      {
-        "heading": "For Quantity",
-        "required": true,
-        "quantityOption": true,
-        "keyboardType": TextInputType.number,
-        "dataType": double,
-        "fieldName": "forQuantity",
-      },
-      {
-        "heading": "Money Given",
-        "required": true,
-        "keyboardType": TextInputType.number,
-        "dataType": int,
-        "fieldName": "moneyGiven",
-      },
-      {
-        "heading": "Debtor's Name",
-        "required": true,
-        "dataType": String,
-        "fieldName": "debtorName",
-      },
-      {
-        "heading": "Debtor's Information",
-        "required": false,
-        "dataType": String,
-        "fieldName": "debtorInformation",
-      },
-      {
-        "heading": "Description",
-        "required": false,
-        "dataType": String,
-        "fieldName": "description",
-      },
-    ];
-  }
-
   List<Map> getInformation({required String transactionType}) {
     switch (transactionType.toLowerCase()) {
       case "cash":
@@ -133,9 +89,6 @@ class StockHelper {
 
       case "credit":
         return _getCreditInformation();
-
-      case "prepaid":
-        return _getPrepaidInformation();
 
       default:
         return [];

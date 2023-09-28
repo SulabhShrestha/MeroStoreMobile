@@ -92,8 +92,10 @@ class CustomCard extends StatelessWidget {
 
   _displayingStock() {
     String materialName = stockModel!.details["materialName"];
-    var totalBroughtQty = stockModel!.details["broughtQuantity"];
-    var totalPrice = stockModel!.details["totalPrice"];
+    var totalBroughtQty = stockModel!.details["broughtQuantity"] ??
+        stockModel!.details["forQuantity"];
+    var totalPrice =
+        stockModel!.details["totalPrice"] ?? stockModel!.details["totalPrice"];
     String avgPrice =
         ((totalPrice / totalBroughtQty) as double).formatWithIntegerCheck();
     String broughtQuantityType = stockModel!.details["broughtQuantityType"];

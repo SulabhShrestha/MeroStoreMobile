@@ -27,6 +27,10 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
     return state.firstWhere((stock) => stock.id == id);
   }
 
+  List<StockModel> getStocksByStoreName(String storeName) {
+    return state.where((stock) => stock.storeName == storeName).toList();
+  }
+
   void updateStockById(
       {required String id, required Map<String, dynamic> data}) {
     log("Data; $data");

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/models/store_model.dart';
+import 'package:merostore_mobile/providers/currently_selected_store_provider.dart';
 import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
@@ -64,6 +65,11 @@ class _RootPageState extends ConsumerState<RootPage> {
         stocksProv.addStock(stock);
       }
     }
+
+    // adding initial selected store to all location
+    ref
+        .read(selectedStoreProvider.notifier)
+        .setAllSelectedStore(allStores.first.storeName);
 
     setState(() => showLoading = false);
   }
