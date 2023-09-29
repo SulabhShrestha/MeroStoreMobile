@@ -52,20 +52,6 @@ class SalesWebServices {
   /// Returns desc (in desc) if any type of error is occurred
   Future<Map<String, dynamic>> addNew(
       {required Map<String, dynamic> salesRecord}) async {
-    try {
-      await _validateQuantity(
-        materialName: salesRecord["details"]["Material Name"],
-        storeName: salesRecord["Store Name"],
-        quantitySold: salesRecord["details"][
-            "Brought Quantity"], //TODO: should be sold quantity, had to look for this
-      );
-    } on CustomException catch (e) {
-      return {
-        "isAdded": false,
-        "desc": e.message,
-      }; // Material not present, so returning false
-    }
-
     var token = await LocalStorageServices().getId();
 
     final response = await http.post(

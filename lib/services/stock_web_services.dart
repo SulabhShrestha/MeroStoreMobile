@@ -48,7 +48,10 @@ class StockWebServices {
   }
 
   /// Updates the stock
-  Future<Response> updateStock({required String storeId, required String stockId, required Map<String, dynamic> userInput}) async{
+  Future<Response> updateStock(
+      {required String storeId,
+      required String stockId,
+      required Map<String, dynamic> userInput}) async {
     var token = await LocalStorageServices().getId();
     var url = "${_urls.allStocksUrl}/$storeId/$stockId";
     final response = await http.patch(
@@ -131,7 +134,8 @@ class StockWebServices {
   }
 
   /// Deletes the store
-  Future<int> deleteStock({required String storeId, required String stockId}) async {
+  Future<int> deleteStock(
+      {required String storeId, required String stockId}) async {
     var token = await LocalStorageServices().getId();
     var url = "${_urls.allStocksUrl}/$storeId/$stockId";
 

@@ -1,5 +1,3 @@
-
-
 import 'dart:developer';
 
 import 'package:data_table_2/data_table_2.dart';
@@ -9,9 +7,10 @@ import 'package:merostore_mobile/models/sales_model.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/view_models/sales_view_model.dart';
-import 'package:merostore_mobile/views/add_new_sales_transaction/add_new_sales_transaction.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
+
+import 'pages/add_new_sales_transaction/add_new_sales_transaction.dart';
 
 class TodaySoldPage extends ConsumerStatefulWidget {
   const TodaySoldPage({Key? key}) : super(key: key);
@@ -60,54 +59,87 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
             ),
           ];
         },
-        body: Listener(
-          onPointerDown: (event){
-            _tapPosition = event.position;
-          },
-          child: DataTable2(
-              columnSpacing: 12,
-              horizontalMargin: 12,
-              minWidth: 600,
-              columns: const [
-                DataColumn2(
-                  label: Text('Column A'),
-                  size: ColumnSize.L,
-                ),
-                DataColumn(
-                  label: Text('Column B'),
-                ),
-                DataColumn(
-                  label: Text('Column C'),
-                ),
-                DataColumn(
-                  label: Text('Column D'),
-                ),
-                DataColumn(
-                  label: Text('Column NUMBERS'),
-                  numeric: true,
-                ),
-              ],
-              rows: List<DataRow2>.generate(
-                  100,
-                  (index) => DataRow2(
+        body: Stack(
+          children: [
+            Listener(
+              onPointerDown: (event) {
+                _tapPosition = event.position;
+              },
+              child: DataTable2(
+                  columnSpacing: 12,
+                  horizontalMargin: 12,
+                  minWidth: 600,
+                  columns: const [
+                    DataColumn2(
+                      label: Text('Column A'),
+                      size: ColumnSize.L,
+                    ),
+                    DataColumn(
+                      label: Text('Column B'),
+                    ),
+                    DataColumn(
+                      label: Text('Column C'),
+                    ),
+                    DataColumn(
+                      label: Text('Column D'),
+                    ),
+                    DataColumn(
+                      label: Text('Column NUMBERS'),
+                      numeric: true,
+                    ),
+                  ],
+                  rows: List<DataRow2>.generate(
+                      100,
+                      (index) => DataRow2(
+                              onTap: () => changeSelectedIndex(index),
+                              onLongPress: () {
+                                // Show the popup menu
+                                _showPopupMenu(context);
+                              },
+                              color: index == selectedIndex
+                                  ? MaterialStateProperty.all(ConstantAppColors
+                                      .blueColor
+                                      .withOpacity(0.5))
+                                  : null,
+                              cells: [
+                                DataCell(Text('A' * (10 - index % 10))),
+                                DataCell(Text('B' * (10 - (index + 5) % 10))),
+                                DataCell(Text('C' * (15 - (index + 5) % 10))),
+                                DataCell(Text('D' * (15 - (index + 10) % 10))),
+                                DataCell(
+                                    Text(((index + 0.1) * 25.4).toString()))
+                              ]))),
+            ),
 
-                          onTap: () => changeSelectedIndex(index),
-                          onLongPress: () {
-                            // Show the popup menu
-                            _showPopupMenu(context);
-                          },
+            // add new transaction
+            Positioned(
+              right: 16,
+              bottom: 16,
+              child: AnimatedContainer(
+                width: 58,
+                height: 58,
+                duration: const Duration(milliseconds: 250),
+                child: FloatingActionButton(
+                  onPressed: () async {
+                    bool? result = await Navigator.of(context)
+                        .push<bool?>(MaterialPageRoute(
+                      builder: (_) => const AddNewSalesTransaction(),
+                    ));
 
-                          color: index == selectedIndex
-                              ? MaterialStateProperty.all(
-                                  ConstantAppColors.blueColor.withOpacity(0.5))
-                              : null,
-                          cells: [
-                            DataCell(Text('A' * (10 - index % 10))),
-                            DataCell(Text('B' * (10 - (index + 5) % 10))),
-                            DataCell(Text('C' * (15 - (index + 5) % 10))),
-                            DataCell(Text('D' * (15 - (index + 10) % 10))),
-                            DataCell(Text(((index + 0.1) * 25.4).toString()))
-                          ]))),
+                    if (result == true) {
+                      setState(() {
+                        newStockAdded = true;
+                      });
+                    }
+                  },
+                  tooltip: "Add new sales transaction",
+                  child: const Icon(
+                    Icons.add,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -132,11 +164,11 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
           MediaQuery.of(context).size.height - _tapPosition!.dy,
         ),
         items: [
-          PopupMenuItem(
+          const PopupMenuItem(
             child: Text('Edit'),
             value: 'edit',
           ),
-          PopupMenuItem(
+          const PopupMenuItem(
             child: Text('Delete'),
             value: 'delete',
           ),
@@ -149,70 +181,5 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
         }
       });
     }
-  }
-
-
-  Widget _previousSalesWidgets() {
-    return Stack(
-      children: [
-        // list of sales transactions
-        FutureBuilder(
-            future: newStockAdded ? fetchSalesRecords() : salesFuture,
-            builder: (context, snapshot) {
-              log("Fetching");
-              if (snapshot.hasData) {
-                if (snapshot.data!.isEmpty) {
-                  return const Center(
-                    child: Text("Nothing to display."),
-                  );
-                }
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      for (Sales element in snapshot.data!)
-                        CustomCard(
-                          displaying: "Stock",
-                        ),
-                    ],
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return const Center(
-                  child: Text("Something went wrong."),
-                );
-              }
-              return const Center(child: CircularProgressIndicator());
-            }),
-
-        // add new transaction
-        Positioned(
-          right: 16,
-          bottom: 16,
-          child: AnimatedContainer(
-            width: 58,
-            height: 58,
-            duration: const Duration(milliseconds: 250),
-            child: FloatingActionButton(
-              onPressed: () async {
-                bool? result =
-                    await Navigator.of(context).push<bool?>(MaterialPageRoute(
-                  builder: (_) => const AddNewSalesTransaction(),
-                ));
-
-                if (result == true) {
-                  setState(() {
-                    newStockAdded = true;
-                  });
-                }
-              },
-              tooltip: "Add new sales transaction",
-              child: const Icon(
-                Icons.add,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }

@@ -10,7 +10,6 @@ import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
 import 'package:merostore_mobile/view_models/sales_view_model.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
-import 'package:merostore_mobile/views/add_new_sales_transaction/utils/sales_helper.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_text_button.dart';
@@ -22,6 +21,7 @@ import 'package:merostore_mobile/views/core_widgets/snackbar_message.dart';
 import 'package:merostore_mobile/views/instock_page/pages/add_new_stock/widgets/required_marking.dart';
 import 'package:merostore_mobile/views/instock_page/utils/stock_helper.dart';
 
+import 'utils/sales_helper.dart';
 import 'widgets/textfield_with_suggestions.dart';
 
 class AddNewSalesTransaction extends ConsumerStatefulWidget {
