@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:merostore_mobile/extensions/string_extensions.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/providers/currently_selected_store_provider.dart';
+import 'package:merostore_mobile/providers/filter_stocks_provider.dart';
 import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
@@ -16,6 +18,7 @@ import 'package:merostore_mobile/views/instock_page/pages/edit_stock/edit_stock.
 import 'package:merostore_mobile/views/instock_page/widgets/record_view_dialog.dart';
 
 import 'pages/add_new_stock/add_new_stock.dart';
+import 'utils/stock_helper.dart';
 
 class InStockPage extends ConsumerStatefulWidget {
   const InStockPage({Key? key}) : super(key: key);
@@ -31,14 +34,15 @@ class _InStockPageState extends ConsumerState<InStockPage> {
   @override
   Widget build(BuildContext context) {
     final storesProv = ref.watch(storesProvider.notifier);
-    final stocksProv = ref.watch(stocksProvider.notifier);
 
-    List<StockModel> stocks =
-        ref.watch(stocksProvider); // listening for any changes
+    final selectedStoreProv =
+        ref.watch(currentlySelectedStoreProvider.notifier);
 
-    Map<String, dynamic> selectedStore = ref.watch(selectedStoreProvider);
+    // returns the filtered stocks based on currently selected store
+    final filteredStocksNotifier = ref.watch(filteredStocksProvider.notifier);
+    final filteredStocks = ref.watch(filteredStocksProvider);
 
-    log("Selected store: $selectedStore");
+    log("Filter: $filteredStocks");
 
     return Scaffold(
       body: NestedScrollView(
@@ -51,8 +55,11 @@ class _InStockPageState extends ConsumerState<InStockPage> {
               flexibleSpace: CustomDropDownBtn(
                 tooltip: "Store selection",
                 options: storesProv.allStoresNames,
-                initialValue: selectedStore["stock"],
-                onTap: (val) {},
+                initialValue: selectedStoreProv.state["stock"],
+                onTap: (val) {
+                  selectedStoreProv.setSelectedStore("stock", val);
+                  filteredStocksNotifier.filterStocks();
+                },
               ),
               actions: [
                 Material(
@@ -94,53 +101,59 @@ class _InStockPageState extends ConsumerState<InStockPage> {
               onPointerDown: (event) {
                 tapPosition = event.position;
               },
-              child: DataTable2(
-                  columnSpacing: 12,
-                  horizontalMargin: 12,
-                  minWidth: 500,
-                  columns: stocksProv.getUniqueProperties().map((prop) {
-                    return DataColumn2(
-                      label: Align(
-                          alignment: Alignment.center,
-                          child: Text(prop["heading"])),
-                    );
-                  }).toList(),
-                  rows: List<DataRow2>.generate(
-                      stocks.length,
-                      (index) => DataRow2(
-                            onTap: () => changeSelectedIndex(index),
-                            onDoubleTap: () {
-                              log(stocks[index].toJSON().toString());
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => RecordViewDialog(
-                                        stockModel: stocks[index],
-                                      ));
-                            },
-                            onLongPress: () {
-                              // Show the popup menu
-                              _showPopupMenu(context, stocks[index]);
-                            },
-                            color: index == selectedIndex
-                                ? MaterialStateProperty.all(ConstantAppColors
-                                    .blueColor
-                                    .withOpacity(0.5))
-                                : null,
-                            cells: stocksProv.getUniqueProperties().map((prop) {
-                              final value =
-                                  stocks[index].details[prop["fieldName"]];
-                              return DataCell(
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    value != null
-                                        ? '$value'
-                                        : '-', // Convert to string or use an empty string if null
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ))),
+              child: filteredStocks.isEmpty
+                  ? const Text("Nothing to display.")
+                  : DataTable2(
+                      columnSpacing: 12,
+                      horizontalMargin: 12,
+                      minWidth: 500,
+                      columns: filteredStocksNotifier
+                          .getUniqueProperties()
+                          .map((prop) {
+                        return DataColumn2(
+                          label: Align(
+                              alignment: Alignment.center,
+                              child: Text(prop["heading"])),
+                        );
+                      }).toList(),
+                      rows: List<DataRow2>.generate(
+                          filteredStocks.length,
+                          (index) => DataRow2(
+                                onTap: () => changeSelectedIndex(index),
+                                onDoubleTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) => RecordViewDialog(
+                                            stockModel: filteredStocks[index],
+                                          ));
+                                },
+                                onLongPress: () {
+                                  // Show the popup menu
+                                  _showPopupMenu(
+                                      context, filteredStocks[index]);
+                                },
+                                color: index == selectedIndex
+                                    ? MaterialStateProperty.all(
+                                        ConstantAppColors.blueColor
+                                            .withOpacity(0.5))
+                                    : null,
+                                cells: filteredStocksNotifier
+                                    .getUniqueProperties()
+                                    .map((prop) {
+                                  final value = filteredStocks[index]
+                                      .details[prop["fieldName"]];
+                                  return DataCell(
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        value != null
+                                            ? '$value'
+                                            : '-', // Convert to string or use an empty string if null
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ))),
             ),
 
             // add new transaction

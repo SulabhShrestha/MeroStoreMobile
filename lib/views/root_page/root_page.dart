@@ -4,6 +4,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/providers/currently_selected_store_provider.dart';
+import 'package:merostore_mobile/providers/filter_stocks_provider.dart';
 import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
@@ -32,13 +33,15 @@ class _RootPageState extends ConsumerState<RootPage> {
 
   @override
   void initState() {
-    fetchNecessary();
-    _pagesList = const [
-      TodaySoldPage(),
-      SummaryPage(),
-      InStockPage(),
-      OtherPage(),
-    ];
+    fetchNecessary().then((value) {
+      _pagesList = const [
+        TodaySoldPage(),
+        SummaryPage(),
+        InStockPage(),
+        OtherPage(),
+      ];
+    });
+
     super.initState();
   }
 
@@ -48,8 +51,8 @@ class _RootPageState extends ConsumerState<RootPage> {
     var allStores = await StoreViewModel().getAllStores();
     var allStocks = await StockViewModel().getAllStocks();
 
-    var storesProv = ref.read(storesProvider.notifier);
-    var stocksProv = ref.read(stocksProvider.notifier);
+    var storesProv = ref.watch(storesProvider.notifier);
+    var stocksProv = ref.watch(stocksProvider.notifier);
 
     // Check if the data needs to be updated
     if (storesProv.state.isEmpty) {
@@ -68,8 +71,11 @@ class _RootPageState extends ConsumerState<RootPage> {
 
     // adding initial selected store to all location
     ref
-        .read(selectedStoreProvider.notifier)
+        .watch(currentlySelectedStoreProvider.notifier)
         .setAllSelectedStore(allStores.first.storeName);
+
+    // a
+    ref.read(filteredStocksProvider.notifier).filterStocks();
 
     setState(() => showLoading = false);
   }

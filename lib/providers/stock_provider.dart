@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/extensions/string_extensions.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/models/store_model.dart';
+import 'package:merostore_mobile/providers/currently_selected_store_provider.dart';
 import 'package:merostore_mobile/views/instock_page/utils/stock_helper.dart';
 
 final stocksProvider =
@@ -27,7 +28,8 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
     return state.firstWhere((stock) => stock.id == id);
   }
 
-  List<StockModel> getStocksByStoreName(String storeName) {
+  List<StockModel> getStocksByStore(String storeName) {
+    log("Getting stock");
     return state.where((stock) => stock.storeName == storeName).toList();
   }
 
@@ -68,36 +70,5 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
   /// checks if currently adding store is already added
   bool contains(String storeName) {
     return state.any((store) => store.storeName == storeName);
-  }
-
-  // returns the map of unique properties along with additional information of the stock,
-  // used for heading of the table
-  List<Map<String, dynamic>> getUniqueProperties() {
-    // Extract details and collect unique property names
-    Set<String> propertyNames = <String>{};
-    for (var stock in state) {
-      propertyNames.addAll(stock.details.keys);
-    }
-
-    List<Map<String, dynamic>> transformedProperties = [];
-
-    // Split camelCase and join with spaces
-    for (var propertyName in propertyNames) {
-      List<String> words = [];
-
-      // skip blacklisted properties to be added to the heading
-      if (StockHelper().getBlacklistedHeading().contains(propertyName)) {
-        continue;
-      }
-      transformedProperties.add({
-        "heading": propertyName.camelCaseToWords(),
-        "fieldName": propertyName,
-        "numeric": StockHelper()
-            .getHeadingContainingNumericValue()
-            .contains(propertyName),
-      });
-    }
-
-    return transformedProperties;
   }
 }
