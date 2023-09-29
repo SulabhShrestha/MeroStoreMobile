@@ -42,8 +42,6 @@ class _InStockPageState extends ConsumerState<InStockPage> {
     final filteredStocksNotifier = ref.watch(filteredStocksProvider.notifier);
     final filteredStocks = ref.watch(filteredStocksProvider);
 
-    log("Filter: $filteredStocks");
-
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,

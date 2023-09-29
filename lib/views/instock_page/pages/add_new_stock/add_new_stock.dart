@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:merostore_mobile/providers/currently_selected_store_provider.dart';
+import 'package:merostore_mobile/providers/filter_stocks_provider.dart';
 import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
@@ -108,6 +110,8 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
                           CustomDropDownBtn(
                             options: storesProv.allStoresNames,
                             tooltip: "Store selection",
+                            initialValue: ref
+                                .read(currentlySelectedStoreProvider)["stock"],
                             onTap: (storeName) {
                               Map<String, dynamic> previousUserInput =
                                   {}; // for storing previously added data
