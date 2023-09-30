@@ -5,6 +5,7 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:merostore_mobile/extensions/double_extension.dart';
 import 'package:merostore_mobile/extensions/string_extensions.dart';
+import 'package:merostore_mobile/models/sales_model.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/models/store_model.dart';
 import 'package:merostore_mobile/views/core_widgets/bold_first_word_from_text.dart';
@@ -12,7 +13,7 @@ import 'package:merostore_mobile/views/core_widgets/edit_delete_button.dart';
 
 /// This card is responsible for displaying for stock, store and sales transaction
 class CustomCard extends StatelessWidget {
-  /// What to display, "Stock" or "Store"
+  /// What to display, "Stock", "Store" or "Sales
   final String displaying;
 
   // for displaying store data,
@@ -20,6 +21,9 @@ class CustomCard extends StatelessWidget {
 
   // for displaying stocks
   final StockModel? stockModel;
+
+  // for displaying sales
+  final SalesModel? salesModel;
 
   // Display delete button or not from [EditDeleteButton]
   final bool enableDeleteOption;
@@ -29,6 +33,7 @@ class CustomCard extends StatelessWidget {
     this.enableDeleteOption = true,
     this.storeModel,
     this.stockModel,
+    this.salesModel,
     required this.displaying,
   }) : super(key: key);
 
@@ -71,6 +76,16 @@ class CustomCard extends StatelessWidget {
                   ),
                 ],
               ),
+
+            if (displaying == "Sales")
+              Row(
+                children: [
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: _displayingSales()),
+                ],
+              ),
           ],
         ),
       ),
@@ -87,6 +102,51 @@ class CustomCard extends StatelessWidget {
       BoldFirstWordFromText(
           boldWord: "Transaction Type",
           normalWord: storeModel!.transactionTypes.toString()),
+    ];
+  }
+
+  _displayingSales() {
+    String materialName = salesModel!.details["materialName"];
+
+    double totalSoldQuantity = (salesModel!.details["soldQuantity"] ??
+            salesModel!.details["forQuantity"])
+        .toDouble();
+
+    // since this is already captured
+    // and details might have other info such as creditor or debtor name, info, description etc
+    List<String> blacklistedFields = [
+      "materialName",
+      "broughtQuantity",
+      "soldQuantityType",
+      "soldQuantity"
+    ];
+
+    var widgetList = <Widget>[];
+    for (var key in salesModel!.details.keys) {
+      if (!blacklistedFields.contains(key)) {
+        widgetList.add(
+          BoldFirstWordFromText(
+            boldWord: key.camelCaseToWords(),
+            normalWord: salesModel!.details[key].toString(),
+          ),
+        );
+      }
+    }
+
+    return [
+      Text(salesModel!.transactionType),
+      BoldFirstWordFromText(
+        boldWord: "Material Name:",
+        normalWord: materialName,
+      ),
+      BoldFirstWordFromText(
+        boldWord: "Total Sold:",
+        normalWord:
+            "$totalSoldQuantity ${salesModel!.details["soldQuantityType"]}",
+      ),
+
+      // displaying other details
+      ...widgetList,
     ];
   }
 

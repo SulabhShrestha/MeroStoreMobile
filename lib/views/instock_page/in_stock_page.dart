@@ -15,7 +15,7 @@ import 'package:merostore_mobile/view_models/stock_view_model.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 import 'package:merostore_mobile/views/core_widgets/snackbar_message.dart';
 import 'package:merostore_mobile/views/instock_page/pages/edit_stock/edit_stock.dart';
-import 'package:merostore_mobile/views/instock_page/widgets/record_view_dialog.dart';
+import 'package:merostore_mobile/views/core_widgets/record_view_dialog.dart';
 
 import 'pages/add_new_stock/add_new_stock.dart';
 import 'utils/stock_helper.dart';
@@ -122,6 +122,7 @@ class _InStockPageState extends ConsumerState<InStockPage> {
                                   showDialog(
                                       context: context,
                                       builder: (_) => RecordViewDialog(
+                                            displaying: "Stock",
                                             stockModel: filteredStocks[index],
                                           ));
                                 },

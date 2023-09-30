@@ -11,6 +11,7 @@ import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/view_models/sales_view_model.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
+import 'package:merostore_mobile/views/core_widgets/record_view_dialog.dart';
 
 import 'pages/add_new_sales_transaction/add_new_sales_transaction.dart';
 
@@ -96,7 +97,14 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
                         filteredSales.length,
                         (index) => DataRow2(
                           onTap: () => changeSelectedIndex(index),
-                          onDoubleTap: () {},
+                          onDoubleTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) => RecordViewDialog(
+                                      salesModel: filteredSales[index],
+                                      displaying: "Sales",
+                                    ));
+                          },
                           onLongPress: () {
                             // Show the popup menu
                             _showPopupMenu(context);

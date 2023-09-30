@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:merostore_mobile/models/sales_model.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/view_models/stock_view_model.dart';
@@ -11,10 +12,14 @@ import 'package:merostore_mobile/views/instock_page/pages/edit_stock/edit_stock.
 /// Displays record in a dialog form
 class RecordViewDialog extends ConsumerWidget {
   final StockModel? stockModel;
+  final SalesModel? salesModel;
+  final String displaying;
 
   const RecordViewDialog({
     super.key,
-    required this.stockModel,
+    this.stockModel,
+    this.salesModel,
+    required this.displaying,
   });
 
   @override
@@ -62,7 +67,11 @@ class RecordViewDialog extends ConsumerWidget {
           ),
 
           // record details
-          CustomCard(displaying: "Stock", stockModel: stockModel),
+          CustomCard(
+            displaying: displaying,
+            stockModel: stockModel,
+            salesModel: salesModel,
+          ),
         ],
       ),
     );
