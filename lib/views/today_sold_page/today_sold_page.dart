@@ -4,6 +4,8 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/sales_model.dart';
+import 'package:merostore_mobile/providers/currently_selected_store_provider.dart';
+import 'package:merostore_mobile/providers/filter_sales_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/view_models/sales_view_model.dart';
@@ -20,7 +22,7 @@ class TodaySoldPage extends ConsumerStatefulWidget {
 }
 
 class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
-  late Future<List<Sales>> salesFuture;
+  late Future<List<SalesModel>> salesFuture;
   bool newStockAdded = false;
 
   Offset? _tapPosition;
@@ -32,7 +34,7 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
   }
 
   // when any update is taken place
-  Future<List<Sales>> fetchSalesRecords() async {
+  Future<List<SalesModel>> fetchSalesRecords() async {
     final stocks = await SalesViewModel().getAllSales();
     return stocks;
   }
@@ -42,6 +44,13 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
   @override
   Widget build(BuildContext context) {
     StoreNotifier storesProv = ref.read(storesProvider.notifier);
+
+    final selectedStoreProv =
+        ref.watch(currentlySelectedStoreProvider.notifier);
+
+    // returns the filtered stocks based on currently selected store
+    final filteredSalesNotifier = ref.watch(filteredSalesProvider.notifier);
+    final filteredSales = ref.watch(filteredSalesProvider);
 
     return Scaffold(
       body: NestedScrollView(
@@ -54,7 +63,10 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
               flexibleSpace: CustomDropDownBtn(
                 tooltip: "Store selection",
                 options: storesProv.allStoresNames,
-                onTap: (val) {},
+                onTap: (val) {
+                  selectedStoreProv.setSelectedStore("stock", val);
+                  filteredSalesNotifier.filterSales();
+                },
               ),
             ),
           ];
@@ -65,50 +77,52 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
               onPointerDown: (event) {
                 _tapPosition = event.position;
               },
-              child: DataTable2(
-                  columnSpacing: 12,
-                  horizontalMargin: 12,
-                  minWidth: 600,
-                  columns: const [
-                    DataColumn2(
-                      label: Text('Column A'),
-                      size: ColumnSize.L,
-                    ),
-                    DataColumn(
-                      label: Text('Column B'),
-                    ),
-                    DataColumn(
-                      label: Text('Column C'),
-                    ),
-                    DataColumn(
-                      label: Text('Column D'),
-                    ),
-                    DataColumn(
-                      label: Text('Column NUMBERS'),
-                      numeric: true,
-                    ),
-                  ],
-                  rows: List<DataRow2>.generate(
-                      100,
-                      (index) => DataRow2(
-                              onTap: () => changeSelectedIndex(index),
-                              onLongPress: () {
-                                // Show the popup menu
-                                _showPopupMenu(context);
-                              },
-                              color: index == selectedIndex
-                                  ? MaterialStateProperty.all(ConstantAppColors
-                                      .blueColor
-                                      .withOpacity(0.5))
-                                  : null,
-                              cells: [
-                                DataCell(Text('A' * (10 - index % 10))),
-                                DataCell(Text('B' * (10 - (index + 5) % 10))),
-                                DataCell(Text('C' * (15 - (index + 5) % 10))),
-                                DataCell(Text('D' * (15 - (index + 10) % 10))),
-                                DataCell(
-                                    Text(((index + 0.1) * 25.4).toString()))
-                              ]))),
+              child: filteredSales.isEmpty
+                  ? const Text("Nothing to display.")
+                  : DataTable2(
+                      columnSpacing: 12,
+                      horizontalMargin: 12,
+                      minWidth: 600,
+                      columns: filteredSalesNotifier
+                          .getUniqueProperties()
+                          .map((prop) {
+                        return DataColumn2(
+                          label: Align(
+                              alignment: Alignment.center,
+                              child: Text(prop["heading"])),
+                        );
+                      }).toList(),
+                      rows: List<DataRow2>.generate(
+                        filteredSales.length,
+                        (index) => DataRow2(
+                          onTap: () => changeSelectedIndex(index),
+                          onDoubleTap: () {},
+                          onLongPress: () {
+                            // Show the popup menu
+                            _showPopupMenu(context);
+                          },
+                          color: index == selectedIndex
+                              ? MaterialStateProperty.all(
+                                  ConstantAppColors.blueColor.withOpacity(0.5))
+                              : null,
+                          cells: filteredSalesNotifier
+                              .getUniqueProperties()
+                              .map((prop) {
+                            final value =
+                                filteredSales[index].details[prop["fieldName"]];
+                            return DataCell(
+                              Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  value != null
+                                      ? '$value'
+                                      : '-', // Convert to string or use an empty string if null
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      )),
             ),
 
             // add new transaction

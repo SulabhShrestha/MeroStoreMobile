@@ -20,8 +20,8 @@ import 'package:merostore_mobile/views/core_widgets/snackbar_message.dart';
 
 import 'package:merostore_mobile/views/instock_page/pages/add_new_stock/widgets/required_marking.dart';
 import 'package:merostore_mobile/views/instock_page/utils/stock_helper.dart';
+import 'package:merostore_mobile/views/today_sold_page/utils/sales_helper.dart';
 
-import 'utils/sales_helper.dart';
 import 'widgets/textfield_with_suggestions.dart';
 
 class AddNewSalesTransaction extends ConsumerStatefulWidget {

@@ -25,8 +25,6 @@ class StoreWebServices {
       body: json.encode(newStore),
     );
     if (response.statusCode == 201) {
-      log("Response res: $newStore");
-
       return {
         "isSaved": true,
         "savedStore": StoreModel.fromJSON(jsonDecode(response.body))
@@ -64,7 +62,7 @@ class StoreWebServices {
     } else {
       log("Something went wrong${response.reasonPhrase} ${response.statusCode}");
     }
-    log("Response: $stocks");
+
     return stocks;
   }
 

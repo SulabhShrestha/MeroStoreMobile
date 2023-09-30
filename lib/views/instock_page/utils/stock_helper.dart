@@ -101,6 +101,7 @@ class StockHelper {
       "broughtQuantityType",
       "creditorInformation",
       "debtorInformation",
+      "description"
     ];
   }
 

@@ -25,7 +25,8 @@ class SalesViewModel {
   }
 
   /// Return all the sales record
-  Future<List<Sales>> getAllSales({ArrangementOrder? arrangementOrder}) async {
+  Future<List<SalesModel>> getAllSales(
+      {ArrangementOrder? arrangementOrder}) async {
     var allSalesRecord = await _salesWebServices.getAllSalesRecords();
 
     if (arrangementOrder == null) {

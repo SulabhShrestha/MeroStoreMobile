@@ -18,7 +18,7 @@ class SalesWebServices {
   final _urls = UrlsConstant();
 
   /// Returns all the sales record
-  Future<List<Sales>> getAllSalesRecords() async {
+  Future<List<SalesModel>> getAllSalesRecords() async {
     var token = await LocalStorageServices().getId();
     final response = await http.get(
       Uri.parse(_urls.allSalesUrl),
@@ -28,18 +28,15 @@ class SalesWebServices {
       },
     );
 
-    List<Sales> sales = [];
+    List<SalesModel> sales = [];
 
     if (response.statusCode == 200) {
-      log("Response: ${response.body}");
       for (Map<String, dynamic> elem in jsonDecode(response.body)) {
-        sales.add(Sales.fromJSON(elem));
+        sales.add(SalesModel.fromJSON(elem));
       }
     } else {
       log("Something went wrong");
     }
-
-    log("Sales records: $sales");
 
     return sales;
   }

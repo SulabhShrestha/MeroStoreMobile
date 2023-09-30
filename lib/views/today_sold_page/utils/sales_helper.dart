@@ -236,4 +236,27 @@ class SalesHelper {
         return [];
     }
   }
+
+  // heading that is not to be displayed
+  List<String> getBlacklistedHeading() {
+    return <String>[
+      "soldQuantityType",
+      "creditorInformation",
+      "debtorInformation",
+      "description"
+    ];
+  }
+
+  // returns heading that will contains numeric values
+  List<String> getHeadingContainingNumericValue() {
+    return <String>[
+      "soldQuantity",
+      "totalPrice",
+      "forQuantity",
+      "moneyGiven",
+      "returnedQuantity",
+      "returnedAmount",
+      "amount",
+    ];
+  }
 }

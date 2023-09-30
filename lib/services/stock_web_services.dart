@@ -29,8 +29,6 @@ class StockWebServices {
 
     // created
     if (response.statusCode == 201) {
-      log("Response: $response");
-
       return {
         "isSaved": true,
         "data": StockModel.fromJSON(jsonDecode(response.body))
@@ -80,7 +78,6 @@ class StockWebServices {
     List<StockModel> stocks = [];
 
     if (response.statusCode == 200) {
-      log("Response: ${response.body}");
       for (Map<String, dynamic> elem in jsonDecode(response.body)) {
         stocks.add(StockModel.fromJSON(elem));
       }
@@ -105,7 +102,6 @@ class StockWebServices {
     List<String> names = [];
 
     if (response.statusCode == 200) {
-      log("Response: ${response.body}");
       for (String elem in jsonDecode(response.body)) {
         names.add(elem);
       }
