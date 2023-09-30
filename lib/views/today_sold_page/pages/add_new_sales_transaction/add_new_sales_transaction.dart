@@ -65,7 +65,7 @@ class _AddNewSalesTransactionState
 
     // Handling related to form data
     allFormFields =
-        StockHelper().getInformation(transactionType: _currentTransactionType);
+        SalesHelper().getInformation(transactionType: _currentTransactionType);
 
     // Initialize controllers based on initial transaction type
     for (Map elem in allFormFields) {
@@ -342,12 +342,12 @@ class _AddNewSalesTransactionState
     String flagDesc = ""; // cause of red flag
 
     Map<String, dynamic> salesRecord = {};
-    Map<String, dynamic> details = {}; // holds all stock details
+    Map<String, dynamic> details = {}; // holds all sales details
 
-    salesRecord["Transaction Type"] = _currentTransactionType;
-    salesRecord["Store Name"] = _currentStoreName;
+    salesRecord["transactionType"] = _currentTransactionType;
+    salesRecord["storeName"] = _currentStoreName;
 
-    details["Sold Quantity"] = _currentQuantityType;
+    details["soldQuantityType"] = _currentQuantityType;
 
     // length of controllers and allFormFields is same.
     for (int i = 0; i < allFormFields.length; i++) {
@@ -369,7 +369,7 @@ class _AddNewSalesTransactionState
               flagDesc = MessagesConstant().invalidPrice;
               break;
             }
-            details[elem["heading"]] = data;
+            details[elem["fieldName"]] = data;
 
             continue; // No need to check other conditions
           } catch (e) {
@@ -387,7 +387,7 @@ class _AddNewSalesTransactionState
               flagDesc = MessagesConstant().invalidPrice;
               break;
             }
-            details[elem["heading"]] = data;
+            details[elem["fieldName"]] = data;
 
             continue; // No need to check other conditions
           } catch (e) {
@@ -400,7 +400,7 @@ class _AddNewSalesTransactionState
 
       // User has entered important field
       if (isRequired && value.isNotEmpty) {
-        details[elem["heading"]] = value;
+        details[elem["fieldName"]] = value;
       }
 
       // User hasn't entered important field
@@ -412,7 +412,7 @@ class _AddNewSalesTransactionState
 
       // User has entered not important field such as description
       else if (value.isNotEmpty) {
-        details[elem["heading"]] = value;
+        details[elem["fieldName"]] = value;
       }
     }
 
