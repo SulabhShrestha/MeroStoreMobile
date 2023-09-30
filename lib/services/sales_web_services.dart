@@ -56,8 +56,12 @@ class SalesWebServices {
       headers: {..._urls.headers, "Authorization": token},
       body: json.encode(salesRecord),
     );
+
     if (response.statusCode == 201) {
-      return {"isAdded": true};
+      return {
+        "isAdded": true,
+        "data": SalesModel.fromJSON(jsonDecode(response.body))
+      };
     } else {
       return {
         "isAdded": false,
@@ -102,5 +106,18 @@ class SalesWebServices {
       }
       log("catch: $e");
     }
+  }
+
+  /// Deletes the sales record
+  Future<int> deleteSales(
+      {required String storeId, required String salesId}) async {
+    var token = await LocalStorageServices().getId();
+
+    final response = await http.delete(
+      Uri.parse("${_urls.allSalesUrl}$storeId/$salesId"),
+      headers: {..._urls.headers, "Authorization": token},
+    );
+
+    return response.statusCode;
   }
 }

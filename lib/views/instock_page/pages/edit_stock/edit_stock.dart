@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
+import 'package:merostore_mobile/providers/filter_stocks_provider.dart';
 import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
@@ -223,9 +224,11 @@ class _AddNewStockState extends ConsumerState<EditStock> {
                                       stockId: widget.stockModel.id,
                                       userInput: userInput["userInput"])
                                   .then((value) {
-
-                                    stocksProv.updateStockById(id: widget.stockModel.id, data: value);
-
+                                stocksProv.updateStockById(
+                                    id: widget.stockModel.id, data: value);
+                                ref
+                                    .read(filteredStocksProvider.notifier)
+                                    .filterStocks();
                                 SnackBarMessage().showMessage(
                                     context, "Stock updated successfully.");
                                 Navigator.of(context).pop();

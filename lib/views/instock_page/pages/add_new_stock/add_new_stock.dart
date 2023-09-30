@@ -256,17 +256,23 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
                                 userInput: userInput["userInput"],
                                 onStockAdded: (addedStock) {
                                   stocksProv.addStock(addedStock);
+                                  ref
+                                      .read(filteredStocksProvider.notifier)
+                                      .filterStocks();
                                   SnackBarMessage().showMessage(
                                       context, "Stock added successfully.");
                                   Navigator.of(context).pop();
                                 },
                                 onUpdated: (updatedStock) {
-                                  SnackBarMessage().showMessage(
-                                      context, "Stock updated successfully.");
                                   stocksProv.updateStockById(
                                       id: updatedStock["_id"],
                                       data: updatedStock);
+                                  ref
+                                      .read(filteredStocksProvider.notifier)
+                                      .filterStocks();
                                   Navigator.of(context).pop();
+                                  SnackBarMessage().showMessage(
+                                      context, "Stock updated successfully.");
                                 },
                                 onFailure: () {
                                   ScaffoldMessenger.of(context).showSnackBar(

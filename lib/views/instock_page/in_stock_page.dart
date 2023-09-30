@@ -219,6 +219,7 @@ class _InStockPageState extends ConsumerState<InStockPage> {
                   .then((value) {
                 // deleting from local
                 ref.read(stocksProvider.notifier).deleteStore(model.id);
+                ref.read(filteredStocksProvider.notifier).filterStocks();
                 SnackBarMessage().showMessage(context, "Deleted successfully");
               }).onError((error, stackTrace) {
                 SnackBarMessage().showMessage(context, error.toString());

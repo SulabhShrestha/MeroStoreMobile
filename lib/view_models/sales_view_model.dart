@@ -9,19 +9,17 @@ class SalesViewModel {
   final _salesWebServices = SalesWebServices();
 
   /// Add new sales to the database
-  Future<void> addNewSales({
+  Future<SalesModel> addNewSales({
     required Map<String, dynamic> userInput,
-    required VoidCallback onStockAdded,
-    required Function(String) onFailure,
   }) async {
     Map<String, dynamic> res =
         await _salesWebServices.addNew(salesRecord: userInput);
 
     if (res["isAdded"]) {
-      onStockAdded();
-    } else {
-      onFailure(res["desc"]);
+      return res["data"];
     }
+
+    throw res["desc"];
   }
 
   /// Return all the sales record
@@ -40,5 +38,18 @@ class SalesViewModel {
     // descending
     return allSalesRecord
         .sortedByDescending((sales) => sales.details["Total Price"]);
+  }
+
+  /// deletes the sales record
+  Future<void> deleteSales({
+    required String storeId,
+    required String salesId,
+  }) async {
+    int statusCode =
+        await _salesWebServices.deleteSales(storeId: storeId, salesId: salesId);
+
+    if (statusCode == 404) {
+      throw "Sales record not found";
+    }
   }
 }

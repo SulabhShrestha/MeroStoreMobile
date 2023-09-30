@@ -6,12 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/sales_model.dart';
 import 'package:merostore_mobile/providers/currently_selected_store_provider.dart';
 import 'package:merostore_mobile/providers/filter_sales_provider.dart';
+import 'package:merostore_mobile/providers/sales_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/view_models/sales_view_model.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 import 'package:merostore_mobile/views/core_widgets/record_view_dialog.dart';
+import 'package:merostore_mobile/views/core_widgets/snackbar_message.dart';
 
 import 'pages/add_new_sales_transaction/add_new_sales_transaction.dart';
 
@@ -107,7 +109,7 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
                           },
                           onLongPress: () {
                             // Show the popup menu
-                            _showPopupMenu(context);
+                            _showPopupMenu(context, filteredSales[index]);
                           },
                           color: index == selectedIndex
                               ? MaterialStateProperty.all(
@@ -175,7 +177,7 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
   }
 
   // displays pop up menu
-  void _showPopupMenu(BuildContext context) {
+  void _showPopupMenu(BuildContext context, SalesModel model) {
     if (_tapPosition != null) {
       showMenu(
         context: context,
@@ -186,13 +188,26 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
           MediaQuery.of(context).size.height - _tapPosition!.dy,
         ),
         items: [
-          const PopupMenuItem(
-            child: Text('Edit'),
+          PopupMenuItem(
             value: 'edit',
+            onTap: () {},
+            child: const Text('Edit'),
           ),
-          const PopupMenuItem(
-            child: Text('Delete'),
+          PopupMenuItem(
             value: 'delete',
+            onTap: () {
+              SalesViewModel()
+                  .deleteSales(storeId: model.storeModel.id, salesId: model.id)
+                  .then((value) {
+                // deleting from local
+                ref.read(salesProvider.notifier).deleteSales(model.id);
+                ref.read(filteredSalesProvider.notifier).filterSales();
+                SnackBarMessage().showMessage(context, "Deleted successfully");
+              }).onError((error, stackTrace) {
+                SnackBarMessage().showMessage(context, error.toString());
+              });
+            },
+            child: const Text('Delete'),
           ),
         ],
       ).then((value) {

@@ -3,6 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:merostore_mobile/providers/filter_sales_provider.dart';
+import 'package:merostore_mobile/providers/filter_stocks_provider.dart';
+import 'package:merostore_mobile/providers/sales_provider.dart';
+import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/messages_constant.dart';
@@ -259,17 +263,23 @@ class _AddNewSalesTransactionState
                               }
                               // User has inserted required fields
                               else {
-                                SalesViewModel().addNewSales(
+                                SalesViewModel()
+                                    .addNewSales(
                                   userInput: userInput["salesRecord"],
-                                  onStockAdded: () {
-                                    Navigator.of(context).pop(
-                                        true); // indicating data is successfully saved
-                                  },
-                                  onFailure: (message) {
-                                    SnackBarMessage()
-                                        .showMessage(context, message);
-                                  },
-                                );
+                                )
+                                    .then((value) {
+                                  ref
+                                      .read(salesProvider.notifier)
+                                      .addSales(value);
+                                  ref
+                                      .read(filteredSalesProvider.notifier)
+                                      .filterSales();
+                                  Navigator.of(context).pop(
+                                      true); // indicating data is successfully saved
+                                }).onError((error, stackTrace) {
+                                  SnackBarMessage()
+                                      .showMessage(context, error.toString());
+                                });
                               }
                             },
                           ),
