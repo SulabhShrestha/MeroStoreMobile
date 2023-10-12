@@ -14,6 +14,7 @@ import 'package:merostore_mobile/views/core_widgets/custom_card.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_drop_down_btn.dart';
 import 'package:merostore_mobile/views/core_widgets/record_view_dialog.dart';
 import 'package:merostore_mobile/views/core_widgets/snackbar_message.dart';
+import 'package:merostore_mobile/views/today_sold_page/pages/edit_sales_transaction/edit_sales_transaction.dart';
 
 import 'pages/add_new_sales_transaction/add_new_sales_transaction.dart';
 
@@ -190,7 +191,12 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
         items: [
           PopupMenuItem(
             value: 'edit',
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => EditSalesTransaction(
+                        salesModel: model,
+                      )));
+            },
             child: const Text('Edit'),
           ),
           PopupMenuItem(

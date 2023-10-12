@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
@@ -17,7 +19,6 @@ class CustomDropDownBtn extends StatefulWidget {
     required this.options,
     required this.tooltip,
     this.onTap,
-
     this.hideBackgroundUI,
     this.width,
     this.initialValue,
@@ -35,6 +36,8 @@ class _CustomDropDownBtnState extends State<CustomDropDownBtn> {
     super.initState();
     _currentItemSelected = widget.initialValue ??
         widget.options.first; // First priority is always initial value
+
+    log("Currently selected: $_currentItemSelected");
   }
 
   @override
@@ -91,7 +94,7 @@ class _CustomDropDownBtnState extends State<CustomDropDownBtn> {
             ),
           ),
           onSelected: (value) {
-            if(widget.onTap != null) widget.onTap!(value);
+            if (widget.onTap != null) widget.onTap!(value);
             setState(() {
               _currentItemSelected = value;
             });

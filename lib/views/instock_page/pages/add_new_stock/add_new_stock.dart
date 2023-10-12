@@ -322,7 +322,7 @@ class _AddNewStockState extends ConsumerState<AddNewStock> {
             if (elem["quantityOption"] != null)
               DottedUnderlineTextFieldWithDropDownBtn(
                 controller: controllers[elem["heading"]],
-                displayingText: _currentQuantityType,
+                initialSelectedValue: _currentQuantityType,
                 keyboardType: elem["keyboardType"] ?? TextInputType.text,
                 quantityTypes: _allBroughtQuantities,
                 onSelected: (newQuantityType) {

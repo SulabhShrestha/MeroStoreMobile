@@ -330,7 +330,7 @@ class _AddNewSalesTransactionState
             if (elem["quantityOption"] != null)
               DottedUnderlineTextFieldWithDropDownBtn(
                 controller: controllers[elem["heading"]],
-                displayingText: _currentQuantityType,
+                initialSelectedValue: _currentQuantityType,
                 keyboardType: elem["keyboardType"] ?? TextInputType.text,
                 quantityTypes: _allBroughtQuantities,
                 onSelected: (newQuantityType) {

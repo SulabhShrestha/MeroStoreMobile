@@ -3,8 +3,8 @@ import 'dart:developer';
 class StoreModel {
   final String id;
   final String storeName;
-  final List<dynamic> quantityTypes;
-  final List<dynamic> transactionTypes;
+  final List<String> quantityTypes;
+  final List<String> transactionTypes;
 
   StoreModel({
     required this.id,
@@ -17,8 +17,10 @@ class StoreModel {
     return StoreModel(
       id: json["_id"],
       storeName: json["storeName"],
-      quantityTypes: json["quantityTypes"],
-      transactionTypes: json["transactionTypes"],
+      quantityTypes: (json['quantityTypes'] as List)
+          .map((item) => item as String)
+          .toList(),
+      transactionTypes: List<String>.from(json['transactionTypes'] as List),
     );
   }
 
@@ -26,8 +28,8 @@ class StoreModel {
   StoreModel copyWith({
     String? id,
     String? storeName,
-    List<dynamic>? quantityTypes,
-    List<dynamic>? transactionTypes,
+    List<String>? quantityTypes,
+    List<String>? transactionTypes,
   }) {
     return StoreModel(
       id: id ?? this.id,
