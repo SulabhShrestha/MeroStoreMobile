@@ -24,7 +24,6 @@ import 'package:merostore_mobile/views/core_widgets/normal_heading_for_adding_ne
 import 'package:merostore_mobile/views/core_widgets/snackbar_message.dart';
 
 import 'package:merostore_mobile/views/instock_page/pages/add_new_stock/widgets/required_marking.dart';
-import 'package:merostore_mobile/views/instock_page/utils/stock_helper.dart';
 import 'package:merostore_mobile/views/today_sold_page/pages/add_new_sales_transaction/widgets/textfield_with_suggestions.dart';
 import 'package:merostore_mobile/views/today_sold_page/utils/sales_helper.dart';
 
@@ -151,7 +150,7 @@ class _EditSalesTransactionState extends ConsumerState<EditSalesTransaction> {
 
                         // Changing current form fields
                         setState(
-                          () => allFormFields = StockHelper().getInformation(
+                          () => allFormFields = SalesHelper().getInformation(
                               transactionType: _currentTransactionType),
                         );
 
@@ -218,17 +217,23 @@ class _EditSalesTransactionState extends ConsumerState<EditSalesTransaction> {
                       // User has inserted required fields
                       else {
                         SalesViewModel()
-                            .addNewSales(
+                            .updateSales(
                           userInput: userInput["salesRecord"],
+                          storeId: widget.salesModel.storeModel.id,
+                          salesId: widget.salesModel.id,
                         )
                             .then((value) {
-                          ref.read(salesProvider.notifier).addSales(value);
+                          ref.read(salesProvider.notifier).updateSalesById(
+                                data: value,
+                                id: widget.salesModel.id,
+                              );
                           ref
                               .read(filteredSalesProvider.notifier)
                               .filterSales();
                           Navigator.of(context).pop(
                               true); // indicating data is successfully saved
                         }).onError((error, stackTrace) {
+                          log("Error, $error");
                           SnackBarMessage()
                               .showMessage(context, error.toString());
                         });

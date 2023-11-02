@@ -29,23 +29,29 @@ class StockViewModel {
 
   /// Deletes stock
   /// returns success or not found message
-  Future<void> deleteStock({required String storeId, required String stockId}) async {
-    int statusCode = await _stockWebServices.deleteStock(stockId: stockId, storeId: storeId);
+  Future<void> deleteStock(
+      {required String storeId, required String stockId}) async {
+    int statusCode =
+        await _stockWebServices.deleteStock(stockId: stockId, storeId: storeId);
 
-    if(statusCode == 404){
+    if (statusCode == 404) {
       throw "Stock not found";
     }
   }
 
   /// Updates the stock
-  Future<Map<String, dynamic>> updateStock({required String storeId, required String stockId, required Map<String, dynamic> userInput}) async {
-    final response = await _stockWebServices.updateStock(stockId: stockId, storeId: storeId, userInput: userInput);
+  Future<Map<String, dynamic>> updateStock({
+    required String storeId,
+    required String stockId,
+    required Map<String, dynamic> userInput,
+  }) async {
+    final response = await _stockWebServices.updateStock(
+        stockId: stockId, storeId: storeId, userInput: userInput);
 
-    if(response.statusCode == 404){
+    if (response.statusCode == 404) {
       throw "Stock not found";
     }
     return jsonDecode(response.body);
-
   }
 
   Future<List<StockModel>> getAllStocks() async {

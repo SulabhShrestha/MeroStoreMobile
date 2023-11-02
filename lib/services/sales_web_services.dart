@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:merostore_mobile/exceptions/custom_exception.dart';
 import 'package:merostore_mobile/models/sales_model.dart';
 import 'package:merostore_mobile/utils/constants/messages_constant.dart';
@@ -119,5 +120,24 @@ class SalesWebServices {
     );
 
     return response.statusCode;
+  }
+
+  /// Updates the sales
+  Future<Response> updateSales(
+      {required String storeId,
+      required String salesId,
+      required Map<String, dynamic> userInput}) async {
+    var token = await LocalStorageServices().getId();
+    var url = "${_urls.allSalesUrl}$storeId/$salesId";
+    final response = await http.patch(
+      Uri.parse(url),
+      headers: {
+        ..._urls.headers,
+        "Authorization": token,
+      },
+      body: json.encode(userInput),
+    );
+
+    return response;
   }
 }
