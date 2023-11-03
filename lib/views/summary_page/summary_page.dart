@@ -149,13 +149,12 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                         ConstantSpaces.height16,
                         Column(
                           children: [
-                            for (var key in allSalesProv.groupSales()[0].keys)
-                              Text("hi")
-                            //   ItemCard(
-                            //       title: key,
-                            //       amount: allSalesProv
-                            //           .groupSales()[0][key]
-                            //           .toString()),
+                            for (var key in allSalesProv.groupSales()[1].keys)
+                              ItemCard(
+                                  title: key,
+                                  amount: allSalesProv
+                                      .groupSales()[1][key]
+                                      .toString()),
                           ],
                         ),
                       ],

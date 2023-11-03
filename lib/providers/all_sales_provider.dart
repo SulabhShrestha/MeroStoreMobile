@@ -25,34 +25,36 @@ class AllSalesProvider extends StateNotifier<List<SalesModel>> {
         <String, int>{}; // stores sales in time framed defined in groupBy
 
     var currentWeek = Jiffy.now().weekOfYear;
-
-    final soldItemsByMaterialName = <String, Map<String, int>>{};
+    final soldItemsByMaterialName = <String, int>{};
 
     for (var salesModel in state) {
+      // for bar graph
       var jiffyDate = Jiffy.parseFromDateTime(DateTime.parse(
           salesModel.createdAt)); // converting string time to date
       String timeFrame = groupBy == 'year'
           ? jiffyDate.year.toString()
           : groupBy == "month"
               ? jiffyDate.MMM
-              : jiffyDate.weekOfYear.toString(); // how to group sales
+              : jiffyDate.EEEE; // how to group sales
 
       if (groupBy == "week" && currentWeek != jiffyDate.weekOfYear) {
         continue; // means that week is selected but the sales isn't from this week
       }
       salesByDuration.update(
-        jiffyDate.EEEE,
+        timeFrame,
         (value) => (salesModel.details["totalPrice"] as int) + value,
         ifAbsent: () => salesModel.details["totalPrice"],
       );
-      log("month: ${jiffyDate.MMM}");
+
+      // for most sold items
+      soldItemsByMaterialName.update(
+        salesModel.details["materialName"],
+        (value) => (salesModel.details["totalPrice"] as int) + value,
+        ifAbsent: () => salesModel.details["totalPrice"],
+      );
     }
 
-    log(salesByDuration.toString());
-
-    return [
-      salesByDuration,
-    ];
+    return [salesByDuration, soldItemsByMaterialName];
   }
 
   // Add a method to remove a store from the list
