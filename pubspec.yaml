@@ -47,6 +47,7 @@ dependencies:
   dartx: ^1.2.0
   flutter_riverpod: ^2.4.0
   data_table_2: ^2.5.8
+  jiffy: ^6.2.1
 
 dev_dependencies:
   flutter_test:

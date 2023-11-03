@@ -22,7 +22,7 @@ class _SalesData {
   _SalesData(this.year, this.sales);
 
   final String year;
-  final double sales;
+  final int sales;
 }
 
 class SummaryPage extends ConsumerStatefulWidget {
@@ -33,23 +33,19 @@ class SummaryPage extends ConsumerStatefulWidget {
 }
 
 class _SummaryPageState extends ConsumerState<SummaryPage> {
-  final List<_SalesData> data = [
-    _SalesData('Jan', 3000),
-    _SalesData('Feb', 280),
-    _SalesData('Mar', 3400),
-    _SalesData('Apr', 3220),
-    _SalesData('May', 4290),
-    _SalesData('June', 2090),
-    _SalesData('July', 1090),
-    _SalesData('Aug', 4090),
-    _SalesData('Sep', 1090),
-    _SalesData('Oct', 2090),
-    _SalesData('Nov', 3090),
-    _SalesData('Dec', 900),
-  ];
+  final List<_SalesData> data = [];
 
   // To store all list of stores
   List<String> allStoreList = [];
+
+  @override
+  void initState() {
+    ref.read(allSalesProvider.notifier).groupSales()[0].forEach((key, value) {
+      data.add(_SalesData(key, value));
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +122,7 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                             maximumZoomLevel: 0.5,
                           ),
                           series: <ChartSeries<_SalesData, String>>[
-                            LineSeries<_SalesData, String>(
+                            ColumnSeries<_SalesData, String>(
                               dataSource: data,
                               xValueMapper: (_SalesData sales, _) => sales.year,
                               yValueMapper: (_SalesData sales, _) =>
@@ -153,12 +149,13 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                         ConstantSpaces.height16,
                         Column(
                           children: [
-                            for (var key in allSalesProv.groupSales().keys)
-                              ItemCard(
-                                  title: key,
-                                  amount: allSalesProv
-                                      .groupSales()[key]
-                                      .toString()),
+                            for (var key in allSalesProv.groupSales()[0].keys)
+                              Text("hi")
+                            //   ItemCard(
+                            //       title: key,
+                            //       amount: allSalesProv
+                            //           .groupSales()[0][key]
+                            //           .toString()),
                           ],
                         ),
                       ],

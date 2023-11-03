@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:merostore_mobile/models/sales_model.dart';
+import 'package:intl/intl.dart';
 
 /// Holds and stores the list of all sales occurred by the user
 final allSalesProvider =
@@ -16,18 +20,39 @@ class AllSalesProvider extends StateNotifier<List<SalesModel>> {
   }
 
   /// Returns group sales and sum of each group
-  Map<String, int> groupSales() {
-    return state.fold({}, (Map<String, int> result, SalesModel sale) {
-      if (result.containsKey(sale.details["materialName"])) {
-        // If the name is already in the result map, add the sale amount to the existing total
-        result[sale.details["materialName"]] =
-            sale.details["totalPrice"] + result[sale.details["materialName"]];
-      } else {
-        // If the name is not in the result map, create a new entry with the sale amount
-        result[sale.details["materialName"]] = sale.details["totalPrice"];
+  List<Map<String, int>> groupSales({String groupBy = "year"}) {
+    final salesByDuration =
+        <String, int>{}; // stores sales in time framed defined in groupBy
+
+    var currentWeek = Jiffy.now().weekOfYear;
+
+    final soldItemsByMaterialName = <String, Map<String, int>>{};
+
+    for (var salesModel in state) {
+      var jiffyDate = Jiffy.parseFromDateTime(DateTime.parse(
+          salesModel.createdAt)); // converting string time to date
+      String timeFrame = groupBy == 'year'
+          ? jiffyDate.year.toString()
+          : groupBy == "month"
+              ? jiffyDate.MMM
+              : jiffyDate.weekOfYear.toString(); // how to group sales
+
+      if (groupBy == "week" && currentWeek != jiffyDate.weekOfYear) {
+        continue; // means that week is selected but the sales isn't from this week
       }
-      return result;
-    });
+      salesByDuration.update(
+        jiffyDate.EEEE,
+        (value) => (salesModel.details["totalPrice"] as int) + value,
+        ifAbsent: () => salesModel.details["totalPrice"],
+      );
+      log("month: ${jiffyDate.MMM}");
+    }
+
+    log(salesByDuration.toString());
+
+    return [
+      salesByDuration,
+    ];
   }
 
   // Add a method to remove a store from the list
