@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:merostore_mobile/providers/filter_sales_provider.dart';
 import 'package:merostore_mobile/providers/filter_stocks_provider.dart';
-import 'package:merostore_mobile/providers/sales_provider.dart';
+import 'package:merostore_mobile/providers/today_sales_provider.dart';
 import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
@@ -269,7 +269,7 @@ class _AddNewSalesTransactionState
                                 )
                                     .then((value) {
                                   ref
-                                      .read(salesProvider.notifier)
+                                      .read(todaySalesProvider.notifier)
                                       .addSales(value);
                                   ref
                                       .read(filteredSalesProvider.notifier)

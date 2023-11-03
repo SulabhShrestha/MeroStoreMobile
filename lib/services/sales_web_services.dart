@@ -18,8 +18,32 @@ class SalesWebServices {
   final _stockWebServices = StockWebServices();
   final _urls = UrlsConstant();
 
+  /// Returns today the sales record
+  Future<List<SalesModel>> getTodaySalesRecords() async {
+    var token = await LocalStorageServices().getId();
+    final response = await http.get(
+      Uri.parse(_urls.todaySalesUrl),
+      headers: {
+        ..._urls.headers,
+        "Authorization": token,
+      },
+    );
+
+    List<SalesModel> sales = [];
+
+    if (response.statusCode == 200) {
+      for (Map<String, dynamic> elem in jsonDecode(response.body)) {
+        sales.add(SalesModel.fromJSON(elem));
+      }
+    } else {
+      log("Something went wrong");
+    }
+
+    return sales;
+  }
+
   /// Returns all the sales record
-  Future<List<SalesModel>> getAllSalesRecords() async {
+  Future<List<SalesModel>> getAllSalesRecord() async {
     var token = await LocalStorageServices().getId();
     final response = await http.get(
       Uri.parse(_urls.allSalesUrl),
@@ -115,7 +139,7 @@ class SalesWebServices {
     var token = await LocalStorageServices().getId();
 
     final response = await http.delete(
-      Uri.parse("${_urls.allSalesUrl}$storeId/$salesId"),
+      Uri.parse("${_urls.todaySalesUrl}$storeId/$salesId"),
       headers: {..._urls.headers, "Authorization": token},
     );
 
@@ -128,7 +152,7 @@ class SalesWebServices {
       required String salesId,
       required Map<String, dynamic> userInput}) async {
     var token = await LocalStorageServices().getId();
-    var url = "${_urls.allSalesUrl}$storeId/$salesId";
+    var url = "${_urls.todaySalesUrl}$storeId/$salesId";
     final response = await http.patch(
       Uri.parse(url),
       headers: {

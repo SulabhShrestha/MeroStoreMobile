@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/models/store_model.dart';
+import 'package:merostore_mobile/providers/all_sales_provider.dart';
 import 'package:merostore_mobile/providers/currently_selected_store_provider.dart';
 import 'package:merostore_mobile/providers/filter_sales_provider.dart';
 import 'package:merostore_mobile/providers/filter_stocks_provider.dart';
-import 'package:merostore_mobile/providers/sales_provider.dart';
+import 'package:merostore_mobile/providers/today_sales_provider.dart';
 import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
@@ -53,11 +54,13 @@ class _RootPageState extends ConsumerState<RootPage> {
 
     var allStores = await StoreViewModel().getAllStores();
     var allStocks = await StockViewModel().getAllStocks();
+    var todaySales = await SalesViewModel().getTodaySales();
     var allSales = await SalesViewModel().getAllSales();
 
     var storesProv = ref.watch(storesProvider.notifier);
     var stocksProv = ref.watch(stocksProvider.notifier);
-    var salesProv = ref.watch(salesProvider.notifier);
+    var todaySalesProv = ref.watch(todaySalesProvider.notifier);
+    var allSalesProv = ref.watch(allSalesProvider.notifier);
 
     // Check if the data needs to be added
     if (storesProv.state.isEmpty) {
@@ -74,10 +77,17 @@ class _RootPageState extends ConsumerState<RootPage> {
       }
     }
 
-    if (salesProv.state.isEmpty) {
+    if (todaySalesProv.state.isEmpty) {
+      // Adding sales
+      for (var sale in todaySales) {
+        todaySalesProv.addSales(sale);
+      }
+    }
+
+    if (allSalesProv.state.isEmpty) {
       // Adding sales
       for (var sale in allSales) {
-        salesProv.addSales(sale);
+        allSalesProv.addSales(sale);
       }
     }
 

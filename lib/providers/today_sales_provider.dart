@@ -5,14 +5,14 @@ import 'package:merostore_mobile/models/sales_model.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/models/store_model.dart';
 
-final salesProvider =
-    StateNotifierProvider<StocksNotifier, List<SalesModel>>((ref) {
-  return StocksNotifier();
+final todaySalesProvider =
+    StateNotifierProvider<SalesNotifier, List<SalesModel>>((ref) {
+  return SalesNotifier();
 });
 
 /// This stores list of [SalesModel] and uses [Provider] to update them in real-time
-class StocksNotifier extends StateNotifier<List<SalesModel>> {
-  StocksNotifier() : super([]); // initializing with empty list
+class SalesNotifier extends StateNotifier<List<SalesModel>> {
+  SalesNotifier() : super([]); // initializing with empty list
 
   // adding new store
   void addSales(SalesModel newSales) {

@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:merostore_mobile/models/sales_model.dart';
 import 'package:merostore_mobile/providers/filter_sales_provider.dart';
 import 'package:merostore_mobile/providers/filter_stocks_provider.dart';
-import 'package:merostore_mobile/providers/sales_provider.dart';
+import 'package:merostore_mobile/providers/today_sales_provider.dart';
 import 'package:merostore_mobile/providers/stock_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
@@ -223,7 +223,7 @@ class _EditSalesTransactionState extends ConsumerState<EditSalesTransaction> {
                           salesId: widget.salesModel.id,
                         )
                             .then((value) {
-                          ref.read(salesProvider.notifier).updateSalesById(
+                          ref.read(todaySalesProvider.notifier).updateSalesById(
                                 data: value,
                                 id: widget.salesModel.id,
                               );

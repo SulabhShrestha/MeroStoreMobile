@@ -14,7 +14,8 @@ class UrlsConstant {
   String get materialDetailsUrl => "$_url/instock/materialDetails";
 
   // sales related
-  String get allSalesUrl => "$_url/sales/";
+  String get todaySalesUrl => "$_url/sales/";
+  String get allSalesUrl => "$_url/sales/all";
   String get addSalesUrl => "$_url/sales/add";
 
   // stores related

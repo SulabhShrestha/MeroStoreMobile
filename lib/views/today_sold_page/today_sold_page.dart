@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/sales_model.dart';
 import 'package:merostore_mobile/providers/currently_selected_store_provider.dart';
 import 'package:merostore_mobile/providers/filter_sales_provider.dart';
-import 'package:merostore_mobile/providers/sales_provider.dart';
+import 'package:merostore_mobile/providers/today_sales_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/view_models/sales_view_model.dart';
@@ -39,7 +39,7 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
 
   // when any update is taken place
   Future<List<SalesModel>> fetchSalesRecords() async {
-    final stocks = await SalesViewModel().getAllSales();
+    final stocks = await SalesViewModel().getTodaySales();
     return stocks;
   }
 
@@ -206,7 +206,7 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
                   .deleteSales(storeId: model.storeModel.id, salesId: model.id)
                   .then((value) {
                 // deleting from local
-                ref.read(salesProvider.notifier).deleteSales(model.id);
+                ref.read(todaySalesProvider.notifier).deleteSales(model.id);
                 ref.read(filteredSalesProvider.notifier).filterSales();
                 SnackBarMessage().showMessage(context, "Deleted successfully");
               }).onError((error, stackTrace) {

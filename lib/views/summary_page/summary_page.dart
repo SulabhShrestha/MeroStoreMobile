@@ -3,6 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:merostore_mobile/providers/all_sales_provider.dart';
+import 'package:merostore_mobile/providers/filter_sales_provider.dart';
+import 'package:merostore_mobile/providers/today_sales_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
 import 'package:merostore_mobile/utils/arrangement_order.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
@@ -51,6 +54,12 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
   @override
   Widget build(BuildContext context) {
     final storesProv = ref.watch(storesProvider.notifier);
+    // returns the filtered stocks based on currently selected store
+    final filteredSalesNotifier = ref.watch(filteredSalesProvider.notifier);
+    final allSalesProv = ref.watch(allSalesProvider.notifier);
+
+    log("Summary: ${allSalesProv.state.toString()}");
+
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
@@ -90,102 +99,73 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                 )),
           ];
         },
-        body: ListView(
-          children: [
-            CustomBox(
-              padding: const EdgeInsets.only(top: 8, right: 8, bottom: 8),
-              child: Column(
+        body: allSalesProv.state.isEmpty
+            ? const Text("Nothing to display.")
+            : ListView(
                 children: [
-                  SfCartesianChart(
-                    primaryXAxis: CategoryAxis(
-                      interval: 1,
-                      arrangeByIndex: true,
-                      autoScrollingDelta: 6, // shows only 6 at a time
-                      autoScrollingMode:
-                          AutoScrollingMode.start, // show from beginning
-                    ),
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    primaryYAxis: NumericAxis(
-                      numberFormat: NumberFormat("Rs#"),
-                    ),
-                    zoomPanBehavior: ZoomPanBehavior(
-                      enablePanning: true, //horizontal scroll
-                      enablePinching: true,
-                      zoomMode: ZoomMode.x,
-                      maximumZoomLevel: 0.5,
-                    ),
-                    series: <ChartSeries<_SalesData, String>>[
-                      LineSeries<_SalesData, String>(
-                        dataSource: data,
-                        xValueMapper: (_SalesData sales, _) => sales.year,
-                        yValueMapper: (_SalesData sales, _) => sales.sales,
-                        name: 'Sales',
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            ConstantSpaces.height8,
-
-            // Content
-            CustomBox(
-              child: Column(
-                children: [
-                  ConstantSpaces.height4,
-                  const Text(
-                    "Most sold items",
-                    style: ConstantTextStyles.redHeading20,
-                  ),
-                  ConstantSpaces.height16,
-
-                  // Most sold items
-                  FutureBuilder(
-                    future: SalesViewModel().getAllSales(
-                        arrangementOrder: ArrangementOrder.descending),
-                    builder: (context, snapshot) {
-                      // showing indicator
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-
-                      // if we have data, can be empty or not
-                      else if (snapshot.hasData) {
-                        log("Summary page; ${snapshot.data}, ${snapshot.data!.length}");
-
-                        // if it is empty
-                        if (snapshot.data!.isEmpty) {
-                          return const Center(
-                            child: Text("No data found"),
-                          );
-                        }
-
-                        return Column(
-                          children: [
-                            // we are having some data
-                            for (var data in snapshot.data!)
-                              ItemCard(
-                                title: data.details["Material Name"].toString(),
-                                amount: data.details["Total Price"].toString(),
-                              ),
+                  CustomBox(
+                    padding: const EdgeInsets.only(top: 8, right: 8, bottom: 8),
+                    child: Column(
+                      children: [
+                        SfCartesianChart(
+                          primaryXAxis: CategoryAxis(
+                            interval: 1,
+                            arrangeByIndex: true,
+                            autoScrollingDelta: 6, // shows only 6 at a time
+                            autoScrollingMode:
+                                AutoScrollingMode.start, // show from beginning
+                          ),
+                          tooltipBehavior: TooltipBehavior(enable: true),
+                          primaryYAxis: NumericAxis(
+                            numberFormat: NumberFormat("Rs#"),
+                          ),
+                          zoomPanBehavior: ZoomPanBehavior(
+                            enablePanning: true, //horizontal scroll
+                            enablePinching: true,
+                            zoomMode: ZoomMode.x,
+                            maximumZoomLevel: 0.5,
+                          ),
+                          series: <ChartSeries<_SalesData, String>>[
+                            LineSeries<_SalesData, String>(
+                              dataSource: data,
+                              xValueMapper: (_SalesData sales, _) => sales.year,
+                              yValueMapper: (_SalesData sales, _) =>
+                                  sales.sales,
+                              name: 'Sales',
+                            )
                           ],
-                        );
-                      }
+                        ),
+                      ],
+                    ),
+                  ),
 
-                      // Something unexpected happened
-                      return const Center(
-                        child: Text("Something went wrong."),
-                      );
-                    },
-                  )
+                  ConstantSpaces.height8,
+
+                  // Content
+                  CustomBox(
+                    child: Column(
+                      children: [
+                        ConstantSpaces.height4,
+                        const Text(
+                          "Most sold items",
+                          style: ConstantTextStyles.redHeading20,
+                        ),
+                        ConstantSpaces.height16,
+                        Column(
+                          children: [
+                            for (var key in allSalesProv.groupSales().keys)
+                              ItemCard(
+                                  title: key,
+                                  amount: allSalesProv
+                                      .groupSales()[key]
+                                      .toString()),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

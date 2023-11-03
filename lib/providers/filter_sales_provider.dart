@@ -1,10 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/extensions/string_extensions.dart';
 import 'package:merostore_mobile/models/sales_model.dart';
-import 'package:merostore_mobile/providers/sales_provider.dart';
+import 'package:merostore_mobile/providers/today_sales_provider.dart';
 import 'package:merostore_mobile/views/today_sold_page/utils/sales_helper.dart';
 import 'currently_selected_store_provider.dart';
 
+/// Uses [todaySalesProvider] to provided sales filtered using the store name
 final filteredSalesProvider =
     StateNotifierProvider<FilteredSalesNotifier, List<SalesModel>>((ref) {
   return FilteredSalesNotifier(ref);
@@ -18,7 +19,7 @@ class FilteredSalesNotifier extends StateNotifier<List<SalesModel>> {
   /// filters the stocks based on store name
   void filterSales() {
     final selectedStore = _ref.read(currentlySelectedStoreProvider);
-    final allSales = _ref.read(salesProvider);
+    final allSales = _ref.read(todaySalesProvider);
 
     String selectedStoreName = selectedStore["stock"];
 

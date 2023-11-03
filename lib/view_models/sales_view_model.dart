@@ -23,22 +23,27 @@ class SalesViewModel {
     throw res["desc"];
   }
 
-  /// Return all the sales record
-  Future<List<SalesModel>> getAllSales(
+  /// Returns today sales record
+  Future<List<SalesModel>> getTodaySales(
       {ArrangementOrder? arrangementOrder}) async {
-    var allSalesRecord = await _salesWebServices.getAllSalesRecords();
+    var allSalesRecord = await _salesWebServices.getTodaySalesRecords();
 
     if (arrangementOrder == null) {
       return allSalesRecord;
     } else if (arrangementOrder == ArrangementOrder.ascending) {
       final sorted =
-          allSalesRecord.sortedBy((sales) => sales.details["Total Price"]);
+          allSalesRecord.sortedBy((sales) => sales.details["totalPrice"]);
       return sorted;
     }
 
     // descending
     return allSalesRecord
-        .sortedByDescending((sales) => sales.details["Total Price"]);
+        .sortedByDescending((sales) => sales.details["totalPrice"]);
+  }
+
+  /// Returns all sales record
+  Future<List<SalesModel>> getAllSales() async {
+    return await _salesWebServices.getAllSalesRecord();
   }
 
   /// deletes the sales record
