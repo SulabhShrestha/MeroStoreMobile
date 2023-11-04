@@ -5,7 +5,12 @@ import 'package:merostore_mobile/views/core_widgets/custom_text_button.dart';
 /// Duration filter for [SummaryPage]
 ///
 class DurationFilterButtons extends StatefulWidget {
-  const DurationFilterButtons({Key? key}) : super(key: key);
+  final ValueChanged<String> onButtonTap;
+
+  const DurationFilterButtons({
+    Key? key,
+    required this.onButtonTap,
+  }) : super(key: key);
 
   @override
   State<DurationFilterButtons> createState() => _DurationFilterButtonsState();
@@ -13,10 +18,15 @@ class DurationFilterButtons extends StatefulWidget {
 
 class _DurationFilterButtonsState extends State<DurationFilterButtons> {
   // Filter buttons
-  List<String> buttonNames = ["All", "Year", "Month", "Week", "Range"];
+  List<String> buttonNames = [
+    "Year",
+    "Month",
+    "Week",
+  ];
   int selectedIndex = 0;
 
   void _onButtonTap(int index) {
+    widget.onButtonTap(buttonNames[index]);
     setState(() {
       selectedIndex = index;
     });

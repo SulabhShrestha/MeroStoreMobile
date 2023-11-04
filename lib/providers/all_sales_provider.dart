@@ -26,14 +26,14 @@ class AllSalesProvider extends StateNotifier<Map<String, dynamic>> {
 
   /// Returns group sales and sum of each group
   void groupSales(
-      {required String currentlySelectedStore, String groupBy = "year"}) {
+      {required String currentlySelectedStore, String groupBy = "Year"}) {
     Map<String, int> salesByDuration =
         {}; // stores sales in time framed defined in groupBy
 
     var currentWeek = Jiffy.now().weekOfYear;
-    Map<String, int> soldItemsByMaterialName = {};
+    final soldItemsByMaterialName = <String, int>{};
 
-    log("Inside group sales; $currentlySelectedStore");
+    log("Inside group sales; $currentlySelectedStore, $groupBy");
 
     for (var salesModel in state["allSales"]) {
       log("${salesModel.storeModel.storeName} == $currentlySelectedStore");
@@ -43,9 +43,9 @@ class AllSalesProvider extends StateNotifier<Map<String, dynamic>> {
       // for bar graph
       var jiffyDate = Jiffy.parseFromDateTime(DateTime.parse(
           salesModel.createdAt)); // converting string time to date
-      String timeFrame = groupBy == 'year'
+      String timeFrame = groupBy == 'Year'
           ? jiffyDate.year.toString()
-          : groupBy == "month"
+          : groupBy == "Month"
               ? jiffyDate.MMM
               : jiffyDate.EEEE; // how to group sales
 
@@ -71,6 +71,7 @@ class AllSalesProvider extends StateNotifier<Map<String, dynamic>> {
       'soldItemsByMaterialName': Map<String, int>.from(soldItemsByMaterialName),
     };
     state.addAll(groupSalesData);
+    log("AllSales Provider: $state");
   }
 
   // Add a method to remove a store from the list

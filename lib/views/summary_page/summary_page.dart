@@ -39,24 +39,7 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
   // To store all list of stores
   List<String> allStoreList = [];
 
-  @override
-  void initState() {
-    // This is important for adding data to the [_SalesData] list
-    String currentlySelectedStore =
-        ref.read(currentlySelectedStoreProvider)["summary"];
-    ref
-        .read(allSalesProvider.notifier)
-        .groupSales(currentlySelectedStore: currentlySelectedStore);
-
-    ref
-        .read(allSalesProvider.notifier)
-        .state["salesByDuration"]
-        .forEach((key, value) {
-      data.add(_SalesData(key, value));
-    });
-
-    super.initState();
-  }
+  String currentlySelectedButton = "Year";
 
   @override
   Widget build(BuildContext context) {
@@ -64,11 +47,16 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
         ref.watch(currentlySelectedStoreProvider)["summary"];
     final storesProv = ref.watch(storesProvider.notifier);
     // returns the filtered stocks based on currently selected store
-    ref
-        .watch(allSalesProvider.notifier)
-        .groupSales(currentlySelectedStore: currentlySelectedStore);
+    ref.watch(allSalesProvider.notifier).groupSales(
+        currentlySelectedStore: currentlySelectedStore,
+        groupBy: currentlySelectedButton);
 
     final allSalesProv = ref.watch(allSalesProvider.notifier);
+    data.clear(); // removing all data from the list
+    allSalesProv.state["salesByDuration"].forEach((key, value) {
+      data.add(_SalesData(key, value));
+    });
+    log("Summary page building");
 
     return Scaffold(
       body: NestedScrollView(
@@ -107,9 +95,15 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                     ),
                   ),
                 ],
-                bottom: const PreferredSize(
-                  preferredSize: Size.fromHeight(48),
-                  child: DurationFilterButtons(),
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(48),
+                  child: DurationFilterButtons(
+                    onButtonTap: (value) {
+                      setState(() {
+                        currentlySelectedButton = value;
+                      });
+                    },
+                  ),
                 )),
           ];
         },
