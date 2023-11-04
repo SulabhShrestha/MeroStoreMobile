@@ -31,6 +31,9 @@ class AllSalesProvider extends StateNotifier<Map<String, dynamic>> {
         {}; // stores sales in time framed defined in groupBy
 
     var currentWeek = Jiffy.now().weekOfYear;
+    var currentMonth = Jiffy.now().month;
+    var currentYear = Jiffy.now().year;
+
     final soldItemsByMaterialName = <String, int>{};
 
     log("Inside group sales; $currentlySelectedStore, $groupBy");
@@ -49,7 +52,9 @@ class AllSalesProvider extends StateNotifier<Map<String, dynamic>> {
               ? jiffyDate.MMM
               : jiffyDate.EEEE; // how to group sales
 
-      if (groupBy == "week" && currentWeek != jiffyDate.weekOfYear) {
+      if ((groupBy == "Week" && currentWeek != jiffyDate.weekOfYear) ||
+          (groupBy == "Month" && currentMonth != jiffyDate.month) ||
+          (groupBy == "Year" && currentYear != jiffyDate.year)) {
         continue; // means that week is selected but the sales isn't from this week
       }
       salesByDuration.update(
