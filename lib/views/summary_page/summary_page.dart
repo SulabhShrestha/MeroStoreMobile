@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:merostore_mobile/providers/all_sales_provider.dart';
+import 'package:merostore_mobile/providers/currently_selected_store_provider.dart';
 import 'package:merostore_mobile/providers/filter_sales_provider.dart';
 import 'package:merostore_mobile/providers/today_sales_provider.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
@@ -40,7 +41,17 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
 
   @override
   void initState() {
-    ref.read(allSalesProvider.notifier).groupSales()[0].forEach((key, value) {
+    // This is important for adding data to the [_SalesData] list
+    String currentlySelectedStore =
+        ref.read(currentlySelectedStoreProvider)["summary"];
+    ref
+        .read(allSalesProvider.notifier)
+        .groupSales(currentlySelectedStore: currentlySelectedStore);
+
+    ref
+        .read(allSalesProvider.notifier)
+        .state["salesByDuration"]
+        .forEach((key, value) {
       data.add(_SalesData(key, value));
     });
 
@@ -49,12 +60,15 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final currentlySelectedStore =
+        ref.watch(currentlySelectedStoreProvider)["summary"];
     final storesProv = ref.watch(storesProvider.notifier);
     // returns the filtered stocks based on currently selected store
-    final filteredSalesNotifier = ref.watch(filteredSalesProvider.notifier);
-    final allSalesProv = ref.watch(allSalesProvider.notifier);
+    ref
+        .watch(allSalesProvider.notifier)
+        .groupSales(currentlySelectedStore: currentlySelectedStore);
 
-    log("Summary: ${allSalesProv.state.toString()}");
+    final allSalesProv = ref.watch(allSalesProvider.notifier);
 
     return Scaffold(
       body: NestedScrollView(
@@ -67,7 +81,11 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                 flexibleSpace: CustomDropDownBtn(
                   tooltip: "Store selection",
                   options: storesProv.allStoresNames,
-                  onTap: (val) {},
+                  onTap: (val) {
+                    ref
+                        .watch(currentlySelectedStoreProvider.notifier)
+                        .setSelectedStore("summary", val);
+                  },
                 ),
                 actions: [
                   CircleAvatar(
@@ -95,7 +113,7 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                 )),
           ];
         },
-        body: allSalesProv.state.isEmpty
+        body: allSalesProv.state["salesByDuration"].isEmpty
             ? const Text("Nothing to display.")
             : ListView(
                 children: [
@@ -149,11 +167,12 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
                         ConstantSpaces.height16,
                         Column(
                           children: [
-                            for (var key in allSalesProv.groupSales()[1].keys)
+                            for (var key in allSalesProv
+                                .state["soldItemsByMaterialName"].keys)
                               ItemCard(
                                   title: key,
                                   amount: allSalesProv
-                                      .groupSales()[1][key]
+                                      .state["soldItemsByMaterialName"][key]
                                       .toString()),
                           ],
                         ),

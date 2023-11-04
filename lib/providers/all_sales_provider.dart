@@ -7,27 +7,39 @@ import 'package:intl/intl.dart';
 
 /// Holds and stores the list of all sales occurred by the user
 final allSalesProvider =
-    StateNotifierProvider<AllSalesProvider, List<SalesModel>>((ref) {
-  return AllSalesProvider([]);
+    StateNotifierProvider<AllSalesProvider, Map<String, dynamic>>((ref) {
+  return AllSalesProvider({});
 });
 
-class AllSalesProvider extends StateNotifier<List<SalesModel>> {
-  AllSalesProvider(List<SalesModel> initialData) : super(initialData);
+class AllSalesProvider extends StateNotifier<Map<String, dynamic>> {
+  AllSalesProvider(Map<String, dynamic> initialData) : super(initialData);
 
-  // Add a method to update the list of StoreModel
-  void addSales(SalesModel store) {
-    state = [...state, store];
+  // Add a method to update the map of StoreModel
+  void addSales(SalesModel sales) {
+    Map<String, dynamic> newState =
+        Map.of(state); // Create a copy of the current state
+    List<SalesModel> currentSales = newState['allSales'] ?? <SalesModel>[];
+    currentSales.add(sales); // Add the new sales to the list
+    newState['allSales'] = currentSales; // Update the 'allSales' key in the map
+    state = newState; // Set the new state
   }
 
   /// Returns group sales and sum of each group
-  List<Map<String, int>> groupSales({String groupBy = "year"}) {
-    final salesByDuration =
-        <String, int>{}; // stores sales in time framed defined in groupBy
+  void groupSales(
+      {required String currentlySelectedStore, String groupBy = "year"}) {
+    Map<String, int> salesByDuration =
+        {}; // stores sales in time framed defined in groupBy
 
     var currentWeek = Jiffy.now().weekOfYear;
-    final soldItemsByMaterialName = <String, int>{};
+    Map<String, int> soldItemsByMaterialName = {};
 
-    for (var salesModel in state) {
+    log("Inside group sales; $currentlySelectedStore");
+
+    for (var salesModel in state["allSales"]) {
+      log("${salesModel.storeModel.storeName} == $currentlySelectedStore");
+      if (salesModel.storeModel.storeName != currentlySelectedStore) {
+        continue;
+      }
       // for bar graph
       var jiffyDate = Jiffy.parseFromDateTime(DateTime.parse(
           salesModel.createdAt)); // converting string time to date
@@ -54,11 +66,15 @@ class AllSalesProvider extends StateNotifier<List<SalesModel>> {
       );
     }
 
-    return [salesByDuration, soldItemsByMaterialName];
+    Map<String, dynamic> groupSalesData = {
+      'salesByDuration': Map<String, int>.from(salesByDuration),
+      'soldItemsByMaterialName': Map<String, int>.from(soldItemsByMaterialName),
+    };
+    state.addAll(groupSalesData);
   }
 
   // Add a method to remove a store from the list
   void removeStore(SalesModel store) {
-    state = state.where((item) => item != store).toList();
+    state = state["allSales"].where((item) => item != store).toList();
   }
 }
