@@ -19,6 +19,7 @@ class DurationFilterButtons extends StatefulWidget {
 class _DurationFilterButtonsState extends State<DurationFilterButtons> {
   // Filter buttons
   List<String> buttonNames = [
+    "All",
     "Year",
     "Month",
     "Week",

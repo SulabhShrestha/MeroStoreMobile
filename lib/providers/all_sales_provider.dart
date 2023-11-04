@@ -46,11 +46,13 @@ class AllSalesProvider extends StateNotifier<Map<String, dynamic>> {
       // for bar graph
       var jiffyDate = Jiffy.parseFromDateTime(DateTime.parse(
           salesModel.createdAt)); // converting string time to date
-      String timeFrame = groupBy == 'Year'
+      String timeFrame = groupBy == 'All'
           ? jiffyDate.year.toString()
-          : groupBy == "Month"
+          : groupBy == "Year"
               ? jiffyDate.MMM
-              : jiffyDate.EEEE; // how to group sales
+              : groupBy == "Month"
+                  ? jiffyDate.dayOfWeek.toString()
+                  : jiffyDate.EEEE; // how to group sales
 
       if ((groupBy == "Week" && currentWeek != jiffyDate.weekOfYear) ||
           (groupBy == "Month" && currentMonth != jiffyDate.month) ||

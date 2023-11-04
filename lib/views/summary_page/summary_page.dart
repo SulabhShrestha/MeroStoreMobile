@@ -39,7 +39,7 @@ class _SummaryPageState extends ConsumerState<SummaryPage> {
   // To store all list of stores
   List<String> allStoreList = [];
 
-  String currentlySelectedButton = "Year";
+  String currentlySelectedButton = "All";
 
   @override
   Widget build(BuildContext context) {
