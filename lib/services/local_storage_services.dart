@@ -19,6 +19,7 @@ class LocalStorageServices {
   Future<Map<String, dynamic>> getUserInfo() async {
     final prefs = await SharedPreferences.getInstance();
     final encodedMap = prefs.getString(_uniqueKey);
+    log("UserInfo: $encodedMap");
     return encodedMap != null ? jsonDecode(encodedMap) : {};
   }
 

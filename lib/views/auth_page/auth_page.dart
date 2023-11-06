@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:merostore_mobile/providers/user_provider.dart';
 import 'package:merostore_mobile/view_models/local_storage_view_model.dart';
 import 'package:merostore_mobile/view_models/user_view_model.dart';
 import 'package:merostore_mobile/views/core_widgets/snackbar_message.dart';
@@ -9,11 +11,11 @@ import 'package:merostore_mobile/views/root_page/root_page.dart';
 /// Authentication page
 ///
 
-class AuthPage extends StatelessWidget {
+class AuthPage extends ConsumerWidget {
   const AuthPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: FutureBuilder(
         future: LocalStorageViewModel().getUserInfo(),
@@ -22,6 +24,8 @@ class AuthPage extends StatelessWidget {
               snapshot.hasData) {
             log("snapshot.hasData: ${snapshot.data}");
             if (snapshot.data!.isNotEmpty) {
+              // log("inside auth: ${snapshot.data}");
+              ref.watch(userProvider).add(snapshot.data!);
               return const RootPage();
             } else {
               return Center(
@@ -36,7 +40,8 @@ class AuthPage extends StatelessWidget {
                       );
                     }).onError((error, stackTrace) {
                       log(error.toString());
-                      SnackBarMessage().showMessage(context, "Some error occurred");
+                      SnackBarMessage()
+                          .showMessage(context, "Some error occurred");
                     });
                   },
                   child: const Text("Login with Google"),

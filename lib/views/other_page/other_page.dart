@@ -1,12 +1,16 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:merostore_mobile/providers/store_provider.dart';
+import 'package:merostore_mobile/providers/user_provider.dart';
 import 'package:merostore_mobile/services/user_web_services.dart';
 import 'package:merostore_mobile/utils/constants/app_colors.dart';
 import 'package:merostore_mobile/utils/constants/spaces.dart';
 import 'package:merostore_mobile/utils/constants/text_styles.dart';
+import 'package:merostore_mobile/view_models/local_storage_view_model.dart';
+import 'package:merostore_mobile/view_models/user_view_model.dart';
 import 'package:merostore_mobile/views/auth_page/auth_page.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_box.dart';
 import 'package:merostore_mobile/views/core_widgets/custom_shadow_container.dart';
@@ -15,11 +19,11 @@ import 'widgets/custom_list_tile.dart';
 
 /// Handles every settings related to user
 
-class OtherPage extends StatelessWidget {
+class OtherPage extends ConsumerWidget {
   const OtherPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       children: [
@@ -30,19 +34,19 @@ class OtherPage extends StatelessWidget {
               CircleAvatar(
                 maxRadius: 36,
                 backgroundColor: ConstantAppColors.redColor,
-                child: SvgPicture.network(
-                    "https://avatars.dicebear.com/api/bottts/s.svg"),
+                child:
+                    Image.network(ref.read(userProvider).photoUrl.toString()),
               ),
               ConstantSpaces.width8,
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Sulabh Shrestha",
+                    ref.read(userProvider).name.toString(),
                     style: ConstantTextStyles.blueHeading22,
                   ),
                   Text(
-                    "+9771231231234",
+                    ref.read(userProvider).email.toString(),
                     style: ConstantTextStyles.dimStyle14,
                   )
                 ],
