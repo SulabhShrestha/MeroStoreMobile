@@ -67,4 +67,15 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
   bool contains(String storeName) {
     return state.any((store) => store.storeName == storeName);
   }
+
+  List<String> getMaterialNamesByStore(String storeName) {
+    List<String> materialNames = [];
+    for (var stock in state) {
+      if (stock.storeName == storeName) {
+        materialNames.add(stock.details["materialName"]);
+      }
+    }
+
+    return materialNames;
+  }
 }

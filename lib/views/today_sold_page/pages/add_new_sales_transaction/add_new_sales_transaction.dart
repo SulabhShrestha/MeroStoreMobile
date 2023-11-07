@@ -57,10 +57,15 @@ class _AddNewSalesTransactionState
 
   // Store provider reference
   late StoreNotifier storesProv;
+  late StocksNotifier stocksProv;
 
   @override
   void initState() {
+    // initializing provider
     storesProv = ref.read(storesProvider.notifier);
+    stocksProv = ref.read(stocksProvider.notifier);
+
+    // current store name
     _currentStoreName = storesProv.allStoresNames.first;
 
     // Transaction types
@@ -224,7 +229,8 @@ class _AddNewSalesTransactionState
 
                         ConstantSpaces.height12,
 
-                        ..._populateOptions(snapshot.data!),
+                        ..._populateOptions(stocksProv
+                            .getMaterialNamesByStore(_currentStoreName)),
 
                         // Today's date
                         Row(
