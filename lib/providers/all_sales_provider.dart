@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:merostore_mobile/models/sales_model.dart';
@@ -38,7 +39,11 @@ class AllSalesProvider extends StateNotifier<Map<String, dynamic>> {
 
     log("Inside group sales; $currentlySelectedStore, $groupBy");
 
-    for (var salesModel in state["allSales"]) {
+    // sorting according to the price
+    final allSales = (state["allSales"] as List)
+        .sortedByDescending((sales) => sales.details["totalPrice"]);
+
+    for (var salesModel in allSales) {
       log("${salesModel.storeModel.storeName} == $currentlySelectedStore");
       if (salesModel.storeModel.storeName != currentlySelectedStore) {
         continue;
