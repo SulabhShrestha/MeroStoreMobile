@@ -145,17 +145,10 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
                 height: 58,
                 duration: const Duration(milliseconds: 250),
                 child: FloatingActionButton(
-                  onPressed: () async {
-                    bool? result = await Navigator.of(context)
-                        .push<bool?>(MaterialPageRoute(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
                       builder: (_) => const AddNewSalesTransaction(),
                     ));
-
-                    if (result == true) {
-                      setState(() {
-                        newStockAdded = true;
-                      });
-                    }
                   },
                   tooltip: "Add new sales transaction",
                   child: const Icon(

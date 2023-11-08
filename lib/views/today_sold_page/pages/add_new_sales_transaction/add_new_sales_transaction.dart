@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:merostore_mobile/providers/all_sales_provider.dart';
 import 'package:merostore_mobile/providers/filter_sales_provider.dart';
 import 'package:merostore_mobile/providers/filter_stocks_provider.dart';
 import 'package:merostore_mobile/providers/today_sales_provider.dart';
@@ -275,10 +276,13 @@ class _AddNewSalesTransactionState
                                 )
                                     .then((value) {
                                   ref
-                                      .read(todaySalesProvider.notifier)
+                                      .watch(todaySalesProvider.notifier)
                                       .addSales(value);
                                   ref
-                                      .read(filteredSalesProvider.notifier)
+                                      .watch(allSalesProvider.notifier)
+                                      .addSales(value);
+                                  ref
+                                      .watch(filteredSalesProvider.notifier)
                                       .filterSales();
                                   Navigator.of(context).pop(
                                       true); // indicating data is successfully saved
