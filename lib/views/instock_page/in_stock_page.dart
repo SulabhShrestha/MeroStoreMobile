@@ -42,6 +42,10 @@ class _InStockPageState extends ConsumerState<InStockPage> {
     final filteredStocksNotifier = ref.watch(filteredStocksProvider.notifier);
     final filteredStocks = ref.watch(filteredStocksProvider);
 
+    // for sorting
+    int columnIndex = -1;
+    bool ascending = false;
+
     return Scaffold(
       body: NestedScrollView(
         floatHeaderSlivers: true,
@@ -59,37 +63,6 @@ class _InStockPageState extends ConsumerState<InStockPage> {
                   filteredStocksNotifier.filterStocks();
                 },
               ),
-              actions: [
-                Material(
-                  type: MaterialType
-                      .transparency, //Makes it usable on any background color
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: ConstantAppColors.primaryColor,
-                        width: 1.0,
-                      ),
-                      color: ConstantAppColors.greenColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: InkWell(
-                      //This keeps the splash effect within the circle
-                      borderRadius: BorderRadius.circular(
-                          100.0), //Something large to ensure a circle
-                      onTap: () {},
-                      splashColor: Colors.white38,
-                      child: const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Icon(
-                          Icons.search,
-                          size: 24.0,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
             ),
           ];
         },
@@ -105,10 +78,29 @@ class _InStockPageState extends ConsumerState<InStockPage> {
                       columnSpacing: 12,
                       horizontalMargin: 12,
                       minWidth: 500,
+                      sortAscending: true,
+                      sortColumnIndex: 0,
+                      sortArrowBuilder: (bool ascending, bool sorted) {
+                        log("Sorted arrow builder: $ascending $sorted");
+                        if (sorted) {
+                          return Icon(
+                            ascending
+                                ? Icons.arrow_upward
+                                : Icons.arrow_downward,
+                            color: Colors.blue,
+                          );
+                        }
+                        return null; // Return null for columns that are not currently sorted.
+                      },
                       columns: filteredStocksNotifier
                           .getUniqueProperties()
                           .map((prop) {
+                        log("Data column: ${prop["numeric"]} ${prop["heading"]}");
                         return DataColumn2(
+                          numeric: prop["numeric"] ? true : false,
+                          onSort: (index, ascending) {
+                            log("Inside Column: $index $ascending");
+                          },
                           label: Align(
                               alignment: Alignment.center,
                               child: Text(prop["heading"])),

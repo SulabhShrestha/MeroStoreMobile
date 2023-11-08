@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/extensions/string_extensions.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
@@ -35,6 +36,7 @@ class FilteredStocksNotifier extends StateNotifier<List<StockModel>> {
   List<Map<String, dynamic>> getUniqueProperties() {
     // Extract details and collect unique property names
     Set<String> propertyNames = <String>{};
+
     for (var stock in state) {
       propertyNames.addAll(stock.details.keys);
     }

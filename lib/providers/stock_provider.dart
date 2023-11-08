@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dartx/dartx.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merostore_mobile/models/stock_model.dart';
 import 'package:merostore_mobile/models/store_model.dart';
@@ -15,7 +16,11 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
 
   // adding new store
   void addStock(StockModel newStock) {
-    state = [...state, newStock];
+    final data = [...state, newStock];
+    data.sort((a, b) =>
+        a.details["materialName"].compareTo(b.details["materialName"]));
+
+    state = data;
   }
 
   List<StockModel> get allStocks => state;
