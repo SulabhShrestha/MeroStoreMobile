@@ -17,9 +17,19 @@ class FilteredSalesNotifier extends StateNotifier<List<SalesModel>> {
   FilteredSalesNotifier(this._ref) : super([]);
 
   /// filters the stocks based on store name
-  void filterSales() {
+  void filterSales({String? sortingHeading, bool? sortAscending}) {
     final selectedStore = _ref.read(currentlySelectedStoreProvider);
     final allSales = _ref.read(todaySalesProvider);
+
+    if (sortingHeading != null) {
+      if (sortAscending == true) {
+        allSales.sort((a, b) => (a.details[sortingHeading] ?? "")
+            .compareTo(b.details[sortingHeading] ?? ""));
+      } else {
+        allSales.sort((a, b) => (b.details[sortingHeading] ?? "")
+            .compareTo(a.details[sortingHeading] ?? ""));
+      }
+    }
 
     String selectedStoreName = selectedStore["stock"];
 

@@ -45,6 +45,11 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
 
   int selectedIndex = -1;
 
+  // for sorting
+  int currentColumnIndex = 0;
+  bool sortAscending = true;
+  String currentSelectedHeading = "materialName"; // sorting basis
+
   @override
   Widget build(BuildContext context) {
     StoreNotifier storesProv = ref.read(storesProvider.notifier);
@@ -87,10 +92,34 @@ class _TodaySoldPageState extends ConsumerState<TodaySoldPage> {
                       columnSpacing: 12,
                       horizontalMargin: 12,
                       minWidth: 600,
+                      sortAscending: sortAscending,
+                      sortColumnIndex: currentColumnIndex,
+                      sortArrowBuilder: (bool ascending, bool sorted) {
+                        if (sorted) {
+                          return Icon(
+                            sortAscending
+                                ? Icons.arrow_upward
+                                : Icons.arrow_downward,
+                            color: Colors.black,
+                          );
+                        }
+                        return null; // Return null for columns that are not currently sorted.
+                      },
                       columns: filteredSalesNotifier
                           .getUniqueProperties()
                           .map((prop) {
                         return DataColumn2(
+                          numeric: prop["numeric"] ? true : false,
+                          onSort: (index, ascending) {
+                            setState(() {
+                              currentSelectedHeading = prop["fieldName"];
+                              currentColumnIndex = index;
+                              sortAscending = !sortAscending;
+                              filteredSalesNotifier.filterSales(
+                                  sortAscending: sortAscending,
+                                  sortingHeading: currentSelectedHeading);
+                            });
+                          },
                           label: Align(
                               alignment: Alignment.center,
                               child: Text(prop["heading"])),

@@ -34,7 +34,7 @@ class _InStockPageState extends ConsumerState<InStockPage> {
   // for sorting
   int currentColumnIndex = 0;
   bool sortAscending = true;
-  String currentSelectedHeading = "materialName"; // for sorting
+  String currentSelectedHeading = "materialName"; // sorting basis
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +89,7 @@ class _InStockPageState extends ConsumerState<InStockPage> {
                             sortAscending
                                 ? Icons.arrow_upward
                                 : Icons.arrow_downward,
-                            color: Colors.blue,
+                            color: Colors.black,
                           );
                         }
                         return null; // Return null for columns that are not currently sorted.
