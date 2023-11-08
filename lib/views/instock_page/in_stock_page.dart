@@ -31,6 +31,11 @@ class _InStockPageState extends ConsumerState<InStockPage> {
   Offset? tapPosition; // for tracking the tap position
   int selectedIndex = -1;
 
+  // for sorting
+  int currentColumnIndex = 0;
+  bool sortAscending = true;
+  String currentSelectedHeading = "materialName"; // for sorting
+
   @override
   Widget build(BuildContext context) {
     final storesProv = ref.watch(storesProvider.notifier);
@@ -41,10 +46,6 @@ class _InStockPageState extends ConsumerState<InStockPage> {
     // returns the filtered stocks based on currently selected store
     final filteredStocksNotifier = ref.watch(filteredStocksProvider.notifier);
     final filteredStocks = ref.watch(filteredStocksProvider);
-
-    // for sorting
-    int columnIndex = -1;
-    bool ascending = false;
 
     return Scaffold(
       body: NestedScrollView(
@@ -60,7 +61,9 @@ class _InStockPageState extends ConsumerState<InStockPage> {
                 initialValue: selectedStoreProv.state["stock"],
                 onTap: (val) {
                   selectedStoreProv.setSelectedStore("stock", val);
-                  filteredStocksNotifier.filterStocks();
+                  filteredStocksNotifier.filterStocks(
+                      sortAscending: sortAscending,
+                      sortingHeading: currentSelectedHeading);
                 },
               ),
             ),
@@ -78,13 +81,12 @@ class _InStockPageState extends ConsumerState<InStockPage> {
                       columnSpacing: 12,
                       horizontalMargin: 12,
                       minWidth: 500,
-                      sortAscending: true,
-                      sortColumnIndex: 0,
+                      sortAscending: sortAscending,
+                      sortColumnIndex: currentColumnIndex,
                       sortArrowBuilder: (bool ascending, bool sorted) {
-                        log("Sorted arrow builder: $ascending $sorted");
                         if (sorted) {
                           return Icon(
-                            ascending
+                            sortAscending
                                 ? Icons.arrow_upward
                                 : Icons.arrow_downward,
                             color: Colors.blue,
@@ -95,11 +97,17 @@ class _InStockPageState extends ConsumerState<InStockPage> {
                       columns: filteredStocksNotifier
                           .getUniqueProperties()
                           .map((prop) {
-                        log("Data column: ${prop["numeric"]} ${prop["heading"]}");
                         return DataColumn2(
                           numeric: prop["numeric"] ? true : false,
                           onSort: (index, ascending) {
-                            log("Inside Column: $index $ascending");
+                            setState(() {
+                              currentSelectedHeading = prop["fieldName"];
+                              currentColumnIndex = index;
+                              sortAscending = !sortAscending;
+                              filteredStocksNotifier.filterStocks(
+                                  sortAscending: sortAscending,
+                                  sortingHeading: currentSelectedHeading);
+                            });
                           },
                           label: Align(
                               alignment: Alignment.center,

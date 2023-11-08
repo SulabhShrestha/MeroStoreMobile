@@ -17,6 +17,8 @@ class StocksNotifier extends StateNotifier<List<StockModel>> {
   // adding new store
   void addStock(StockModel newStock) {
     final data = [...state, newStock];
+
+    // default action is to sort by material name in ascending order
     data.sort((a, b) =>
         a.details["materialName"].compareTo(b.details["materialName"]));
 
